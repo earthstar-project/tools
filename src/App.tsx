@@ -1,25 +1,48 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import * as React from "react";
+import { StorageLocalStorage, ValidatorEs4 } from "earthstar";
+import {
+  AuthorTab,
+  Earthbar,
+  EarthstarPeer,
+  LocalStorageSettingsWriter,
+  MultiWorkspaceTab,
+  Spacer,
+  useLocalStorageEarthstarSettings,
+} from "react-earthstar";
+import "react-earthstar/styles/layout.css";
+import "react-earthstar/styles/junior.css";
+import WorkspaceRoutes from "./WorkspaceRoutes";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import WorkspaceLookup from "./WorkspaceLookup";
+import Dashboard from "./Dashboard";
+
+const STORAGE_KEY = "letterbox";
 
 function App() {
+  const settings = useLocalStorageEarthstarSettings(STORAGE_KEY);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <EarthstarPeer
+        {...settings}
+        onCreateWorkspace={(addr) => {
+          return new StorageLocalStorage([ValidatorEs4], addr);
+        }}
+      >
+        <Earthbar>
+          <MultiWorkspaceTab />
+          <Spacer />
+          <AuthorTab />
+        </Earthbar>
+        <WorkspaceLookup>
+          <Routes>
+            <Route path={"/"} element={<Dashboard />} />
+            <Route path={":workspaceLookup/*"} element={<WorkspaceRoutes />} />
+          </Routes>
+        </WorkspaceLookup>
+        <LocalStorageSettingsWriter storageKey={STORAGE_KEY} />
+      </EarthstarPeer>
+    </Router>
   );
 }
 

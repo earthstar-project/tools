@@ -10,8 +10,15 @@
     "@types/node": "^12.0.0",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
+    "date-fns": "^2.22.1",
+    "earthstar": "^6.8.5",
+    "earthstar-graph-db": "^2.0.0",
+    "history": "^5.0.0",
+    "micromark": "^3.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-earthstar": "^3.0.1-alpha.5",
+    "react-router-dom": "^6.0.0-beta.0",
     "react-scripts": "4.0.3",
     "typescript": "^4.1.2",
     "web-vitals": "^1.0.1"
@@ -39,5 +46,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "devDependencies": {}
 }

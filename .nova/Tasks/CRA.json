@@ -1,0 +1,16 @@
+{
+  "actions" : {
+    "build" : {
+      "enabled" : true,
+      "script" : "yarn build"
+    },
+    "run" : {
+      "enabled" : true,
+      "script" : "yarn start"
+    }
+  },
+  "environment" : {
+    "BROWSER" : "none"
+  },
+  "identifier" : "7B665834-43CA-4C46-894B-C0FABB6E3CBC"
+}
