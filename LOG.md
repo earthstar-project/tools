@@ -39,3 +39,8 @@
   - Although I want to avoid subthreading for the time-being, it would be trivial to spawn new threads from replies by just creating a new `HAS_THREAD` edge between a reply and the workspace.
   - How am I going to deal with thread ordering (ie getting all threads by most recently posted to?) in an efficient way?
     - Can I even hope for pagination?
+    
+### Next time
+
+- Make a thread view where you can add replies.
+- Start using some styling.
