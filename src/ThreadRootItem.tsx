@@ -3,6 +3,7 @@ import { ThreadRoot } from "./letterbox-layer";
 import { micromark } from "micromark";
 import { AuthorLabel } from "react-earthstar";
 import { formatRelative } from "date-fns";
+import { Link } from "react-router-dom";
 
 export default function ThreadRootItem({ root }: { root: ThreadRoot }) {
   const [firstLine] = root.doc.content.split("\n");
@@ -11,7 +12,7 @@ export default function ThreadRootItem({ root }: { root: ThreadRoot }) {
 
   const html = micromark(excerpt);
 
-  return <div>
+  return <Link to={`thread/${root.id}`}>
     <div dangerouslySetInnerHTML={{ __html: html }} />
     <div>
       <b>
@@ -19,5 +20,5 @@ export default function ThreadRootItem({ root }: { root: ThreadRoot }) {
       </b>{" "}
       {formatRelative(root.firstPosted, Date.now())}
     </div>
-  </div>;
+  </Link>;
 }

@@ -24,7 +24,7 @@ export default function WorkspaceView() {
       : <p>You must sign in to post threads.</p>}
     {threadRoots.length === 0 ? <div>No threads.</div> : <ul>
       {letterbox.getThreadRoots().map((threadRoot, i) => {
-        return <li>
+        return <li key={threadRoot.id}>
           <ThreadRootItem root={threadRoot} />
           {i < threadRoots.length - 1 ? <hr /> : null}
         </li>;

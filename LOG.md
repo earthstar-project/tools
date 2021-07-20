@@ -1,5 +1,22 @@
 # Working Log
 
+## 20 July 2021
+
+- Late start today, want to get cracking so I can show something substantial for Wednesday (Earthstar Picnic #4).
+- Going to use Tailwind for styling. A bit confusing for beginners but will save a lot of time with styling at this early stage.
+
+---
+
+- Started work on getting threads.
+- Wondering how to identify threads - by timestamp?
+  - It's _possible_ for two people to post something exactly at the same time, but with small groups, and microseconds... I think we can safely use timestamps as IDs for threads.
+  - The way I'm writing `getThread` a malicious user could know how threads are queried and make a doc that starts with `/letterbox/` and ends with `{timestamp}.md`. I guess... I should put the author pubkey in there. Okay.
+    - Not exactly friendly URLs but it's not like anybody's going to be spidering these.
+- Should everyone be able to tag a thread, or just the author? I'm going to go with just the author for now, we want to see the author's intent rather than everyone's personal filing system.
+- Hard time choosing between paths for replying... right now it's `/{workspace}/thread/{authorPubKey}/{timestamp}/reply`, but I also like `/{workspace}/reply/{authorPubKey}/{timestamp}`.
+  - Easier to do nested layout with the former, so you can still the whole thread you're replying to inline. Was tempted by opening reply box in a new window, though...
+- Added thread view + thread replies. Horrendous layout, but it works.
+
 ## 19 July 2021
 
 - Started work on an app for threaded discussions. I'm going to call it Letterbox.
