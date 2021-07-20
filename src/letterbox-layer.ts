@@ -168,6 +168,24 @@ export default class LetterboxLayer {
     return isErr(result) ? result : path;
   }
 
+  getThreadTitle(id: string): string | undefined {
+    const thread = this.getThread(id);
+
+    if (!thread) {
+      return undefined;
+    }
+
+    const { content } = thread.root.doc;
+
+    const [firstLine] = content.split("\n");
+
+    if (!firstLine || !firstLine.startsWith("# ")) {
+      return undefined;
+    }
+
+    return firstLine.substring(2);
+  }
+
   getThreadRoots(): ThreadRoot[] {
     const threadRootEdges = findEdgesSync(this._storage, {
       appName: APP_NAME,

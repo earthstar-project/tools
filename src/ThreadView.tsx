@@ -18,8 +18,9 @@ function PostAttribution(
 }
 
 function ThreadRootView({ root }: { root: ThreadRoot }) {
-  return <article>
+  return <article className="border shadow p-2 mb-3">
     <PostContent doc={root.doc} />
+    <hr className="my-2" />
     <PostAttribution
       authorPubKey={root.doc.author}
       postedOn={root.firstPosted}
@@ -28,8 +29,9 @@ function ThreadRootView({ root }: { root: ThreadRoot }) {
 }
 
 function PostView({ post }: { post: Post }) {
-  return <article>
+  return <article className="border shadow p-2 mb-3">
     <PostContent doc={post.doc} />
+    <hr className="my-2" />
     <PostAttribution
       authorPubKey={post.doc.author}
       postedOn={post.firstPosted}
@@ -56,12 +58,12 @@ export default function ThreadView() {
 
   return <div>
     <Outlet />
-    <ol>
+    <ol className="my-3">
       <ThreadRootView root={thread.root} />
       {thread.replies.map((post) =>
         <PostView key={post.doc.path} post={post} />
       )}
     </ol>
-    <Link to={"reply"}>Reply</Link>
+    <Link className="link-btn" to={"reply"}>Reply</Link>
   </div>;
 }

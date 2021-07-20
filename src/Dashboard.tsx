@@ -7,11 +7,17 @@ export default function Dashboard() {
   const workspaces = useWorkspaces();
   const lookup = React.useContext(PathWorkspaceLookupContext);
 
-  return <div>
+  return <div className={"p-3"}>
+    <header className={"mb-3"}>
+      <h1 className={"text-2xl"}>Letterbox</h1>
+    </header>
     <ul>
       {workspaces.map((addr) =>
         <li key={addr}>
-          <Link to={`/${lookup.addrsToPaths[addr]}`}>
+          <Link
+            className={"underline text-blue-600"}
+            to={`/${lookup.addrsToPaths[addr]}`}
+          >
             <WorkspaceLabel address={addr} />
           </Link>
         </li>

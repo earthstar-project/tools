@@ -1,34 +1,50 @@
 import * as React from "react";
-
-import { useCurrentAuthor, useStorage, WorkspaceLabel } from "react-earthstar";
-import { Link } from "react-router-dom";
+import { useStorage, WorkspaceLabel } from "react-earthstar";
+import { Link, Outlet, useMatch, useParams } from "react-router-dom";
 import { useLetterboxLayer } from "./letterbox-layer";
 import { useWorkspaceAddrFromRouter } from "./WorkspaceLookup";
 
-import ThreadRootItem from "./ThreadRootItem";
+function ThreadTitle({ threadId }: { threadId: string }) {
+  const letterboxLayer = useLetterboxLayer();
+  const threadTitle = letterboxLayer.getThreadTitle(threadId);
+
+  if (!threadTitle) {
+    return null;
+  }
+
+  return <>{threadTitle}</>;
+}
 
 export default function WorkspaceView() {
   const workspace = useWorkspaceAddrFromRouter();
   const storage = useStorage(workspace);
-  const [currentAuthor] = useCurrentAuthor();
-  const letterbox = useLetterboxLayer();
 
-  const threadRoots = letterbox.getThreadRoots();
+  const { workspaceLookup } = useParams();
+  const match = useMatch("/:workspaceLookup/thread/:pubKey/:timestamp/*");
 
-  return <div>
-    <h1 className={"text-2xl"}>
-      <WorkspaceLabel address={storage.workspace} />
-    </h1>
-    {currentAuthor
-      ? <Link to={"post"}>Post a new thread</Link>
-      : <p>You must sign in to post threads.</p>}
-    {threadRoots.length === 0 ? <div>No threads.</div> : <ul>
-      {letterbox.getThreadRoots().map((threadRoot, i) => {
-        return <li key={threadRoot.id}>
-          <ThreadRootItem root={threadRoot} />
-          {i < threadRoots.length - 1 ? <hr /> : null}
-        </li>;
-      })}
-    </ul>}
+  return <div className={"p-3"}>
+    <header className={"mb-3"}>
+      <h1 className={"text-2xl"}>
+        <Link className={"text-blue-600 underline"} to={"/"}>Letterbox</Link>
+        {" ‣ "}
+        <Link className={"text-blue-600 underline"} to={`/${workspaceLookup}`}>
+          <WorkspaceLabel address={storage.workspace} />
+        </Link>
+        {match?.params.timestamp
+          ? <>
+            {" ‣ "}
+            <Link
+              className={"text-blue-600 underline"}
+              to={`/${workspaceLookup}/thread/${match.params.pubKey}/${match.params.timestamp}`}
+            >
+              <ThreadTitle
+                threadId={`${match.params.pubKey}/${match.params.timestamp}`}
+              />
+            </Link>
+          </>
+          : null}
+      </h1>
+    </header>
+    <Outlet />
   </div>;
 }

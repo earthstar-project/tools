@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .link-btn {
+    @apply p-2 text-white underline  inline-block border-blue-300 text-blue-600 border;
+  }
+  
+  .btn {
+    @apply p-2 bg-blue-600 text-white shadow inline-block;
+  }
+}

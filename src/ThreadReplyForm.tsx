@@ -28,11 +28,13 @@ export default function ThreadReplyForm() {
     }}
   >
     <textarea
-      className={"border"}
+      required
+      className={"border p-2 mb-2 shadow-inner"}
       value={replyText}
       placeholder={"Supports markdown"}
+      rows={10}
       onChange={(e) => setReplyText(e.target.value)}
     />
-    <button className={"bg-blue-100 p-2"} type={"submit"}>Reply</button>
+    <button className={"btn"} type={"submit"}>Post reply</button>
   </form>;
 }

@@ -17,6 +17,7 @@ export default function NewThreadForm() {
   }
 
   return <form
+    className="flex flex-col"
     onSubmit={() => {
       const content = [`# ${title}`, "", postVal].join("\n");
 
@@ -29,21 +30,28 @@ export default function NewThreadForm() {
         return;
       }
 
-      navigate("..");
+      navigate(`../thread/${res.id}`);
     }}
   >
     <input
+      className="border mb-2 p-2 shadow-inner"
       type={"text"}
       value={title}
       onChange={(e) => setTitle(e.target.value)}
+      placeholder={"Thread title"}
+      required
     />
+
     <textarea
+      required
+      className="border mb-2 p-2 shadow-inner"
       placeholder={"Write the first post of a new thread. Accepts markdown."}
+      rows={6}
       value={postVal}
       onChange={(e) => {
         setPostVal(e.target.value);
       }}
     />
-    <button type={"submit"}>Create new thread</button>
+    <button className="btn" type={"submit"}>Create new thread</button>
   </form>;
 }

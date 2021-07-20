@@ -12,13 +12,18 @@ export default function ThreadRootItem({ root }: { root: ThreadRoot }) {
 
   const html = micromark(excerpt);
 
-  return <Link to={`thread/${root.id}`}>
-    <div dangerouslySetInnerHTML={{ __html: html }} />
-    <div>
-      <b>
-        <AuthorLabel address={root.doc.author} />
-      </b>{" "}
-      {formatRelative(root.firstPosted, Date.now())}
-    </div>
-  </Link>;
+  return <div className="border p-2 shadow-sm mb-3">
+    <Link className={""} to={`thread/${root.id}`}>
+      <div
+        className={"text-2xl font-bold mt-1"}
+        dangerouslySetInnerHTML={{ __html: html }}
+      />
+      <div className={"my-1"}>
+        <b>
+          <AuthorLabel address={root.doc.author} />
+        </b>{" "}
+        {formatRelative(root.firstPosted, Date.now())}
+      </div>
+    </Link>
+  </div>;
 }

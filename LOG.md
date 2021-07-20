@@ -16,6 +16,7 @@
 - Hard time choosing between paths for replying... right now it's `/{workspace}/thread/{authorPubKey}/{timestamp}/reply`, but I also like `/{workspace}/reply/{authorPubKey}/{timestamp}`.
   - Easier to do nested layout with the former, so you can still the whole thread you're replying to inline. Was tempted by opening reply box in a new window, though...
 - Added thread view + thread replies. Horrendous layout, but it works.
+- Put together an acceptable layout for a prototype.
 
 ## 19 July 2021
 
