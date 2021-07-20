@@ -19,6 +19,16 @@
 - Put together an acceptable layout for a prototype.
 - Spent a lot of today trying to figure out how to render my own markup with parsed markdown in order to add my own classes to them.
 - Added a nice (toggleable) preview area.
+- Made threads and replies order properly.
+- Got lost in the styling weeds today.
+  - Had to do some styling to avoid UI soup
+  - Also the js markdown ecosystem is extremely confusing.
+  - Also worked from home today, a nice bit of paper with all the things I should do in order is at the studio and was sorely missed.
+- Always had LOG.md open in the corner and wrote as I worked, which led to much better notes.
+
+### Next time
+
+- Will work on read / unread UI.
 
 ## 19 July 2021
 
