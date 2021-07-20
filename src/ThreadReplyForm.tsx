@@ -2,6 +2,7 @@ import { isErr } from "earthstar";
 import * as React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useLetterboxLayer } from "./letterbox-layer";
+import MarkdownPreview from "./MarkdownPreview";
 
 export default function ThreadReplyForm() {
   const { authorPubKey, timestamp } = useParams();
@@ -35,6 +36,7 @@ export default function ThreadReplyForm() {
       rows={10}
       onChange={(e) => setReplyText(e.target.value)}
     />
-    <button className={"btn"} type={"submit"}>Post reply</button>
+    <MarkdownPreview raw={replyText} />
+    <button className={"btn mt-2"} type={"submit"}>Post reply</button>
   </form>;
 }

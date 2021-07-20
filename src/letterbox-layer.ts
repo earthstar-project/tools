@@ -200,7 +200,7 @@ export default class LetterboxLayer {
 
     return threadRootEdges.map(this._edgeToThreadRoot, this).filter(
       onlyDefined,
-    );
+    ).sort((aRoot, bRoot) => aRoot.firstPosted < bRoot.firstPosted ? 1 : -1);
   }
 
   createThread(
@@ -286,7 +286,8 @@ export default class LetterboxLayer {
       return undefined;
     }
 
-    const replies = replyEdges.map(this._edgeToPost, this).filter(onlyDefined);
+    const replies = replyEdges.map(this._edgeToPost, this).filter(onlyDefined)
+      .sort((aPost, bPost) => aPost.firstPosted < bPost.firstPosted ? -1 : 1);
 
     return {
       root: this._docToThreadRoot(threadRootDoc),

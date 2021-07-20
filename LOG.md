@@ -17,6 +17,8 @@
   - Easier to do nested layout with the former, so you can still the whole thread you're replying to inline. Was tempted by opening reply box in a new window, though...
 - Added thread view + thread replies. Horrendous layout, but it works.
 - Put together an acceptable layout for a prototype.
+- Spent a lot of today trying to figure out how to render my own markup with parsed markdown in order to add my own classes to them.
+- Added a nice (toggleable) preview area.
 
 ## 19 July 2021
 

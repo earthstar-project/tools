@@ -3,6 +3,7 @@ import * as React from "react";
 import { useCurrentAuthor } from "react-earthstar";
 import { useNavigate } from "react-router-dom";
 import { useLetterboxLayer } from "./letterbox-layer";
+import MarkdownPreview from "./MarkdownPreview";
 
 export default function NewThreadForm() {
   const [currentAuthor] = useCurrentAuthor();
@@ -52,6 +53,7 @@ export default function NewThreadForm() {
         setPostVal(e.target.value);
       }}
     />
-    <button className="btn" type={"submit"}>Create new thread</button>
+    <MarkdownPreview raw={[`# ${title}`, ``, postVal].join("\n")} />
+    <button className="btn mt-2" type={"submit"}>Create new thread</button>
   </form>;
 }

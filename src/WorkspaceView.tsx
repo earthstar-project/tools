@@ -1,19 +1,9 @@
 import * as React from "react";
 import { useStorage, WorkspaceLabel } from "react-earthstar";
 import { Link, Outlet, useMatch, useParams } from "react-router-dom";
-import { useLetterboxLayer } from "./letterbox-layer";
+import ThreadTitle from "./ThreadTitle";
+
 import { useWorkspaceAddrFromRouter } from "./WorkspaceLookup";
-
-function ThreadTitle({ threadId }: { threadId: string }) {
-  const letterboxLayer = useLetterboxLayer();
-  const threadTitle = letterboxLayer.getThreadTitle(threadId);
-
-  if (!threadTitle) {
-    return null;
-  }
-
-  return <>{threadTitle}</>;
-}
 
 export default function WorkspaceView() {
   const workspace = useWorkspaceAddrFromRouter();

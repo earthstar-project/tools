@@ -2,14 +2,14 @@ import * as React from "react";
 import { Document } from "earthstar";
 import { Link, Outlet, useParams } from "react-router-dom";
 import { Post, ThreadRoot, useLetterboxLayer } from "./letterbox-layer";
-import { micromark } from "micromark";
 import { formatRelative } from "date-fns";
 import { AuthorLabel } from "react-earthstar";
+import renderMarkdown from "./util/markdown";
 
 function PostAttribution(
   { authorPubKey, postedOn }: { authorPubKey: string; postedOn: Date },
 ) {
-  return <div>
+  return <div className={"text-gray-500"}>
     <b>
       <AuthorLabel address={authorPubKey} />
     </b>{" "}
@@ -40,9 +40,9 @@ function PostView({ post }: { post: Post }) {
 }
 
 function PostContent({ doc }: { doc: Document }) {
-  const html = micromark(doc.content);
-
-  return <div dangerouslySetInnerHTML={{ __html: html }} />;
+  return <div>
+    {renderMarkdown(doc.content)}
+  </div>;
 }
 
 export default function ThreadView() {
