@@ -16,7 +16,7 @@ export default function WorkspaceView() {
   const threadRoots = letterbox.getThreadRoots();
 
   return <div>
-    <h1>
+    <h1 className={"text-2xl"}>
       <WorkspaceLabel address={storage.workspace} />
     </h1>
     {currentAuthor
