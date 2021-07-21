@@ -5,7 +5,6 @@ import {
   isErr,
   IStorage,
   ValidationError,
-  WriteResult,
 } from "earthstar";
 import {
   findEdgesSync,
@@ -18,7 +17,6 @@ import { useWorkspaceAddrFromRouter } from "./WorkspaceLookup";
 export type Post = {
   doc: Document;
   firstPosted: Date;
-  unread: boolean;
 };
 
 export type Tag = {
@@ -31,7 +29,6 @@ export type ThreadRoot = {
   doc: Document;
   firstPosted: Date;
   tags: Tag[];
-  unread: boolean;
 };
 
 export type Thread = {
@@ -43,6 +40,7 @@ const APP_NAME = "letterbox";
 const KIND_HAS_THREAD = "HAS_THREAD";
 const KIND_TAGGED_WITH = "TAGGED_WITH";
 const KIND_HAS_REPLY = "HAS_REPLY";
+const KIND_READ_THREAD_UP_TO = "READ_THREAD_UP_TO";
 
 function onlyDefined<T>(val: T | undefined): val is T {
   if (val) {
@@ -99,7 +97,6 @@ export default class LetterboxLayer {
       tags: isErr(tagEdges)
         ? []
         : tagEdges.map(this._edgeToTag, this).filter(onlyDefined),
-      unread: true,
     };
   }
 
@@ -109,7 +106,6 @@ export default class LetterboxLayer {
     return {
       doc: postDoc,
       firstPosted: new Date(publishedTimestamp / 1000),
-      unread: true,
     };
   }
 
@@ -263,6 +259,8 @@ export default class LetterboxLayer {
       );
     }
 
+    this.markReadUpTo(threadRoot.id, threadRoot.doc.timestamp);
+
     return threadRoot;
   }
 
@@ -341,13 +339,114 @@ export default class LetterboxLayer {
       );
     }
 
+    this.markReadUpTo(threadId, hopefullyReplyDoc.timestamp);
+
     return this._docToPost(hopefullyReplyDoc);
+  }
+
+  isUnread(threadId: string, timestamp: number): boolean {
+    if (!this._user) {
+      return false;
+    }
+
+    const readUpToEdges = findEdgesSync(this._storage, {
+      appName: APP_NAME,
+      source: this._user.address,
+      owner: this._user.address,
+      dest: `/letterbox/~${threadId}.md`,
+      kind: KIND_READ_THREAD_UP_TO,
+    });
+
+    if (isErr(readUpToEdges)) {
+      return false;
+    }
+
+    const [readUpToEdge] = readUpToEdges;
+
+    if (!readUpToEdge) {
+      return true;
+    }
+
+    const edgeContent: GraphEdgeContent = JSON.parse(readUpToEdge.content);
+
+    return timestamp > edgeContent.data;
+  }
+
+  threadHasUnreadPosts(threadId: string): boolean {
+    const thread = this.getThread(threadId);
+
+    if (!thread) {
+      return false;
+    }
+
+    if (!this._user) {
+      return false;
+    }
+
+    const readUpToEdges = findEdgesSync(this._storage, {
+      appName: APP_NAME,
+      source: this._user.address,
+      owner: this._user.address,
+      dest: `/letterbox/~${threadId}.md`,
+      kind: KIND_READ_THREAD_UP_TO,
+    });
+
+    if (isErr(readUpToEdges)) {
+      return false;
+    }
+
+    const [readUpToEdge] = readUpToEdges;
+
+    if (!readUpToEdge) {
+      return true;
+    }
+
+    return [thread.root, ...thread.replies].map(({ doc }) => doc).some(
+      (doc) => {
+        return this.isUnread(threadId, getDocPublishedTimestamp(doc));
+      },
+    );
+  }
+
+  markReadUpTo(threadId: string, timestamp: number) {
+    if (!this._user) {
+      return;
+    }
+
+    const result = writeEdgeSync(this._storage, this._user, {
+      appName: APP_NAME,
+      kind: KIND_READ_THREAD_UP_TO,
+      owner: this._user.address,
+      source: this._user.address,
+      dest: `/letterbox/~${threadId}.md`,
+    }, timestamp);
+
+    if (isErr(result)) {
+      console.warn(
+        `Something went wrong marking ${threadId} as read`,
+      );
+    }
+  }
+
+  lastReply(threadId: string): Post | undefined {
+    const thread = this.getThread(threadId);
+
+    if (!thread) {
+      return undefined;
+    }
+
+    if (thread.replies.length === 0) {
+      return undefined;
+    }
+
+    return thread.replies[thread.replies.length - 1];
   }
 }
 
-export function useLetterboxLayer() {
-  const workspace = useWorkspaceAddrFromRouter();
-  const storage = useStorage(workspace);
+export function useLetterboxLayer(workspaceAddress?: string) {
+  const inferredWorkspace = useWorkspaceAddrFromRouter();
+
+  const storage = useStorage(workspaceAddress || inferredWorkspace);
   const [currentAuthor] = useCurrentAuthor();
 
   const layer = React.useMemo(() => {

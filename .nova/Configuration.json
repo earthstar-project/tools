@@ -1,5 +1,5 @@
 {
-  "co.gwil.deno.enable" : false,
-  "workspace.preview_type" : "custom",
-  "workspace.preview_url" : "http:\/\/localhost:3000"
+  "co.gwil.deno.enable": false,
+  "workspace.preview_type": "custom",
+  "workspace.preview_url": "http:\/\/localhost:3000"
 }

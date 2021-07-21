@@ -1,5 +1,5 @@
 import * as React from "react";
-import renderToMarkdown from "./util/markdown";
+import { renderMarkdown } from "./util/markdown";
 
 export default function MarkdownPreview({ raw }: { raw: string }) {
   const [enabled, setEnabled] = React.useState(false);
@@ -7,7 +7,7 @@ export default function MarkdownPreview({ raw }: { raw: string }) {
   return <div>
     {enabled
       ? <div className={"border p-2 border-dashed"}>
-        {renderToMarkdown(raw)}
+        {renderMarkdown(raw)}
       </div>
       : null}
     <label>

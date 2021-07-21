@@ -1,5 +1,19 @@
 # Working Log
 
+## 21 July 2021
+
+- Working on unread stuff. Going to store unread status as an edge between author and doc of kind HAS_NOT_READ. Marking something as read will mean deleting the edge, which means the server doesn't get clogged up with unread/read data tracking.
+- Of course this also means that other people can see what you've marked as read and what you haven't. If we make it clear that's the case, it could server as a nice social signal.
+- The read/unread thing could stand alone as another layer, really.
+- Wait, crap - you'd need to create unread edges for every user on the workspace when posting a thread/reply, that doesn't work at all.
+- Pondered over this with a lunch of carrots dipped in peanut butter. Think I've got an idea that leads to a better experience.
+- Have a READ_THREAD_UP_TO edge, where source is author and dest is a thread root.
+  - This edge has a tiny bit of metadata on it: a timestamp representing where the thread was read up to.
+  - If this edge does not exist, everything in the thread can be considered unread.
+  - If this edge does exist, the root and replies' timestamps are compared to the timestapm in the READ_THREAD_UP_TO edge. If lower, it is read. If higher, it is unread.
+- Added isUnread, threadHasUnreadPosts, and markReadUpTo methods. Also made it so that when you post a thread or reply the thread is marked read up until there.
+
+
 ## 20 July 2021
 
 - Late start today, want to get cracking so I can show something substantial for Wednesday (Earthstar Picnic #4).

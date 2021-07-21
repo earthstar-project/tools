@@ -13,7 +13,7 @@ export default function ThreadListing() {
   return <div>
     {currentAuthor
       ? <Link className={"link-btn"} to={"post"}>
-        Post a new thread
+        New thread
       </Link>
       : <p>You must sign in to post threads.</p>}
     {threadRoots.length === 0
