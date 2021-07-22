@@ -36,8 +36,12 @@ function App() {
         </Earthbar>
         <WorkspaceLookup>
           <Routes>
-            <Route path={"/"} element={<Dashboard />} />
-            <Route path={":workspaceLookup/*"} element={<WorkspaceRoutes />} />
+            <Route path={"/"} element={<Dashboard />}>
+              <Route
+                path={":workspaceLookup/*"}
+                element={<WorkspaceRoutes />}
+              />
+            </Route>
           </Routes>
         </WorkspaceLookup>
         <LocalStorageSettingsWriter storageKey={STORAGE_KEY} />

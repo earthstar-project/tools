@@ -5,7 +5,7 @@ import {
   useWorkspaces,
   WorkspaceLabel,
 } from "react-earthstar";
-import { Link } from "react-router-dom";
+import { Link, Outlet, useMatch } from "react-router-dom";
 import LetterboxLayer from "./letterbox-layer";
 import ThreadRootItem from "./ThreadRootItem";
 import { PathWorkspaceLookupContext } from "./WorkspaceLookup";
@@ -21,56 +21,56 @@ function WorkspaceSection({ workspace }: { workspace: string }) {
   }, [storage, currentAuthor]);
   const unreadThreadRoots = layer.getThreadRoots().filter((root) =>
     layer.threadHasUnreadPosts(root.id)
-  ).splice(0, 3);
+  );
 
   const lookup = React.useContext(PathWorkspaceLookupContext);
 
-  return <section>
-    <header className={"border-b mb-3 flex justify-between"}>
-      <h2 className="text-xl mb-2">
-        <Link
-          className={"underline text-blue-600"}
-          to={`/${lookup.addrsToPaths[workspace]}`}
-        >
-          <WorkspaceLabel address={workspace} />
-        </Link>
-      </h2>
-    </header>
+  const match = useMatch("/:workspace/*");
 
-    {unreadThreadRoots.length > 0
-      ? <>
-        <h2 className="mb-1 font-bold">New posts</h2>
-        <ol>
-          {unreadThreadRoots.splice(0, 3).map((root) =>
-            <ThreadRootItem root={root} />
-          )}
-        </ol>
-        {unreadThreadRoots.length > 3
-          ? <Link
-            className={"underline text-blue-600"}
-            to={lookup.addrsToPaths[workspace]}
-          >
-            {`And ${unreadThreadRoots.length - 3} more.`}
-          </Link>
-          : null}
-      </>
-      : <div>Nothing new.</div>}
-  </section>;
+  console.log(match);
+  console.log(lookup.addrsToPaths[workspace]);
+
+  const isActive = lookup.addrsToPaths[workspace] === match?.params.workspace;
+
+  console.log(isActive);
+
+  return <Link
+    to={`/${lookup.addrsToPaths[workspace]}`}
+  >
+    <section
+      className={`flex justify-between items-baseline p-3 ${
+        isActive ? "bg-blue-50" : ""
+      }`}
+    >
+      <h2 className="text-md">
+        <WorkspaceLabel address={workspace} />
+      </h2>
+      {unreadThreadRoots.length
+        ? <div
+          className="text-white bg-blue-500 px-2 py-1 rounded-full shadow-sm text-md"
+        >
+          {unreadThreadRoots.length}
+        </div>
+        : null}
+    </section>
+  </Link>;
 }
 
 export default function Dashboard() {
   const workspaces = useWorkspaces();
 
-  return <div className={"p-3"}>
-    <header className={"mb-3"}>
-      <h1 className={"text-2xl"}>Letterbox</h1>
-    </header>
-    <ul className={"space-y-8"}>
+  return <div className={"h-screen w-screen grid grid-cols-app-wide"}>
+    <ul className={"h-full flex-initial border-r"}>
+      <header className="bg-blue-800 text-white p-3">📮 Letterbox</header>
       {workspaces.map((addr) =>
-        <li key={addr}>
-          <WorkspaceSection workspace={addr} />
-        </li>
+        <>
+          <li key={addr}>
+            <WorkspaceSection workspace={addr} />
+          </li>
+          <hr />
+        </>
       )}
     </ul>
+    <Outlet />
   </div>;
 }

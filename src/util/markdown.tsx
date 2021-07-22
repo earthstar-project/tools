@@ -22,7 +22,10 @@ function Paragraph(props: any) {
 }
 
 function Pre(props: any) {
-  return <pre className="my-2 border p-4 text-sm bg-gray-50" {...props} />;
+  return <pre
+    className="my-2 border p-4 text-sm bg-gray-50 overflow-scroll"
+    {...props}
+  />;
 }
 
 function UnorderedList(props: any) {
@@ -92,7 +95,10 @@ function PreviewParagraph(props: any) {
 }
 
 function PreviewPre(props: any) {
-  return <pre className="inline text-sm bg-gray-50" {...props} />;
+  return <pre
+    className="inline text-sm bg-gray-50 whitespace-nowrap"
+    {...props}
+  />;
 }
 
 function PreviewUnorderedList(props: any) {

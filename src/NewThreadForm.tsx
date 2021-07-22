@@ -18,7 +18,7 @@ export default function NewThreadForm() {
   }
 
   return <form
-    className="flex flex-col"
+    className="flex flex-col px-6 py-3"
     onSubmit={() => {
       const content = [`# ${title}`, "", postVal].join("\n");
 

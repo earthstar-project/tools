@@ -20,10 +20,6 @@ function PostDetails(
 
   return <div className={"text-gray-500 flex justify-between items-baseline"}>
     <div className="flex items-baseline gap-1">
-      <div
-        className={isUnread ? "bg-blue-500 rounded-full w-3 h-3" : "w-3"}
-      />
-
       <b>
         <AuthorLabel address={post.doc.author} />
       </b>{" "}
@@ -54,9 +50,14 @@ function PostDetails(
 }
 
 function ThreadRootView({ root }: { root: ThreadRoot }) {
-  return <article className="border shadow p-2 mb-3">
+  const letterBoxLayer = useLetterboxLayer();
+  const firstPostedTimestamp = getDocPublishedTimestamp(root.doc);
+  const isUnread = letterBoxLayer.isUnread(root.id, firstPostedTimestamp);
+
+  return <article
+    className={`px-6 py-6 ${isUnread ? "" : "bg-gray-50 opacity-70"}`}
+  >
     <PostContent doc={root.doc} />
-    <hr className="my-2" />
     <PostDetails
       post={root}
       threadId={root.id}
@@ -65,9 +66,15 @@ function ThreadRootView({ root }: { root: ThreadRoot }) {
 }
 
 function PostView({ post, threadId }: { post: Post; threadId: string }) {
-  return <article className="border shadow p-2 mb-3">
+  const letterBoxLayer = useLetterboxLayer();
+  const firstPostedTimestamp = getDocPublishedTimestamp(post.doc);
+  const isUnread = letterBoxLayer.isUnread(threadId, firstPostedTimestamp);
+
+  return <article
+    className={`px-6 py-6 ${isUnread ? "" : "bg-gray-50 opacity-70"}`}
+  >
     <PostContent doc={post.doc} />
-    <hr className="my-2" />
+
     <PostDetails
       post={post}
       threadId={threadId}
@@ -94,15 +101,19 @@ export default function ThreadView() {
 
   const nowTimestamp = Date.now() * 1000;
 
-  return <div>
+  return <div className="overflow-scroll">
     <Outlet />
-    <ol className="my-3">
+    <ol>
       <ThreadRootView root={thread.root} />
+      <hr />
       {thread.replies.map((post) =>
-        <PostView key={post.doc.path} post={post} threadId={thread.root.id} />
+        <>
+          <PostView key={post.doc.path} post={post} threadId={thread.root.id} />
+          <hr />
+        </>
       )}
     </ol>
-    <footer className="flex gap-2">
+    <footer className="flex gap-2 px-6 justify-between py-3">
       <Link className="link-btn" to={"reply"}>New reply</Link>
       <button
         className="btn"
