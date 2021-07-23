@@ -18,7 +18,7 @@ function Heading3(props: any) {
 }
 
 function Paragraph(props: any) {
-  return <p className="my-2" {...props} />;
+  return <p className="my-2 max-w-prose" {...props} />;
 }
 
 function Pre(props: any) {
