@@ -14,5 +14,6 @@
 
 [data-re-earthbar-panel-portal] {
   position: absolute;
+  z-index: 99999999;
   width: 100%;
 }
