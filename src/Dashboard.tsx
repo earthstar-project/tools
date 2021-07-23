@@ -27,12 +27,11 @@ function WorkspaceSection({ workspace }: { workspace: string }) {
 
   const match = useMatch("/:workspace/*");
 
-  console.log(match);
-  console.log(lookup.addrsToPaths[workspace]);
+  
 
   const isActive = lookup.addrsToPaths[workspace] === match?.params.workspace;
 
-  console.log(isActive);
+  
 
   return <Link
     to={`/${lookup.addrsToPaths[workspace]}`}
@@ -59,7 +58,7 @@ function WorkspaceSection({ workspace }: { workspace: string }) {
 export default function Dashboard() {
   const workspaces = useWorkspaces();
 
-  return <div className={"h-screen w-screen grid grid-cols-app-wide"}>
+  return <div className={"w-screen flex-grow grid grid-cols-app-wide"}>
     <ul className={"h-full flex-initial border-r"}>
       <header className="bg-blue-800 text-white p-3">📮 Letterbox</header>
       {workspaces.map((addr) =>

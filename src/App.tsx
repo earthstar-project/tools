@@ -29,6 +29,7 @@ function App() {
           return new StorageLocalStorage([ValidatorEs4], addr);
         }}
       >
+      <div className="flex flex-col h-screen">
         <Earthbar>
           <MultiWorkspaceTab />
           <Spacer />
@@ -45,6 +46,7 @@ function App() {
           </Routes>
         </WorkspaceLookup>
         <LocalStorageSettingsWriter storageKey={STORAGE_KEY} />
+          </div>
       </EarthstarPeer>
     </Router>
   );

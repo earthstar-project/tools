@@ -11,3 +11,8 @@
     @apply p-2 bg-blue-800 text-white shadow inline-block rounded-lg;
   }
 }
+
+[data-re-earthbar-panel-portal] {
+  position: absolute;
+  width: 100%;
+}

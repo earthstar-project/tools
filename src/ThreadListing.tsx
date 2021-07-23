@@ -16,10 +16,10 @@ export default function ThreadListing() {
         ? <Link className={"link-btn m-2 text-center"} to={"post"}>
           New thread
         </Link>
-        : <p>You must sign in to post threads.</p>}
+        : <p className="p-3 text-gray-500 text-center">You must sign in to post threads.</p>}
       <hr />
       {threadRoots.length === 0
-        ? <div className="py-3">No threads have been posted yet.</div>
+        ? <div className="p-3 text-gray-500 text-center">No threads have been posted yet.</div>
         : <ol>
           {letterbox.getThreadRoots().map((threadRoot) => {
             return <>
