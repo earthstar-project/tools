@@ -15,6 +15,7 @@ import WorkspaceRoutes from "./WorkspaceRoutes";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import WorkspaceLookup from "./WorkspaceLookup";
 import Dashboard from "./Dashboard";
+import JoinForm from "./JoinForm";
 
 const STORAGE_KEY = "letterbox";
 
@@ -42,6 +43,7 @@ function App() {
                 path={":workspaceLookup/*"}
                 element={<WorkspaceRoutes />}
               />
+              <Route path={"join/*" } element={<JoinForm/>} />
             </Route>
           </Routes>
         </WorkspaceLookup>
