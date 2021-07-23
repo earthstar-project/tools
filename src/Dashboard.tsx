@@ -56,7 +56,9 @@ function WorkspaceSection({ workspace }: { workspace: string }) {
 export default function Dashboard() {
   const workspaces = useWorkspaces();
 
-  return <div className={"w-screen flex-grow grid grid-cols-app-wide border-t"}>
+  return <div
+    className={"w-screen flex-grow grid grid-cols-app-wide border-t h-screen app-height"}
+  >
     <ul className={"h-full flex-initial border-r border-gray-300"}>
       <header className="bg-blue-800 text-white p-3">📮 Letterbox</header>
       {workspaces.map((addr) =>
