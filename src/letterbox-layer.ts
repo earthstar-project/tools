@@ -196,7 +196,20 @@ export default class LetterboxLayer {
 
     return threadRootEdges.map(this._edgeToThreadRoot, this).filter(
       onlyDefined,
-    ).sort((aRoot, bRoot) => aRoot.firstPosted < bRoot.firstPosted ? 1 : -1);
+    ).sort((aRoot, bRoot) => {
+      const aLast = this.lastThreadItem(aRoot.id);
+      const bLast = this.lastThreadItem(bRoot.id);
+
+      if (!aLast) {
+        return 1;
+      }
+
+      if (!bLast) {
+        return -1;
+      }
+
+      return aLast?.firstPosted < bLast?.firstPosted ? 1 : -1;
+    });
   }
 
   createThread(
@@ -428,7 +441,7 @@ export default class LetterboxLayer {
     }
   }
 
-  lastReply(threadId: string): Post | undefined {
+  lastThreadItem(threadId: string): ThreadRoot | Post | undefined {
     const thread = this.getThread(threadId);
 
     if (!thread) {
@@ -436,7 +449,7 @@ export default class LetterboxLayer {
     }
 
     if (thread.replies.length === 0) {
-      return undefined;
+      return thread.root;
     }
 
     return thread.replies[thread.replies.length - 1];

@@ -9,7 +9,7 @@ import { PathWorkspaceLookupContext } from "./WorkspaceLookup";
 export default function ThreadRootItem({ root }: { root: ThreadRoot }) {
   const letterboxLayer = useLetterboxLayer(root.doc.workspace);
   const hasUnreadPosts = letterboxLayer.threadHasUnreadPosts(root.id);
-  const lastReply = letterboxLayer.lastReply(root.id);
+  const lastThreadItem = letterboxLayer.lastThreadItem(root.id);
   const lookup = React.useContext(PathWorkspaceLookupContext);
 
   const match = useMatch("/:workspace/thread/:pubKey/:timestamp/*");
@@ -37,21 +37,15 @@ export default function ThreadRootItem({ root }: { root: ThreadRoot }) {
         <h1 className={"text-md font-bold"}>
           <ThreadTitle workspace={root.doc.workspace} threadId={root.id} />
         </h1>
-        {lastReply
+        {lastThreadItem
           ? <div className="text-gray-500 overflow-ellipsis overflow-hidden">
             <AuthorLabel
               className="mr-1 text-gray-800"
-              address={lastReply.doc.author}
+              address={lastThreadItem.doc.author}
             />
-            {renderMarkdownPreview(lastReply.doc.content)}
+            {renderMarkdownPreview(lastThreadItem.doc.content)}
           </div>
-          : <div className="text-gray-500 overflow-ellipsis overflow-hidden">
-            <AuthorLabel
-              className="mr-1 text-gray-800"
-              address={root.doc.author}
-            />
-            {renderMarkdownPreview(root.doc.content)}
-          </div>}
+          : null}
       </div>
     </Link>
   </div>;

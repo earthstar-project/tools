@@ -102,14 +102,14 @@ export default function ThreadView() {
     return <p>No thread found.</p>;
   }
 
-  const lastReply = thread.replies[thread.replies.length - 1];
+  const lastThreadItem = letterboxLayer.lastThreadItem(threadId);
 
-  const docToCompareReadTimestamp = lastReply?.doc || thread.root.doc;
-
-  const mostRecentIsUnread = letterboxLayer.isUnread(
-    threadId,
-    getDocPublishedTimestamp(docToCompareReadTimestamp),
-  );
+  const mostRecentIsUnread = lastThreadItem
+    ? letterboxLayer.isUnread(
+      threadId,
+      getDocPublishedTimestamp(lastThreadItem.doc),
+    )
+    : true;
 
   const nowTimestamp = Date.now() * 1000;
 
