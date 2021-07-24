@@ -102,7 +102,6 @@ export default function ThreadView() {
   const nowTimestamp = Date.now() * 1000;
 
   return <div className="overflow-scroll">
-    <Outlet />
     <ol>
       <ThreadRootView root={thread.root} />
       <hr />
@@ -123,5 +122,6 @@ export default function ThreadView() {
         Mark thread as read
       </button>
     </footer>
+    <Outlet />
   </div>;
 }

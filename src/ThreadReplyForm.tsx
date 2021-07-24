@@ -14,7 +14,7 @@ export default function ThreadReplyForm() {
   const navigate = useNavigate();
 
   return <form
-    className={"flex flex-col p-6"}
+    className={"flex flex-col p-6 sticky bottom-0 bg-white"}
     onSubmit={() => {
       const result = letterboxLayer.createReply(
         `${authorPubKey}/${timestamp}`,
