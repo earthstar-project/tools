@@ -7,7 +7,7 @@ import {
   useLetterboxLayer,
 } from "./letterbox-layer";
 import { formatRelative } from "date-fns";
-import { AuthorLabel } from "react-earthstar";
+import { AuthorLabel, useCurrentAuthor } from "react-earthstar";
 import { renderMarkdown } from "./util/markdown";
 
 function PostDetails(
@@ -16,6 +16,7 @@ function PostDetails(
   const letterBoxLayer = useLetterboxLayer();
   const firstPostedTimestamp = getDocPublishedTimestamp(post.doc);
   const isUnread = letterBoxLayer.isUnread(threadId, firstPostedTimestamp);
+  const [currentAuthor] = useCurrentAuthor();
 
   return <div className={"text-gray-500 flex justify-between items-baseline"}>
     <div className="flex items-baseline gap-1">
@@ -25,25 +26,28 @@ function PostDetails(
       {formatRelative(post.firstPosted, Date.now())}
     </div>
     <div>
-      {isUnread
-        ? <div>
-          <button
-            className="text-sm"
-            onClick={() =>
-              letterBoxLayer.markReadUpTo(threadId, firstPostedTimestamp)}
-          >
-            Mark as read up to here
-          </button>
-        </div>
-        : <div>
-          <button
-            onClick={() =>
-              letterBoxLayer.markReadUpTo(threadId, firstPostedTimestamp - 1)}
-            className="text-blue-600 text-sm"
-          >
-            Mark as unread from here
-          </button>
-        </div>}
+      {currentAuthor
+        ? isUnread
+          ? <div>
+            <button
+              className="text-sm"
+              onClick={() =>
+                letterBoxLayer.markReadUpTo(threadId, firstPostedTimestamp)}
+            >
+              Mark as read up to here
+            </button>
+          </div>
+          : <div>
+            <button
+              onClick={() => {
+                letterBoxLayer.markReadUpTo(threadId, firstPostedTimestamp - 1);
+              }}
+              className="text-blue-600 text-sm"
+            >
+              Mark as unread from here
+            </button>
+          </div>
+        : null}
     </div>
   </div>;
 }
@@ -91,11 +95,21 @@ export default function ThreadView() {
 
   const letterboxLayer = useLetterboxLayer();
 
-  const thread = letterboxLayer.getThread(`${authorPubKey}/${timestamp}`);
+  const threadId = `${authorPubKey}/${timestamp}`;
+  const thread = letterboxLayer.getThread(threadId);
 
   if (!thread) {
     return <p>No thread found.</p>;
   }
+
+  const lastReply = thread.replies[thread.replies.length - 1];
+
+  const docToCompareReadTimestamp = lastReply?.doc || thread.root.doc;
+
+  const mostRecentIsUnread = letterboxLayer.isUnread(
+    threadId,
+    getDocPublishedTimestamp(docToCompareReadTimestamp),
+  );
 
   const nowTimestamp = Date.now() * 1000;
 
@@ -112,13 +126,15 @@ export default function ThreadView() {
     </ol>
     <footer className="flex gap-2 px-6 justify-between py-3">
       <Link className="link-btn" to={"reply"}>New reply</Link>
-      <button
-        className="btn"
-        onClick={() =>
-          letterboxLayer.markReadUpTo(thread.root.id, nowTimestamp)}
-      >
-        Mark thread as read
-      </button>
+      {mostRecentIsUnread
+        ? <button
+          className="btn"
+          onClick={() =>
+            letterboxLayer.markReadUpTo(thread.root.id, nowTimestamp)}
+        >
+          Mark thread as read
+        </button>
+        : null}
     </footer>
     <Outlet />
   </div>;
