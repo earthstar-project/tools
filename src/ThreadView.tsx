@@ -58,7 +58,7 @@ function ThreadRootView({ root }: { root: ThreadRoot }) {
   const isUnread = letterBoxLayer.isUnread(root.id, firstPostedTimestamp);
 
   return <article
-    className={`px-6 py-6 ${isUnread ? "" : "bg-gray-200 opacity-60"}`}
+    className={`px-6 py-6 ${isUnread ? "" : "bg-gray-100 text-gray-600"}`}
   >
     <PostDetails
       post={root}
@@ -74,7 +74,7 @@ function PostView({ post, threadId }: { post: Post; threadId: string }) {
   const isUnread = letterBoxLayer.isUnread(threadId, firstPostedTimestamp);
 
   return <article
-    className={`px-6 py-6 ${isUnread ? "" : "bg-gray-200 opacity-60"}`}
+    className={`px-6 py-6 ${isUnread ? "" : "bg-gray-100 text-gray-600"}`}
   >
     <PostDetails
       post={post}
