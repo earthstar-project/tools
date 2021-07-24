@@ -1,4 +1,3 @@
-import * as React from "react";
 import { Document } from "earthstar";
 import { Link, Outlet, useParams } from "react-router-dom";
 import {
@@ -55,13 +54,13 @@ function ThreadRootView({ root }: { root: ThreadRoot }) {
   const isUnread = letterBoxLayer.isUnread(root.id, firstPostedTimestamp);
 
   return <article
-    className={`px-6 py-6 ${isUnread ? "" : "bg-gray-50 opacity-70"}`}
+    className={`px-6 py-6 ${isUnread ? "" : "bg-gray-200 opacity-60"}`}
   >
-    <PostContent doc={root.doc} />
     <PostDetails
       post={root}
       threadId={root.id}
     />
+    <PostContent doc={root.doc} />
   </article>;
 }
 
@@ -71,14 +70,13 @@ function PostView({ post, threadId }: { post: Post; threadId: string }) {
   const isUnread = letterBoxLayer.isUnread(threadId, firstPostedTimestamp);
 
   return <article
-    className={`px-6 py-6 ${isUnread ? "" : "bg-gray-50 opacity-70"}`}
+    className={`px-6 py-6 ${isUnread ? "" : "bg-gray-200 opacity-60"}`}
   >
-    <PostContent doc={post.doc} />
-
     <PostDetails
       post={post}
       threadId={threadId}
     />
+    <PostContent doc={post.doc} />
   </article>;
 }
 
@@ -104,11 +102,11 @@ export default function ThreadView() {
   return <div className="overflow-scroll">
     <ol>
       <ThreadRootView root={thread.root} />
-      <hr />
+      <hr className="border-gray-300 border-2" />
       {thread.replies.map((post) =>
         <>
           <PostView key={post.doc.path} post={post} threadId={thread.root.id} />
-          <hr />
+          <hr className="border-gray-300 border-2" />
         </>
       )}
     </ol>
