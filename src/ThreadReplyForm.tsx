@@ -18,7 +18,7 @@ export default function ThreadReplyForm() {
 
   const formRef = React.useRef<HTMLFormElement | null>(null);
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     if (formRef.current) {
       formRef.current.scrollIntoView({ block: "end" });
     }
