@@ -65,8 +65,6 @@ export default function Dashboard() {
   const isExactlyAtWorkspace = workspaceMatch?.params.workspace &&
     workspaceMatch?.params["*"] === "";
 
-  console.log({ isExactlyAtRoot, isExactlyAtWorkspace });
-
   return <div
     className={"w-screen flex-grow grid lg:grid-cols-app-lg md:grid-cols-app-md app border-t md:h-app-md"}
   >

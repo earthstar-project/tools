@@ -123,9 +123,6 @@ function PostEditForm(
     onSubmit={(e) => {
       e.preventDefault();
 
-      console.log(doc);
-      console.log(publishedTimestamp);
-
       const res = letterboxLayer.editPost(publishedTimestamp, content);
 
       if (!isErr(res)) {
