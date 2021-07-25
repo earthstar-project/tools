@@ -19,7 +19,11 @@ export default function ThreadRootItem({ root }: { root: ThreadRoot }) {
 
   return <div
     className={`px-2 py-3 ${
-      isActive ? "bg-blue-50" : !hasUnreadPosts ? "bg-gray-50 opacity-70" : ""
+      isActive
+        ? "bg-blue-100"
+        : !hasUnreadPosts
+        ? "bg-gray-100 text-gray-600"
+        : ""
     }`}
   >
     <Link

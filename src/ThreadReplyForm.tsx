@@ -13,8 +13,17 @@ export default function ThreadReplyForm() {
 
   const navigate = useNavigate();
 
+  const formRef = React.useRef<HTMLFormElement | null>(null);
+
+  React.useEffect(() => {
+    if (formRef.current) {
+      formRef.current.scrollIntoView({ block: "end" });
+    }
+  }, []);
+
   return <form
-    className={"flex flex-col p-6 sticky bottom-0 bg-white border-t"}
+    ref={formRef}
+    className={"flex flex-col p-6 bg-white border-t"}
     onSubmit={() => {
       const result = letterboxLayer.createReply(
         `${authorPubKey}/${timestamp}`,

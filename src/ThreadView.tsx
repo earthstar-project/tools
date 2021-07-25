@@ -113,14 +113,14 @@ export default function ThreadView() {
 
   const nowTimestamp = Date.now() * 1000;
 
-  return <div className="overflow-scroll">
+  return <div className="overflow-scroll shadow-lg">
     <ol>
       <ThreadRootView root={thread.root} />
-      <hr className="border-gray-300 border-2" />
+      <hr className="border-gray-300" />
       {thread.replies.map((post) =>
         <>
           <PostView key={post.doc.path} post={post} threadId={thread.root.id} />
-          <hr className="border-gray-300 border-2" />
+          <hr className="border-gray-300" />
         </>
       )}
     </ol>

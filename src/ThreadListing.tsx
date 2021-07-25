@@ -17,7 +17,7 @@ export default function ThreadListing() {
 
   return <>
     <section
-      className="border-r border-gray-300 h-full flex flex-col overflow-scroll"
+      className="border-r-2 border-gray-300 h-full flex flex-col overflow-scroll shadow-lg"
     >
       <SpaceBar />
       {threadRoots.length === 0
