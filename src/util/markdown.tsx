@@ -6,34 +6,34 @@ import rehype2react from "rehype-react";
 import rehypeTruncate from "rehype-truncate";
 
 function Heading(props: any) {
-  return <h1 className="text-2xl my-2 font-bold" {...props} />;
+  return <h1 className="text-2xl my-3 font-bold" {...props} />;
 }
 
 function Heading2(props: any) {
-  return <h2 className="text-xl my-2 font-bold" {...props} />;
+  return <h2 className="text-xl my-3 font-bold" {...props} />;
 }
 
 function Heading3(props: any) {
-  return <ul className="text-lg my-2 font-bold" {...props} />;
+  return <ul className="text-lg my-3 font-bold" {...props} />;
 }
 
 function Paragraph(props: any) {
-  return <p className="my-2 max-w-prose" {...props} />;
+  return <p className="my-3 max-w-prose" {...props} />;
 }
 
 function Pre(props: any) {
   return <pre
-    className="my-2 border p-4 text-sm bg-gray-50 overflow-scroll"
+    className="my-3 border p-4 text-sm bg-gray-50 overflow-scroll"
     {...props}
   />;
 }
 
 function UnorderedList(props: any) {
-  return <ul className="pl-6 my-2 list-disc" {...props} />;
+  return <ul className="pl-6 my-3 list-disc" {...props} />;
 }
 
 function OrderedList(props: any) {
-  return <ol className="pl-6 my-2 list-decimal" {...props} />;
+  return <ol className="pl-6 my-3 list-decimal" {...props} />;
 }
 
 function ListItem(props: any) {
@@ -42,7 +42,7 @@ function ListItem(props: any) {
 
 function BlockQuote(props: any) {
   return <blockquote
-    className="border-l-2 border-gray-400 pl-2 my-2"
+    className="border-l-2 border-gray-400 pl-2 my-3"
     {...props}
   />;
 }

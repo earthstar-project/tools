@@ -1,5 +1,5 @@
 import { Document } from "earthstar";
-import { Link, Outlet, useParams } from "react-router-dom";
+import { Link, Outlet, useMatch, useParams } from "react-router-dom";
 import {
   getDocPublishedTimestamp,
   Post,
@@ -9,6 +9,51 @@ import {
 import { formatRelative } from "date-fns";
 import { AuthorLabel, useCurrentAuthor } from "react-earthstar";
 import { renderMarkdown } from "./util/markdown";
+import ThreadTitle from "./ThreadTitle";
+
+function ThreadBar({ id }: { id: string }) {
+  const match = useMatch("/:lookup/*");
+
+  const lookup = match?.params.lookup;
+
+  const letterboxLayer = useLetterboxLayer();
+
+  const lastThreadItem = letterboxLayer.lastThreadItem(id);
+
+  const mostRecentIsUnread = lastThreadItem
+    ? letterboxLayer.isUnread(
+      id,
+      getDocPublishedTimestamp(lastThreadItem.doc),
+    )
+    : true;
+
+  const nowTimestamp = Date.now() * 1000;
+
+  return <div
+    className="flex py-2 px-3 md:px-3 bg-gray-100 border-b shadow-sm justify-between sticky top-0 z-50 items-baseline"
+  >
+    <div className="flex">
+      <Link
+        className="md:hidden mr-2 text-blue-500 text-xl"
+        to={`/${lookup}` || "/"}
+      >
+        ⬅
+      </Link>
+      <div className={"font-bold text-xl"}>
+        <ThreadTitle threadId={id} />
+      </div>
+    </div>
+
+    {mostRecentIsUnread
+      ? <button
+        className="p-1.5 bg-blue-800 text-white rounded"
+        onClick={() => letterboxLayer.markReadUpTo(id, nowTimestamp)}
+      >
+        Mark thread as read
+      </button>
+      : null}
+  </div>;
+}
 
 function PostDetails(
   { post, threadId }: { post: Post | ThreadRoot; threadId: string },
@@ -58,7 +103,7 @@ function ThreadRootView({ root }: { root: ThreadRoot }) {
   const isUnread = letterBoxLayer.isUnread(root.id, firstPostedTimestamp);
 
   return <article
-    className={`px-6 py-6 ${isUnread ? "" : "bg-gray-100 text-gray-600"}`}
+    className={`p-3 md:p-6  ${isUnread ? "" : "bg-gray-100 text-gray-600"}`}
   >
     <PostDetails
       post={root}
@@ -74,7 +119,7 @@ function PostView({ post, threadId }: { post: Post; threadId: string }) {
   const isUnread = letterBoxLayer.isUnread(threadId, firstPostedTimestamp);
 
   return <article
-    className={`px-6 py-6 ${isUnread ? "" : "bg-gray-100 text-gray-600"}`}
+    className={`p-3 md:p-6 ${isUnread ? "" : "bg-gray-100 text-gray-600"}`}
   >
     <PostDetails
       post={post}
@@ -104,18 +149,8 @@ export default function ThreadView() {
     return <p>No thread found.</p>;
   }
 
-  const lastThreadItem = letterboxLayer.lastThreadItem(threadId);
-
-  const mostRecentIsUnread = lastThreadItem
-    ? letterboxLayer.isUnread(
-      threadId,
-      getDocPublishedTimestamp(lastThreadItem.doc),
-    )
-    : true;
-
-  const nowTimestamp = Date.now() * 1000;
-
   return <div className="overflow-scroll shadow-lg">
+    <ThreadBar id={thread.root.id} />
     <ol>
       <ThreadRootView root={thread.root} />
       <hr className="border-gray-300" />
@@ -126,18 +161,9 @@ export default function ThreadView() {
         </>
       )}
     </ol>
-    <footer className="flex gap-2 px-6 justify-between py-3">
+    <footer className="flex gap-2 p-3 lg:px-6 justify-between py-3">
       {currentAuthor
         ? <Link className="link-btn" to={"reply"}>New reply</Link>
-        : null}
-      {mostRecentIsUnread
-        ? <button
-          className="btn"
-          onClick={() =>
-            letterboxLayer.markReadUpTo(thread.root.id, nowTimestamp)}
-        >
-          Mark thread as read
-        </button>
         : null}
     </footer>
     <Outlet />

@@ -18,7 +18,7 @@ export default function ThreadRootItem({ root }: { root: ThreadRoot }) {
     root.id === `${match?.params.pubKey}/${match?.params.timestamp}`;
 
   return <div
-    className={`px-2 py-3 ${
+    className={`px-1 md:px-2 py-3 ${
       isActive
         ? "bg-blue-100"
         : !hasUnreadPosts

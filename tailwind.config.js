@@ -4,7 +4,9 @@ module.exports = {
   theme: {
     extend: {
       gridTemplateColumns: {
-        "app-wide": "12rem minmax(20rem, 25rem) 1fr",
+        "app-lg": "12rem minmax(20rem, 25rem) 1fr",
+        "app-md": "minmax(15rem, 20rem) 1fr",
+        "app": "1fr",
       },
     },
   },

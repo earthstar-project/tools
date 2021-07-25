@@ -26,7 +26,7 @@ export default function ThreadReplyForm() {
 
   return <form
     ref={formRef}
-    className={"flex flex-col p-6 bg-white border-t"}
+    className={"flex flex-col p-3 lg:p-6 bg-white border-t"}
     onSubmit={() => {
       const result = letterboxLayer.createReply(
         `${authorPubKey}/${timestamp}`,

@@ -1,4 +1,3 @@
-import * as React from "react";
 import { StorageLocalStorage, ValidatorEs4 } from "earthstar";
 import {
   AuthorTab,
@@ -30,25 +29,25 @@ function App() {
           return new StorageLocalStorage([ValidatorEs4], addr);
         }}
       >
-      <div className="flex flex-col h-screen">
-        <Earthbar>
-          <MultiWorkspaceTab />
-          <Spacer />
-          <AuthorTab />
-        </Earthbar>
-        <WorkspaceLookup>
-          <Routes>
-            <Route path={"/"} element={<Dashboard />}>
-              <Route
-                path={":workspaceLookup/*"}
-                element={<WorkspaceRoutes />}
-              />
-              <Route path={"join/*" } element={<JoinForm/>} />
-            </Route>
-          </Routes>
-        </WorkspaceLookup>
-        <LocalStorageSettingsWriter storageKey={STORAGE_KEY} />
-          </div>
+        <div className="flex flex-col h-screen">
+          <Earthbar>
+            <MultiWorkspaceTab />
+            <Spacer />
+            <AuthorTab />
+          </Earthbar>
+          <WorkspaceLookup>
+            <Routes>
+              <Route element={<Dashboard />}>
+                <Route
+                  path={":workspaceLookup/*"}
+                  element={<WorkspaceRoutes />}
+                />
+                <Route path={"join/*"} element={<JoinForm />} />
+              </Route>
+            </Routes>
+          </WorkspaceLookup>
+          <LocalStorageSettingsWriter storageKey={STORAGE_KEY} />
+        </div>
       </EarthstarPeer>
     </Router>
   );
