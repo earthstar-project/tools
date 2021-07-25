@@ -72,26 +72,21 @@ function PostDetails(
     </div>
     <div>
       {currentAuthor
-        ? isUnread
-          ? <div>
-            <button
-              className="text-sm"
-              onClick={() =>
-                letterBoxLayer.markReadUpTo(threadId, firstPostedTimestamp)}
-            >
-              Mark as read up to here
-            </button>
-          </div>
-          : <div>
-            <button
-              onClick={() => {
+        ? <label>
+          <span className="text-sm">Read</span>
+          <input
+            type="checkbox"
+            className="ml-1"
+            checked={!isUnread}
+            onChange={() => {
+              if (isUnread) {
+                letterBoxLayer.markReadUpTo(threadId, firstPostedTimestamp);
+              } else {
                 letterBoxLayer.markReadUpTo(threadId, firstPostedTimestamp - 1);
-              }}
-              className="text-blue-600 text-sm"
-            >
-              Mark as unread from here
-            </button>
-          </div>
+              }
+            }}
+          />
+        </label>
         : null}
     </div>
   </div>;
