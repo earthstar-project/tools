@@ -1,5 +1,6 @@
 import { isErr } from "earthstar";
 import * as React from "react";
+import { useCurrentAuthor } from "react-earthstar";
 import { useNavigate, useParams } from "react-router-dom";
 import { useLetterboxLayer } from "./letterbox-layer";
 import MarkdownPreview from "./MarkdownPreview";
@@ -8,6 +9,8 @@ export default function ThreadReplyForm() {
   const { authorPubKey, timestamp } = useParams();
 
   const [replyText, setReplyText] = React.useState("");
+
+  const [currentAuthor] = useCurrentAuthor();
 
   const letterboxLayer = useLetterboxLayer();
 
@@ -46,6 +49,8 @@ export default function ThreadReplyForm() {
       onChange={(e) => setReplyText(e.target.value)}
     />
     <MarkdownPreview raw={replyText} />
-    <button className={"btn mt-2"} type={"submit"}>Post reply</button>
+    <button disabled={!currentAuthor} className={"btn mt-2"} type={"submit"}>
+      Post reply
+    </button>
   </form>;
 }

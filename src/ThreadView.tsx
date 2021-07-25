@@ -93,6 +93,8 @@ function PostContent({ doc }: { doc: Document }) {
 export default function ThreadView() {
   const { authorPubKey, timestamp } = useParams();
 
+  const [currentAuthor] = useCurrentAuthor();
+
   const letterboxLayer = useLetterboxLayer();
 
   const threadId = `${authorPubKey}/${timestamp}`;
@@ -125,7 +127,9 @@ export default function ThreadView() {
       )}
     </ol>
     <footer className="flex gap-2 px-6 justify-between py-3">
-      <Link className="link-btn" to={"reply"}>New reply</Link>
+      {currentAuthor
+        ? <Link className="link-btn" to={"reply"}>New reply</Link>
+        : null}
       {mostRecentIsUnread
         ? <button
           className="btn"
