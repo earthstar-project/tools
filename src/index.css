@@ -17,7 +17,3 @@
   z-index: 99999999;
   width: 100%;
 }
-
-.app-height {
-  height: calc(100vh - 52px);
-}

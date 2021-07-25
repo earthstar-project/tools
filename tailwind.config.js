@@ -8,6 +8,9 @@ module.exports = {
         "app-md": "minmax(15rem, 20rem) 1fr",
         "app": "1fr",
       },
+      height: {
+        "app-md": "calc(100vh - 52px)",
+      },
     },
   },
   variants: {

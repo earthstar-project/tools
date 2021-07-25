@@ -68,7 +68,7 @@ export default function Dashboard() {
   console.log({ isExactlyAtRoot, isExactlyAtWorkspace });
 
   return <div
-    className={"w-screen flex-grow grid lg:grid-cols-app-lg md:grid-cols-app-md app border-t h-screen app-height"}
+    className={"w-screen flex-grow grid lg:grid-cols-app-lg md:grid-cols-app-md app border-t md:h-app-md"}
   >
     <ul
       className={`h-full flex-initial border-r-2 border-gray-300 display-none ${
