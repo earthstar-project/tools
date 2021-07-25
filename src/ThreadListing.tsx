@@ -1,3 +1,4 @@
+import * as React from "react";
 import { WorkspaceLabel } from "react-earthstar";
 import { Link, Outlet, useMatch } from "react-router-dom";
 import { useLetterboxLayer } from "./letterbox-layer";
@@ -43,12 +44,12 @@ export default function ThreadListing() {
         </div>
         : <ol>
           {letterbox.getThreadRoots().map((threadRoot) => {
-            return <>
-              <li key={threadRoot.id}>
+            return <React.Fragment key={threadRoot.id}>
+              <li>
                 <ThreadRootItem root={threadRoot} />
               </li>
               <hr />
-            </>;
+            </React.Fragment>;
           })}
         </ol>}
     </section>

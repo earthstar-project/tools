@@ -1,4 +1,5 @@
-import { Document } from "earthstar";
+import * as React from "react";
+import { Document, isErr } from "earthstar";
 import { Link, Outlet, useMatch, useParams } from "react-router-dom";
 import {
   getDocPublishedTimestamp,
@@ -10,6 +11,7 @@ import { formatRelative } from "date-fns";
 import { AuthorLabel, useCurrentAuthor } from "react-earthstar";
 import { renderMarkdown } from "./util/markdown";
 import ThreadTitle from "./ThreadTitle";
+import MarkdownPreview from "./MarkdownPreview";
 
 function ThreadBar({ id }: { id: string }) {
   const match = useMatch("/:lookup/*");
@@ -56,12 +58,19 @@ function ThreadBar({ id }: { id: string }) {
 }
 
 function PostDetails(
-  { post, threadId }: { post: Post | ThreadRoot; threadId: string },
+  { post, threadId, onEdit, isEditing }: {
+    post: Post | ThreadRoot;
+    threadId: string;
+    onEdit: () => void;
+    isEditing: boolean;
+  },
 ) {
   const letterBoxLayer = useLetterboxLayer();
   const firstPostedTimestamp = getDocPublishedTimestamp(post.doc);
   const isUnread = letterBoxLayer.isUnread(threadId, firstPostedTimestamp);
   const [currentAuthor] = useCurrentAuthor();
+
+  const isOwnPost = currentAuthor?.address === post.doc.author;
 
   return <div className={"text-gray-500 flex justify-between items-baseline"}>
     <div className="flex items-baseline gap-1">
@@ -69,6 +78,14 @@ function PostDetails(
         <AuthorLabel address={post.doc.author} />
       </b>{" "}
       {formatRelative(post.firstPosted, Date.now())}
+      {isOwnPost
+        ? <button
+          className={isEditing ? "text-red-600" : "text-blue-500"}
+          onClick={onEdit}
+        >
+          {isEditing ? "Cancel edit" : "Edit"}
+        </button>
+        : null}
     </div>
     <div>
       {currentAuthor
@@ -92,19 +109,64 @@ function PostDetails(
   </div>;
 }
 
+function PostEditForm(
+  { doc, onEdit }: { doc: Document; onEdit: () => void },
+) {
+  const [content, setContent] = React.useState(doc.content);
+
+  const letterboxLayer = useLetterboxLayer();
+
+  const publishedTimestamp = getDocPublishedTimestamp(doc);
+
+  return <form
+    className="flex flex-col mt-3"
+    onSubmit={(e) => {
+      e.preventDefault();
+
+      console.log(doc);
+      console.log(publishedTimestamp);
+
+      const res = letterboxLayer.editPost(publishedTimestamp, content);
+
+      if (!isErr(res)) {
+        onEdit();
+      } else {
+        alert("Something went wrong editing this post!");
+      }
+    }}
+  >
+    <textarea
+      value={content}
+      className="border p-2 mb-2 shadow-inner"
+      onChange={(e) => {
+        setContent(e.target.value);
+      }}
+      rows={10}
+    />
+    <MarkdownPreview raw={content} />
+    <button className="btn mt-1" type="submit">Edit post</button>
+  </form>;
+}
+
 function ThreadRootView({ root }: { root: ThreadRoot }) {
   const letterBoxLayer = useLetterboxLayer();
   const firstPostedTimestamp = getDocPublishedTimestamp(root.doc);
   const isUnread = letterBoxLayer.isUnread(root.id, firstPostedTimestamp);
 
+  const [isEditing, setIsEditing] = React.useState(false);
+
   return <article
     className={`p-3 md:p-6  ${isUnread ? "" : "bg-gray-100 text-gray-600"}`}
   >
     <PostDetails
+      isEditing={isEditing}
+      onEdit={() => setIsEditing((prev) => !prev)}
       post={root}
       threadId={root.id}
     />
-    <PostContent doc={root.doc} />
+    {isEditing
+      ? <PostEditForm onEdit={() => setIsEditing(false)} doc={root.doc} />
+      : <PostContent doc={root.doc} />}
   </article>;
 }
 
@@ -113,14 +175,20 @@ function PostView({ post, threadId }: { post: Post; threadId: string }) {
   const firstPostedTimestamp = getDocPublishedTimestamp(post.doc);
   const isUnread = letterBoxLayer.isUnread(threadId, firstPostedTimestamp);
 
+  const [isEditing, setIsEditing] = React.useState(false);
+
   return <article
     className={`p-3 md:p-6 ${isUnread ? "" : "bg-gray-100 text-gray-600"}`}
   >
     <PostDetails
+      isEditing={isEditing}
+      onEdit={() => setIsEditing((prev) => !prev)}
       post={post}
       threadId={threadId}
     />
-    <PostContent doc={post.doc} />
+    {isEditing
+      ? <PostEditForm onEdit={() => setIsEditing(false)} doc={post.doc} />
+      : <PostContent doc={post.doc} />}
   </article>;
 }
 
@@ -150,10 +218,10 @@ export default function ThreadView() {
       <ThreadRootView root={thread.root} />
       <hr className="border-gray-300" />
       {thread.replies.map((post) =>
-        <>
-          <PostView key={post.doc.path} post={post} threadId={thread.root.id} />
+        <React.Fragment key={post.doc.path}>
+          <PostView post={post} threadId={thread.root.id} />
           <hr className="border-gray-300" />
-        </>
+        </React.Fragment>
       )}
     </ol>
     <footer className="flex gap-2 p-3 lg:px-6 justify-between py-3">

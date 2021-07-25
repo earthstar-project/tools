@@ -8,7 +8,7 @@
   }
   
   .btn {
-    @apply p-2 bg-blue-800 text-white shadow inline-block rounded-lg;
+    @apply p-2 bg-blue-800 text-white shadow inline-block rounded;
   }
 }
 

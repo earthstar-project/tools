@@ -5,6 +5,7 @@ import {
   isErr,
   IStorage,
   ValidationError,
+  WriteResult,
 } from "earthstar";
 import {
   findEdgesSync,
@@ -453,6 +454,32 @@ export default class LetterboxLayer {
     }
 
     return thread.replies[thread.replies.length - 1];
+  }
+
+  editPost(timestamp: number, content: string): WriteResult | ValidationError {
+    if (!this._user) {
+      return new ValidationError(
+        "Couldn't edit post document without a known user.",
+      );
+    }
+
+    const existingPost = this._storage.getDocument(
+      `/letterbox/~${this._user.address}/${timestamp}.md`,
+    );
+
+    if (!existingPost) {
+      return new ValidationError(
+        "Couldn't find an existing post to edit.",
+      );
+    }
+
+    const result = this._storage.set(this._user, {
+      path: existingPost.path,
+      format: "es.4",
+      content,
+    });
+
+    return result;
   }
 }
 

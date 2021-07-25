@@ -80,12 +80,12 @@ export default function Dashboard() {
       }`}
     >
       {workspaces.map((addr) =>
-        <>
-          <li key={addr}>
+        <React.Fragment key={addr}>
+          <li>
             <WorkspaceSection workspace={addr} />
           </li>
           <hr />
-        </>
+        </React.Fragment>
       )}
     </ul>
     <Outlet />
