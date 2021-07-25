@@ -113,11 +113,15 @@ function PreviewListItem(props: any) {
   return <li className="inline" {...props} />;
 }
 
-function PreviewBlockQuote(props: any) {
+function PreviewBlockQuote({ children, ...rest }: any) {
   return <blockquote
-    className="border-l-2 border-gray-400 inline-block"
-    {...props}
-  />;
+    className="inline"
+    {...rest}
+  >
+    {"“"}
+    {children}
+    {"”"}
+  </blockquote>;
 }
 
 function PreviewLink(props: any) {
