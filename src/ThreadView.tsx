@@ -1,17 +1,18 @@
 import * as React from "react";
 import { Document, isErr } from "earthstar";
 import { Link, Outlet, useMatch, useParams } from "react-router-dom";
-import {
+import LetterboxLayer, {
   getDocPublishedTimestamp,
   Post,
   ThreadRoot,
   useLetterboxLayer,
 } from "./letterbox-layer";
 import { formatRelative } from "date-fns";
-import { AuthorLabel, useCurrentAuthor } from "react-earthstar";
+import { AuthorLabel, useCurrentAuthor, useStorage } from "react-earthstar";
 import { renderMarkdown } from "./util/markdown";
 import ThreadTitle from "./ThreadTitle";
 import MarkdownPreview from "./MarkdownPreview";
+import { useWorkspaceAddrFromRouter } from "./WorkspaceLookup";
 
 function ThreadBar({ id }: { id: string }) {
   const match = useMatch("/:lookup/*");
@@ -65,18 +66,30 @@ function PostDetails(
     isEditing: boolean;
   },
 ) {
-  const letterBoxLayer = useLetterboxLayer();
-  const firstPostedTimestamp = getDocPublishedTimestamp(post.doc);
-  const isUnread = letterBoxLayer.isUnread(threadId, firstPostedTimestamp);
+  const workspace = useWorkspaceAddrFromRouter();
+
+  const storage = useStorage(workspace);
   const [currentAuthor] = useCurrentAuthor();
+
+  const letterboxLayer = new LetterboxLayer(storage, currentAuthor);
+
+  const firstPostedTimestamp = getDocPublishedTimestamp(post.doc);
+  const isUnread = letterboxLayer.isUnread(threadId, firstPostedTimestamp);
 
   const isOwnPost = currentAuthor?.address === post.doc.author;
 
+  const authorDisplayName = storage.getContent(
+    `/about/~${post.doc.author}/displayName.txt`,
+  );
+
   return <div className={"text-gray-500 flex justify-between items-baseline"}>
     <div className="flex items-baseline gap-1">
-      <b>
-        <AuthorLabel address={post.doc.author} />
-      </b>{" "}
+      {authorDisplayName
+        ? <b>
+          <span className="text-gray-800">{authorDisplayName}</span>{" "}
+          <AuthorLabel address={post.doc.author} />
+        </b>
+        : <AuthorLabel className="text-gray-800" address={post.doc.author} />}
       {formatRelative(post.firstPosted, Date.now())}
       {isOwnPost
         ? <button
@@ -97,9 +110,9 @@ function PostDetails(
             checked={!isUnread}
             onChange={() => {
               if (isUnread) {
-                letterBoxLayer.markReadUpTo(threadId, firstPostedTimestamp);
+                letterboxLayer.markReadUpTo(threadId, firstPostedTimestamp);
               } else {
-                letterBoxLayer.markReadUpTo(threadId, firstPostedTimestamp - 1);
+                letterboxLayer.markReadUpTo(threadId, firstPostedTimestamp - 1);
               }
             }}
           />
