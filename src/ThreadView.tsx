@@ -7,7 +7,7 @@ import LetterboxLayer, {
   ThreadRoot,
   useLetterboxLayer,
 } from "./letterbox-layer";
-import { formatRelative } from "date-fns";
+import { formatDistanceToNow } from "date-fns";
 import { AuthorLabel, useCurrentAuthor, useStorage } from "react-earthstar";
 import { renderMarkdown } from "./util/markdown";
 import ThreadTitle from "./ThreadTitle";
@@ -89,8 +89,11 @@ function PostDetails(
           <span className="text-gray-800">{authorDisplayName}</span>{" "}
           <AuthorLabel address={post.doc.author} />
         </b>
-        : <AuthorLabel className="text-gray-800" address={post.doc.author} />}
-      {formatRelative(post.firstPosted, Date.now())}
+        : <AuthorLabel
+          className="text-gray-800 font-bold"
+          address={post.doc.author}
+        />}
+      {formatDistanceToNow(post.firstPosted, { addSuffix: true })}
       {isOwnPost
         ? <button
           className={isEditing ? "text-red-600" : "text-blue-500"}
