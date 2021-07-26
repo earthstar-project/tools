@@ -8,6 +8,7 @@ import {
   WriteResult,
 } from "earthstar";
 import {
+  deleteEdgeSync,
   findEdgesSync,
   GraphEdgeContent,
   writeEdgeSync,
@@ -42,6 +43,7 @@ const KIND_HAS_THREAD = "HAS_THREAD";
 const KIND_TAGGED_WITH = "TAGGED_WITH";
 const KIND_HAS_REPLY = "HAS_REPLY";
 const KIND_READ_THREAD_UP_TO = "READ_THREAD_UP_TO";
+const KIND_THREAD_HAS_DRAFT_REPLY = "THREAD_HAS_DRAFT_REPLY";
 
 function onlyDefined<T>(val: T | undefined): val is T {
   if (val) {
@@ -480,6 +482,97 @@ export default class LetterboxLayer {
     });
 
     return result;
+  }
+
+  getReplyDraft(threadId: string): string | undefined {
+    if (!this._user) {
+      return undefined;
+    }
+
+    const draftEdges = findEdgesSync(this._storage, {
+      appName: APP_NAME,
+      source: `/letterbox/~${threadId}.md`,
+      kind: KIND_THREAD_HAS_DRAFT_REPLY,
+      owner: this._user.address,
+    });
+
+    if (isErr(draftEdges)) {
+      console.error("Something went wrong trying to get a drafted reply:");
+      console.error(draftEdges);
+
+      return undefined;
+    }
+
+    const [maybeDraftEdge] = draftEdges;
+
+    if (!maybeDraftEdge) {
+      return undefined;
+    }
+
+    if (maybeDraftEdge.content === "") {
+      return undefined;
+    }
+
+    const { dest }: GraphEdgeContent = JSON.parse(maybeDraftEdge.content);
+
+    const draftDoc = this._storage.getDocument(dest);
+
+    if (!draftDoc) {
+      return undefined;
+    }
+
+    return draftDoc.content;
+  }
+
+  setReplyDraft(threadId: string, content: string): ValidationError | boolean {
+    if (!this._user) {
+      return new ValidationError(
+        "Couldn't set draft reply without a known user.",
+      );
+    }
+
+    const draftPath = `/letterbox/drafts/~${this._user.address}/${threadId}.md`;
+
+    this._storage.set(
+      this._user,
+      {
+        content,
+        format: "es.4",
+        path: draftPath,
+      },
+    );
+
+    writeEdgeSync(this._storage, this._user, {
+      appName: APP_NAME,
+      source: `/letterbox/~${threadId}.md`,
+      dest: draftPath,
+      kind: KIND_THREAD_HAS_DRAFT_REPLY,
+      owner: this._user.address,
+    });
+
+    return true;
+  }
+
+  clearReplyDraft(threadId: string) {
+    if (!this._user) {
+      return new ValidationError(
+        "Couldn't clear draft reply without a known user.",
+      );
+    }
+
+    this.setReplyDraft(threadId, "");
+
+    const draftPath = `/letterbox/drafts/~${this._user.address}/${threadId}.md`;
+
+    deleteEdgeSync(this._storage, this._user, {
+      appName: APP_NAME,
+      source: `/letterbox/~${threadId}.md`,
+      dest: draftPath,
+      owner: this._user.address,
+      kind: KIND_THREAD_HAS_DRAFT_REPLY,
+    });
+
+    return true;
   }
 }
 
