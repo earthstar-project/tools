@@ -7,9 +7,5 @@ export default function ThreadTitle(
   const letterboxLayer = useLetterboxLayer(workspace);
   const threadTitle = letterboxLayer.getThreadTitle(threadId);
 
-  if (!threadTitle) {
-    return null;
-  }
-
-  return <>{threadTitle}</>;
+  return <>{threadTitle || "Untitled thread"}</>;
 }
