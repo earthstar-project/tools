@@ -10,6 +10,7 @@ export default function WorkspaceRoutes() {
     <Route path={"/settings"} element={<SpaceSettings />} />
     <Route path={"/"} element={<ThreadListing />}>
       <Route path={"post"} element={<NewThreadForm />} />
+      <Route path={"post/:draftId"} element={<NewThreadForm />} />
       <Route
         path={"thread/:authorPubKey/:timestamp"}
         element={<ThreadView />}

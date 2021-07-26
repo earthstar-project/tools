@@ -32,7 +32,7 @@ function ThreadBar({ id }: { id: string }) {
   const nowTimestamp = Date.now() * 1000;
 
   return <div
-    className="flex py-2 px-3 md:px-3 bg-gray-100 border-b shadow-sm justify-between sticky top-0 z-50 items-baseline"
+    className="flex py-3 px-3 md:px-6 bg-white border-b shadow-sm justify-between sticky top-0 z-50 items-baseline"
   >
     <div className="flex">
       <Link

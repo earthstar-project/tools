@@ -43,7 +43,8 @@ const KIND_HAS_THREAD = "HAS_THREAD";
 const KIND_TAGGED_WITH = "TAGGED_WITH";
 const KIND_HAS_REPLY = "HAS_REPLY";
 const KIND_READ_THREAD_UP_TO = "READ_THREAD_UP_TO";
-const KIND_THREAD_HAS_DRAFT_REPLY = "THREAD_HAS_DRAFT_REPLY";
+const KIND_HAS_DRAFT_REPLY = "HAS_DRAFT_REPLY";
+const KIND_HAS_DRAFT_THREAD = "HAD_DRAFT_THREAD";
 
 function onlyDefined<T>(val: T | undefined): val is T {
   if (val) {
@@ -492,7 +493,7 @@ export default class LetterboxLayer {
     const draftEdges = findEdgesSync(this._storage, {
       appName: APP_NAME,
       source: `/letterbox/~${threadId}.md`,
-      kind: KIND_THREAD_HAS_DRAFT_REPLY,
+      kind: KIND_HAS_DRAFT_REPLY,
       owner: this._user.address,
     });
 
@@ -546,7 +547,7 @@ export default class LetterboxLayer {
       appName: APP_NAME,
       source: `/letterbox/~${threadId}.md`,
       dest: draftPath,
-      kind: KIND_THREAD_HAS_DRAFT_REPLY,
+      kind: KIND_HAS_DRAFT_REPLY,
       owner: this._user.address,
     });
 
@@ -569,10 +570,170 @@ export default class LetterboxLayer {
       source: `/letterbox/~${threadId}.md`,
       dest: draftPath,
       owner: this._user.address,
-      kind: KIND_THREAD_HAS_DRAFT_REPLY,
+      kind: KIND_HAS_DRAFT_REPLY,
     });
 
     return true;
+  }
+
+  getThreadRootDraftIds(): string[] {
+    if (!this._user) {
+      return [];
+    }
+
+    const draftEdges = findEdgesSync(this._storage, {
+      appName: APP_NAME,
+      source: this._storage.workspace,
+      kind: KIND_HAS_DRAFT_THREAD,
+      owner: this._user.address,
+    });
+
+    if (isErr(draftEdges)) {
+      console.error(
+        "Something went wrong trying to get the IDs of drafted threads:",
+      );
+      console.error(draftEdges);
+
+      return [];
+    }
+
+    return draftEdges.map((edgeDoc) => {
+      if (edgeDoc.content === "") {
+        return undefined;
+      }
+
+      const { dest }: GraphEdgeContent = JSON.parse(edgeDoc.content);
+
+      const result = pathTimestampRegex.exec(dest);
+
+      if (result === null) {
+        return undefined;
+      }
+
+      return result[1];
+    }).filter(onlyDefined);
+  }
+
+  getThreadRootDraftContent(id: string): string | undefined {
+    if (!this._user) {
+      return undefined;
+    }
+
+    const draftEdges = findEdgesSync(this._storage, {
+      appName: APP_NAME,
+      source: this._storage.workspace,
+      kind: KIND_HAS_DRAFT_THREAD,
+      dest: `/letterbox/drafts/~${this._user.address}/${id}.md`,
+      owner: this._user.address,
+    });
+
+    if (isErr(draftEdges)) {
+      console.error("Something went wrong trying to get a drafted thread:");
+      console.error(draftEdges);
+
+      return undefined;
+    }
+
+    const [maybeDraftEdge] = draftEdges;
+
+    if (!maybeDraftEdge) {
+      return undefined;
+    }
+
+    if (maybeDraftEdge.content === "") {
+      return undefined;
+    }
+
+    const { dest }: GraphEdgeContent = JSON.parse(maybeDraftEdge.content);
+
+    const draftDoc = this._storage.getDocument(dest);
+
+    if (!draftDoc) {
+      return undefined;
+    }
+
+    return draftDoc.content;
+  }
+
+  setThreadRootDraft(
+    content: string,
+    id?: string,
+  ): ValidationError | string {
+    if (!this._user) {
+      return new ValidationError(
+        "Couldn't clear draft reply without a known user.",
+      );
+    }
+
+    const timestamp = id || Date.now() * 1000;
+
+    const draftPath =
+      `/letterbox/drafts/~${this._user.address}/${timestamp}.md`;
+
+    this._storage.set(this._user, {
+      content,
+      format: "es.4",
+      path: draftPath,
+    });
+
+    writeEdgeSync(this._storage, this._user, {
+      appName: APP_NAME,
+      source: this._storage.workspace,
+      owner: this._user.address,
+      dest: draftPath,
+      kind: KIND_HAS_DRAFT_THREAD,
+    });
+
+    return `${timestamp}`;
+  }
+
+  clearThreadRootDraft(id: string) {
+    if (!this._user) {
+      return new ValidationError(
+        "Couldn't clear draft reply without a known user.",
+      );
+    }
+
+    const timestamp = id;
+
+    const draftPath =
+      `/letterbox/drafts/~${this._user.address}/${timestamp}.md`;
+
+    this._storage.set(this._user, {
+      content: "",
+      format: "es.4",
+      path: draftPath,
+    });
+
+    deleteEdgeSync(this._storage, this._user, {
+      appName: APP_NAME,
+      source: this._storage.workspace,
+      owner: this._user.address,
+      dest: draftPath,
+      kind: KIND_HAS_DRAFT_THREAD,
+    });
+
+    return true;
+  }
+
+  getDraftThreadParts(
+    id: string,
+  ): { title: string; content: string } | undefined {
+    const draftContent = this.getThreadRootDraftContent(id);
+
+    if (!draftContent) {
+      return undefined;
+    }
+
+    const lines = draftContent.split("\n");
+
+    const [firstLine, _emptyLine, ...rest] = lines;
+
+    if (!firstLine || !firstLine.startsWith("# ")) {
+      return undefined;
+    }
+
+    return { title: firstLine.substring(2), content: rest.join("\n") };
   }
 }
 

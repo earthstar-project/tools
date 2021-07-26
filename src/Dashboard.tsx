@@ -33,7 +33,11 @@ function WorkspaceSection({ workspace }: { workspace: string }) {
   >
     <section
       className={`flex justify-between items-baseline p-3 text-lg md:text-md ${
-        isActive ? "bg-blue-100" : ""
+        isActive
+          ? "bg-blue-100"
+          : unreadThreadRoots.length === 0
+          ? "bg-gray-100"
+          : ""
       }`}
     >
       <h2>

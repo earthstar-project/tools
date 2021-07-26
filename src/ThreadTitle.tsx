@@ -1,4 +1,3 @@
-import * as React from "react";
 import { useLetterboxLayer } from "./letterbox-layer";
 
 export default function ThreadTitle(

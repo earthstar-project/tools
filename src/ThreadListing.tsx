@@ -9,7 +9,7 @@ function SpaceBar() {
   const workspace = useWorkspaceAddrFromRouter();
 
   return <div
-    className="flex py-2 px-3 md:px-3 bg-gray-100 border-b shadow-sm justify-end sticky top-0 z-50 items-baseline"
+    className="flex py-2 px-3 pl-6 bg-white border-b shadow-sm justify-end sticky top-0 z-50 items-baseline"
   >
     <Link className="lg:hidden mr-2 text-blue-500 text-xl" to="/">⬅</Link>
     <WorkspaceLabel
