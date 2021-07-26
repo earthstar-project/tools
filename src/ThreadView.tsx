@@ -171,7 +171,9 @@ function ThreadRootView({ root }: { root: ThreadRoot }) {
   const [isEditing, setIsEditing] = React.useState(false);
 
   return <article
-    className={`p-3 pl-6 ${isUnread ? "" : "bg-gray-100 text-gray-600"}`}
+    className={`p-3 py-4 pl-6 sm:py-6 ${
+      isUnread ? "" : "bg-gray-100 text-gray-600"
+    }`}
   >
     <PostDetails
       isEditing={isEditing}
