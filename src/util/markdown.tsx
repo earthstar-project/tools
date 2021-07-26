@@ -6,11 +6,11 @@ import rehype2react from "rehype-react";
 import rehypeTruncate from "rehype-truncate";
 
 function Heading(props: any) {
-  return <h1 className="text-2xl my-3 font-bold" {...props} />;
+  return <h1 className="text-2xl my-4 font-bold" {...props} />;
 }
 
 function Heading2(props: any) {
-  return <h2 className="text-xl my-3 font-bold" {...props} />;
+  return <h2 className="text-xl my-2 font-bold" {...props} />;
 }
 
 function Heading3(props: any) {
@@ -18,7 +18,7 @@ function Heading3(props: any) {
 }
 
 function Paragraph(props: any) {
-  return <p className="my-3 max-w-prose" {...props} />;
+  return <p className="my-3 max-w-prose leading-relaxed" {...props} />;
 }
 
 function Pre(props: any) {
@@ -29,11 +29,17 @@ function Pre(props: any) {
 }
 
 function UnorderedList(props: any) {
-  return <ul className="pl-6 my-3 list-disc" {...props} />;
+  return <ul
+    className="pl-5 my-1 list-disc max-w-prose leading-relaxed"
+    {...props}
+  />;
 }
 
 function OrderedList(props: any) {
-  return <ol className="pl-6 my-3 list-decimal" {...props} />;
+  return <ol
+    className="pl-5 my-1 list-decimal max-w-prose leading-relaxed"
+    {...props}
+  />;
 }
 
 function ListItem(props: any) {
@@ -42,7 +48,7 @@ function ListItem(props: any) {
 
 function BlockQuote(props: any) {
   return <blockquote
-    className="border-l-2 border-gray-400 pl-2 my-3"
+    className="border-l-2 border-gray-300 pl-2 my-4 text-gray-500"
     {...props}
   />;
 }
@@ -124,8 +130,8 @@ function PreviewBlockQuote({ children, ...rest }: any) {
   </blockquote>;
 }
 
-function PreviewLink(props: any) {
-  return <a className="text-blue-600 underline" {...props} />;
+function PreviewLink({ _href, ...rest }: any) {
+  return <span {...rest} />;
 }
 
 function PreviewCode(props: any) {

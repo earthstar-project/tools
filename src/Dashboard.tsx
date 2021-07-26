@@ -32,7 +32,7 @@ function WorkspaceSection({ workspace }: { workspace: string }) {
     to={`/${workspacePath}`}
   >
     <section
-      className={`flex justify-between items-baseline p-3 text-lg md:text-md ${
+      className={`flex justify-between items-baseline p-3 text-base sm:text-sm ${
         isActive
           ? "bg-blue-100"
           : unreadThreadRoots.length === 0

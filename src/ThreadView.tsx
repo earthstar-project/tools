@@ -33,7 +33,7 @@ function ThreadBar({ id }: { id: string }) {
   const nowTimestamp = Date.now() * 1000;
 
   return <div
-    className="flex py-3 px-3 md:px-6 bg-white border-b shadow-sm justify-between sticky top-0 z-50 items-baseline"
+    className="flex py-2 px-3 pl-6 bg-white border-b shadow-sm justify-between sticky top-0 z-50 items-baseline"
   >
     <div className="flex">
       <Link
@@ -82,7 +82,9 @@ function PostDetails(
     `/about/~${post.doc.author}/displayName.txt`,
   );
 
-  return <div className={"text-gray-500 flex justify-between items-baseline"}>
+  return <div
+    className={"text-gray-500 flex justify-between items-baseline mb-3"}
+  >
     <div className="flex items-baseline gap-1">
       {authorDisplayName
         ? <b>
@@ -169,7 +171,7 @@ function ThreadRootView({ root }: { root: ThreadRoot }) {
   const [isEditing, setIsEditing] = React.useState(false);
 
   return <article
-    className={`p-3 md:p-6  ${isUnread ? "" : "bg-gray-100 text-gray-600"}`}
+    className={`p-3 pl-6 ${isUnread ? "" : "bg-gray-100 text-gray-600"}`}
   >
     <PostDetails
       isEditing={isEditing}
@@ -191,7 +193,9 @@ function PostView({ post, threadId }: { post: Post; threadId: string }) {
   const [isEditing, setIsEditing] = React.useState(false);
 
   return <article
-    className={`p-3 md:p-6 ${isUnread ? "" : "bg-gray-100 text-gray-600"}`}
+    className={`p-3 py-4 pl-6 sm:py-6 ${
+      isUnread ? "" : "bg-gray-100 text-gray-600"
+    }`}
   >
     <PostDetails
       isEditing={isEditing}
@@ -206,7 +210,7 @@ function PostView({ post, threadId }: { post: Post; threadId: string }) {
 }
 
 function PostContent({ doc }: { doc: Document }) {
-  return <div>
+  return <div className="text-sm sm:text-base">
     {renderMarkdown(doc.content)}
   </div>;
 }

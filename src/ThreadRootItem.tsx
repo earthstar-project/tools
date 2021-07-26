@@ -36,9 +36,9 @@ export default function ThreadRootItem({ root }: { root: ThreadRoot }) {
           : "flex-shrink-0 w-3"}
       />
       <div
-        className="flex flex-col gap-1 flex-grow overflow-hidden overflow-ellipsis"
+        className="flex flex-col gap-1 flex-grow overflow-hidden overflow-ellipsis text-sm"
       >
-        <h1 className={"text-md font-bold"}>
+        <h1 className={"font-bold"}>
           <ThreadTitle workspace={root.doc.workspace} threadId={root.id} />
         </h1>
         {lastThreadItem
