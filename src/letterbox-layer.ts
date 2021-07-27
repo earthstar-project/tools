@@ -279,7 +279,6 @@ export default class LetterboxLayer {
       appName: APP_NAME,
       source: threadRootDoc.path,
       kind: KIND_HAS_REPLY,
-      owner: threadRootDoc.author,
     });
 
     if (isErr(replyEdges)) {
