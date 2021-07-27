@@ -33,7 +33,7 @@ function ThreadBar({ id }: { id: string }) {
   const nowTimestamp = Date.now() * 1000;
 
   return <div
-    className="flex py-2 px-3 pl-6 bg-white border-b shadow-sm justify-between sticky top-0 z-50 items-baseline"
+    className="flex py-2 px-3 pl-6 bg-white border-b shadow-sm justify-between sticky top-0 z-50 items-baseline overflow-hidden"
   >
     <div className="flex">
       <Link
@@ -219,7 +219,7 @@ function PostView({ post, threadId }: { post: Post; threadId: string }) {
 }
 
 function PostContent({ doc }: { doc: Document }) {
-  return <div className="text-sm sm:text-base">
+  return <div className="text-sm sm:text-base overflow-hidden">
     {renderMarkdown(doc.content)}
   </div>;
 }
