@@ -240,6 +240,8 @@ export default function ThreadView() {
   const threadId = `${authorPubKey}/${timestamp}`;
   const thread = letterboxLayer.getThread(threadId);
 
+  const match = useMatch("/:workspace/thread/:pubKey/:timestamp/reply");
+
   if (!thread) {
     return <p>No thread found.</p>;
   }
@@ -257,8 +259,8 @@ export default function ThreadView() {
       )}
     </ol>
     <footer className="flex gap-2 p-3 lg:px-6 justify-between py-3">
-      {currentAuthor
-        ? <Link className="link-btn" to={"reply"}>New reply</Link>
+      {!match && currentAuthor
+        ? <Link className="link-btn" to={"reply"}>Reply</Link>
         : null}
     </footer>
     <Outlet />
