@@ -83,29 +83,36 @@ function PostDetails(
   );
 
   return <div
-    className={"text-gray-500 flex justify-between items-baseline mb-3"}
+    className={"text-gray-500 flex justify-between items-baseline mb-3 w-full self-stretch overflow-hidden space-x-1"}
   >
-    <div className="flex items-baseline gap-1">
-      {authorDisplayName
-        ? <b>
-          <span className="text-gray-800">{authorDisplayName}</span>{" "}
-          <AuthorLabel address={post.doc.author} />
-        </b>
-        : <AuthorLabel
-          className="text-gray-800 font-bold"
-          address={post.doc.author}
-        />}
-      {formatDistanceToNow(post.firstPosted, { addSuffix: true })}
-      {isOwnPost
-        ? <button
-          className={isEditing ? "text-red-600" : "text-blue-500"}
-          onClick={onEdit}
+    {authorDisplayName
+      ? <>
+        <span
+          className="font-bold text-gray-800 truncate flex-shrink min-w-0"
         >
-          {isEditing ? "Cancel edit" : "Edit"}
-        </button>
-        : null}
-    </div>
-    <div>
+          {authorDisplayName}
+        </span>{" "}
+        <AuthorLabel
+          className="font-bold"
+          address={post.doc.author}
+        />
+      </>
+      : <AuthorLabel
+        className="text-gray-800 font-bold"
+        address={post.doc.author}
+      />}
+    <span className="flex-initial whitespace-nowrap">
+      {formatDistanceToNow(post.firstPosted, { addSuffix: true })}
+    </span>
+    {isOwnPost
+      ? <button
+        className={isEditing ? "text-red-600" : "text-blue-500"}
+        onClick={onEdit}
+      >
+        {isEditing ? "Cancel edit" : "Edit"}
+      </button>
+      : null}
+    <div className="flex-1 pl-5">
       {currentAuthor
         ? <label>
           <span className="text-sm">Read</span>
