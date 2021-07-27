@@ -62,10 +62,16 @@ export default function ThreadReplyForm() {
         writeDraft(e.target.value);
       }}
     />
-    {didSaveDraft
-      ? <div className="text-right text-gray-500">✔ Draft saved</div>
-      : null}
+    <div
+      className={`text-right text-gray-500 ${
+        didSaveDraft ? "visible" : "invisible"
+      }`}
+    >
+      ✔ Draft saved
+    </div>
+
     <MarkdownPreview raw={replyText} />
+
     <button disabled={!currentAuthor} className={"btn mt-2"} type={"submit"}>
       Post reply
     </button>
