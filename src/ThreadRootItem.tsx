@@ -1,21 +1,26 @@
 import * as React from "react";
-import { ThreadRoot, useLetterboxLayer } from "./letterbox-layer";
+import { Thread, ThreadRoot, useLetterboxLayer } from "./letterbox-layer";
 import { AuthorLabel } from "react-earthstar";
 import { Link, useMatch } from "react-router-dom";
 import ThreadTitle from "./ThreadTitle";
 import { renderMarkdownPreview } from "./util/markdown";
 import { PathWorkspaceLookupContext } from "./WorkspaceLookup";
 
-export default function ThreadRootItem({ root }: { root: ThreadRoot }) {
-  const letterboxLayer = useLetterboxLayer(root.doc.workspace);
-  const hasUnreadPosts = letterboxLayer.threadHasUnreadPosts(root.id);
-  const lastThreadItem = letterboxLayer.lastThreadItem(root.id);
+export default function ThreadItem({ thread }: { thread: Thread }) {
+  const letterboxLayer = useLetterboxLayer(thread.root.doc.workspace);
+  const hasUnreadPosts = letterboxLayer.threadHasUnreadPosts(thread);
+  const lastThreadItem = letterboxLayer.lastThreadItem(thread);
   const lookup = React.useContext(PathWorkspaceLookupContext);
 
   const match = useMatch("/:workspace/thread/:pubKey/:timestamp/*");
 
   const isActive =
-    root.id === `${match?.params.pubKey}/${match?.params.timestamp}`;
+    thread.root.id === `${match?.params.pubKey}/${match?.params.timestamp}`;
+
+  const markdownMemo = React.useMemo(
+    () => renderMarkdownPreview(lastThreadItem?.doc.content || ""),
+    [lastThreadItem?.doc.content],
+  );
 
   return <div
     className={`px-1 md:px-2 py-3 ${
@@ -28,7 +33,9 @@ export default function ThreadRootItem({ root }: { root: ThreadRoot }) {
   >
     <Link
       className={"flex items-center gap-2"}
-      to={`/${lookup.addrsToPaths[root.doc.workspace]}/thread/${root.id}`}
+      to={`/${
+        lookup.addrsToPaths[thread.root.doc.workspace]
+      }/thread/${thread.root.id}`}
     >
       <div
         className={hasUnreadPosts
@@ -39,7 +46,10 @@ export default function ThreadRootItem({ root }: { root: ThreadRoot }) {
         className="flex flex-col gap-1 flex-grow overflow-hidden overflow-ellipsis text-sm"
       >
         <h1 className={"font-bold"}>
-          <ThreadTitle workspace={root.doc.workspace} threadId={root.id} />
+          <ThreadTitle
+            workspace={thread.root.doc.workspace}
+            thread={thread}
+          />
         </h1>
         {lastThreadItem
           ? <div className="text-gray-500 overflow-ellipsis overflow-hidden">
@@ -47,7 +57,7 @@ export default function ThreadRootItem({ root }: { root: ThreadRoot }) {
               className="mr-1 text-gray-800"
               address={lastThreadItem.doc.author}
             />
-            {renderMarkdownPreview(lastThreadItem.doc.content)}
+            {markdownMemo}
           </div>
           : null}
       </div>

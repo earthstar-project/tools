@@ -4,6 +4,7 @@ import { Link, Outlet, useMatch, useParams } from "react-router-dom";
 import LetterboxLayer, {
   getDocPublishedTimestamp,
   Post,
+  Thread,
   ThreadRoot,
   useLetterboxLayer,
 } from "./letterbox-layer";
@@ -14,18 +15,18 @@ import ThreadTitle from "./ThreadTitle";
 import MarkdownPreview from "./MarkdownPreview";
 import { useWorkspaceAddrFromRouter } from "./WorkspaceLookup";
 
-function ThreadBar({ id }: { id: string }) {
+function ThreadBar({ thread }: { thread: Thread }) {
   const match = useMatch("/:lookup/*");
 
   const lookup = match?.params.lookup;
 
   const letterboxLayer = useLetterboxLayer();
 
-  const lastThreadItem = letterboxLayer.lastThreadItem(id);
+  const lastThreadItem = letterboxLayer.lastThreadItem(thread);
 
   const mostRecentIsUnread = lastThreadItem
     ? letterboxLayer.isUnread(
-      id,
+      thread.root.id,
       getDocPublishedTimestamp(lastThreadItem.doc),
     )
     : true;
@@ -43,14 +44,15 @@ function ThreadBar({ id }: { id: string }) {
         ⬅
       </Link>
       <div className={"font-bold text-xl"}>
-        <ThreadTitle threadId={id} />
+        <ThreadTitle thread={thread} />
       </div>
     </div>
 
     {mostRecentIsUnread
       ? <button
         className="p-1.5 bg-blue-800 text-white rounded"
-        onClick={() => letterboxLayer.markReadUpTo(id, nowTimestamp)}
+        onClick={() =>
+          letterboxLayer.markReadUpTo(thread.root.id, nowTimestamp)}
       >
         Mark thread as read
       </button>
@@ -219,8 +221,12 @@ function PostView({ post, threadId }: { post: Post; threadId: string }) {
 }
 
 function PostContent({ doc }: { doc: Document }) {
+  const mdMemo = React.useMemo(() => renderMarkdown(doc.content), [
+    doc.content,
+  ]);
+
   return <div className="text-sm sm:text-base overflow-hidden">
-    {renderMarkdown(doc.content)}
+    {mdMemo}
   </div>;
 }
 
@@ -239,7 +245,7 @@ export default function ThreadView() {
   }
 
   return <div className="overflow-scroll shadow-lg">
-    <ThreadBar id={thread.root.id} />
+    <ThreadBar thread={thread} />
     <ol>
       <ThreadRootView root={thread.root} />
       <hr className="border-gray-300" />

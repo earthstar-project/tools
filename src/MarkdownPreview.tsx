@@ -4,10 +4,12 @@ import { renderMarkdown } from "./util/markdown";
 export default function MarkdownPreview({ raw }: { raw: string }) {
   const [enabled, setEnabled] = React.useState(false);
 
+  const mdMemo = React.useMemo(() => renderMarkdown(raw), [raw]);
+
   return <div>
     {enabled
       ? <div className={"border p-2 border-dashed"}>
-        {renderMarkdown(raw)}
+        {mdMemo}
       </div>
       : null}
     <label>

@@ -168,13 +168,7 @@ export default class LetterboxLayer {
     return isErr(result) ? result : path;
   }
 
-  getThreadTitle(id: string): string | undefined {
-    const thread = this.getThread(id);
-
-    if (!thread) {
-      return undefined;
-    }
-
+  getThreadTitle(thread: Thread): string | undefined {
     const { content } = thread.root.doc;
 
     const [firstLine] = content.split("\n");
@@ -186,7 +180,7 @@ export default class LetterboxLayer {
     return firstLine.substring(2);
   }
 
-  getThreadRoots(): ThreadRoot[] {
+  getThreads(): Thread[] {
     const threadRootEdges = findEdgesSync(this._storage, {
       appName: APP_NAME,
       source: this._storage.workspace,
@@ -198,22 +192,23 @@ export default class LetterboxLayer {
       return [];
     }
 
-    return threadRootEdges.map(this._edgeToThreadRoot, this).filter(
-      onlyDefined,
-    ).sort((aRoot, bRoot) => {
-      const aLast = this.lastThreadItem(aRoot.id);
-      const bLast = this.lastThreadItem(bRoot.id);
+    return threadRootEdges.map(this._edgeToThreadRoot, this).filter(onlyDefined)
+      .map((root) => this.getThread(root?.id)).filter(
+        onlyDefined,
+      ).sort((aThread, bThread) => {
+        const aLast = aThread.replies[aThread.replies.length - 1];
+        const bLast = bThread.replies[bThread.replies.length - 1];
 
-      if (!aLast) {
-        return 1;
-      }
+        if (!aLast) {
+          return 1;
+        }
 
-      if (!bLast) {
-        return -1;
-      }
+        if (!bLast) {
+          return -1;
+        }
 
-      return aLast?.firstPosted < bLast?.firstPosted ? 1 : -1;
-    });
+        return aLast?.firstPosted < bLast?.firstPosted ? 1 : -1;
+      });
   }
 
   createThread(
@@ -292,6 +287,7 @@ export default class LetterboxLayer {
       appName: APP_NAME,
       source: threadRootDoc.path,
       kind: KIND_HAS_REPLY,
+      owner: threadRootDoc.author,
     });
 
     if (isErr(replyEdges)) {
@@ -389,13 +385,7 @@ export default class LetterboxLayer {
     return timestamp > edgeContent.data;
   }
 
-  threadHasUnreadPosts(threadId: string): boolean {
-    const thread = this.getThread(threadId);
-
-    if (!thread) {
-      return false;
-    }
-
+  threadHasUnreadPosts(thread: Thread): boolean {
     if (!this._user) {
       return false;
     }
@@ -404,7 +394,7 @@ export default class LetterboxLayer {
       appName: APP_NAME,
       source: this._user.address,
       owner: this._user.address,
-      dest: `/letterbox/~${threadId}.md`,
+      dest: `/letterbox/~${thread.root.id}.md`,
       kind: KIND_READ_THREAD_UP_TO,
     });
 
@@ -420,7 +410,7 @@ export default class LetterboxLayer {
 
     return [thread.root, ...thread.replies].map(({ doc }) => doc).some(
       (doc) => {
-        return this.isUnread(threadId, getDocPublishedTimestamp(doc));
+        return this.isUnread(thread.root.id, getDocPublishedTimestamp(doc));
       },
     );
   }
@@ -445,9 +435,7 @@ export default class LetterboxLayer {
     }
   }
 
-  lastThreadItem(threadId: string): ThreadRoot | Post | undefined {
-    const thread = this.getThread(threadId);
-
+  lastThreadItem(thread: Thread): ThreadRoot | Post | undefined {
     if (!thread) {
       return undefined;
     }

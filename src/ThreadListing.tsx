@@ -2,7 +2,7 @@ import * as React from "react";
 import { WorkspaceLabel } from "react-earthstar";
 import { Link, Outlet, useMatch } from "react-router-dom";
 import { useLetterboxLayer } from "./letterbox-layer";
-import ThreadRootItem from "./ThreadRootItem";
+import ThreadItem from "./ThreadRootItem";
 import { useWorkspaceAddrFromRouter } from "./WorkspaceLookup";
 
 function SpaceBar() {
@@ -25,7 +25,7 @@ function SpaceBar() {
 export default function ThreadListing() {
   const letterbox = useLetterboxLayer();
 
-  const threadRoots = letterbox.getThreadRoots();
+  const threads = letterbox.getThreads();
 
   const match = useMatch("/:workspacePath/*");
 
@@ -38,15 +38,15 @@ export default function ThreadListing() {
       }`}
     >
       <SpaceBar />
-      {threadRoots.length === 0
+      {threads.length === 0
         ? <div className="p-1 md:p-3 text-gray-500 text-center">
           No threads have been posted yet.
         </div>
         : <ol>
-          {letterbox.getThreadRoots().map((threadRoot) => {
-            return <React.Fragment key={threadRoot.id}>
+          {threads.map((thread) => {
+            return <React.Fragment key={thread.root.id}>
               <li>
-                <ThreadRootItem root={threadRoot} />
+                <ThreadItem thread={thread} />
               </li>
               <hr />
             </React.Fragment>;

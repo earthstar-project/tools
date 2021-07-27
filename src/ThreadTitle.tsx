@@ -1,10 +1,10 @@
-import { useLetterboxLayer } from "./letterbox-layer";
+import { Thread, useLetterboxLayer } from "./letterbox-layer";
 
 export default function ThreadTitle(
-  { threadId, workspace }: { threadId: string; workspace?: string },
+  { thread, workspace }: { thread: Thread; workspace?: string },
 ) {
   const letterboxLayer = useLetterboxLayer(workspace);
-  const threadTitle = letterboxLayer.getThreadTitle(threadId);
+  const threadTitle = letterboxLayer.getThreadTitle(thread);
 
   return <>{threadTitle || "Untitled thread"}</>;
 }

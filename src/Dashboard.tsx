@@ -16,8 +16,9 @@ function WorkspaceSection({ workspace }: { workspace: string }) {
   const layer = React.useMemo(() => {
     return new LetterboxLayer(storage, currentAuthor);
   }, [storage, currentAuthor]);
-  const unreadThreadRoots = layer.getThreadRoots().filter((root) =>
-    layer.threadHasUnreadPosts(root.id)
+
+  const unreadThreadRoots = layer.getThreads().filter((thread) =>
+    layer.threadHasUnreadPosts(thread)
   );
 
   const lookup = React.useContext(PathWorkspaceLookupContext);
