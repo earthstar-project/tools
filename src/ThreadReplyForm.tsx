@@ -58,6 +58,7 @@ export default function ThreadReplyForm() {
       placeholder={"Supports markdown"}
       rows={10}
       onChange={(e) => {
+        setDidSaveDraft(false);
         setReplyText(e.target.value);
         writeDraft(e.target.value);
       }}
