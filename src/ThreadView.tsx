@@ -85,7 +85,7 @@ function PostDetails(
   );
 
   return <div
-    className={"text-gray-500 flex justify-between items-baseline mb-3 w-full self-stretch overflow-hidden space-x-1"}
+    className={"text-gray-500 flex justify-between items-baseline mb-1 w-full self-stretch overflow-hidden space-x-1 text-sm"}
   >
     {authorDisplayName
       ? <>
@@ -114,10 +114,10 @@ function PostDetails(
         {isEditing ? "Cancel edit" : "Edit"}
       </button>
       : null}
-    <div className="flex-1 pl-5">
+    <div className="flex-grow pl-5 text-right">
       {currentAuthor
         ? <label>
-          <span className="text-sm">Read</span>
+          <span>Read</span>
           <input
             type="checkbox"
             className="ml-1"
