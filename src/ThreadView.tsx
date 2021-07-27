@@ -24,14 +24,14 @@ function ThreadBar({ thread }: { thread: Thread }) {
 
   const lastThreadItem = letterboxLayer.lastThreadItem(thread);
 
+  const lastItemTimestamp = getDocPublishedTimestamp(lastThreadItem.doc);
+
   const mostRecentIsUnread = lastThreadItem
     ? letterboxLayer.isUnread(
       thread.root.id,
-      getDocPublishedTimestamp(lastThreadItem.doc),
+      lastItemTimestamp,
     )
     : true;
-
-  const nowTimestamp = Date.now() * 1000;
 
   return <div
     className="flex py-2 px-3 pl-6 bg-white border-b shadow-sm justify-between sticky top-0 z-50 items-baseline overflow-hidden"
@@ -52,7 +52,7 @@ function ThreadBar({ thread }: { thread: Thread }) {
       ? <button
         className="p-1.5 bg-blue-800 text-white rounded"
         onClick={() =>
-          letterboxLayer.markReadUpTo(thread.root.id, nowTimestamp)}
+          letterboxLayer.markReadUpTo(thread.root.id, lastItemTimestamp)}
       >
         Mark thread as read
       </button>
