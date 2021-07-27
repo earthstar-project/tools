@@ -18,7 +18,7 @@ export default function ThreadItem({ thread }: { thread: Thread }) {
     thread.root.id === `${match?.params.pubKey}/${match?.params.timestamp}`;
 
   const markdownMemo = React.useMemo(
-    () => renderMarkdownPreview(lastThreadItem?.doc.content || ""),
+    () => renderMarkdownPreview(lastThreadItem.doc.content),
     [lastThreadItem?.doc.content],
   );
 

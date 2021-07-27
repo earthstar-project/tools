@@ -48,7 +48,7 @@ export default function NewThreadForm() {
 
     setTitle(defaults?.title);
     setPostVal(defaults?.content);
-  }, [maybeDraftId]);
+  }, [maybeDraftId, defaults?.title, defaults?.content]);
 
   const draftIds = letterboxLayer.getThreadRootDraftIds();
 

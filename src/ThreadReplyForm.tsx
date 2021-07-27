@@ -34,7 +34,9 @@ export default function ThreadReplyForm() {
   return <form
     ref={formRef}
     className={"flex flex-col pt-0 p-3 lg:p-6 lg:pt-0  bg-white"}
-    onSubmit={() => {
+    onSubmit={(e) => {
+      e.preventDefault();
+
       const result = letterboxLayer.createReply(
         threadId,
         replyText,

@@ -29,17 +29,18 @@ function WorkspaceSection({ workspace }: { workspace: string }) {
 
   const workspacePath = lookup.addrsToPaths[workspace];
 
-  return <Link
-    to={`/${workspacePath}`}
+  return <section
+    className={`flex items-baseline text-base sm:text-sm space-x-1 ${
+      isActive
+        ? "bg-blue-100"
+        : unreadThreadRoots.length === 0
+        ? "bg-gray-100"
+        : ""
+    }`}
   >
-    <section
-      className={`flex justify-between items-baseline p-3 text-base sm:text-sm ${
-        isActive
-          ? "bg-blue-100"
-          : unreadThreadRoots.length === 0
-          ? "bg-gray-100"
-          : ""
-      }`}
+    <Link
+      to={`/${workspacePath}`}
+      className="flex flex-grow items-baseline justify-between p-2 pr-0"
     >
       <h2>
         <WorkspaceLabel address={workspace} />
@@ -52,10 +53,10 @@ function WorkspaceSection({ workspace }: { workspace: string }) {
             {unreadThreadRoots.length}
           </div>
           : null}
-        <Link to={`/${workspacePath}/settings`}>⚙️</Link>
       </div>
-    </section>
-  </Link>;
+    </Link>
+    <Link to={`/${workspacePath}/settings`}>⚙️</Link>
+  </section>;
 }
 
 export default function Dashboard() {
