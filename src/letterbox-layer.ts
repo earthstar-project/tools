@@ -199,7 +199,7 @@ export default class LetterboxLayer {
         const aLast = this.lastThreadItem(aThread);
         const bLast = this.lastThreadItem(bThread);
 
-        return aLast?.firstPosted < bLast?.firstPosted ? 1 : -1;
+        return aLast.firstPosted < bLast.firstPosted ? 1 : -1;
       });
   }
 
