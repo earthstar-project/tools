@@ -249,7 +249,7 @@ export default function ThreadView() {
   return <div className="overflow-scroll shadow-lg">
     <ThreadBar thread={thread} />
     <ol>
-      <ThreadRootView root={thread.root} />
+      <ThreadRootView root={thread.root} key={thread.root.id} />
       <hr className="border-gray-300" />
       {thread.replies.map((post) =>
         <React.Fragment key={post.doc.path}>
