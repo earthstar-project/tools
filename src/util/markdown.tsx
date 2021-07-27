@@ -30,14 +30,14 @@ function Pre(props: any) {
 
 function UnorderedList(props: any) {
   return <ul
-    className="pl-5 my-1 list-disc max-w-prose leading-relaxed"
+    className="pl-6 my-1 list-disc max-w-prose leading-relaxed"
     {...props}
   />;
 }
 
 function OrderedList(props: any) {
   return <ol
-    className="pl-5 my-1 list-decimal max-w-prose leading-relaxed"
+    className="pl-6 my-1 list-decimal max-w-prose leading-relaxed"
     {...props}
   />;
 }
