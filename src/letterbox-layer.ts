@@ -196,16 +196,8 @@ export default class LetterboxLayer {
       .map((root) => this.getThread(root?.id)).filter(
         onlyDefined,
       ).sort((aThread, bThread) => {
-        const aLast = aThread.replies[aThread.replies.length - 1];
-        const bLast = bThread.replies[bThread.replies.length - 1];
-
-        if (!aLast) {
-          return 1;
-        }
-
-        if (!bLast) {
-          return -1;
-        }
+        const aLast = this.lastThreadItem(aThread);
+        const bLast = this.lastThreadItem(bThread);
 
         return aLast?.firstPosted < bLast?.firstPosted ? 1 : -1;
       });
@@ -435,11 +427,7 @@ export default class LetterboxLayer {
     }
   }
 
-  lastThreadItem(thread: Thread): ThreadRoot | Post | undefined {
-    if (!thread) {
-      return undefined;
-    }
-
+  lastThreadItem(thread: Thread): ThreadRoot | Post {
     if (thread.replies.length === 0) {
       return thread.root;
     }
