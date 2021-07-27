@@ -109,9 +109,6 @@ export default function NewThreadForm() {
             content,
             maybeDraftId,
           );
-
-          setTitle("");
-          setPostVal("");
         }}
       >
         {maybeDraftId ? "Update draft" : "Save as draft"}
