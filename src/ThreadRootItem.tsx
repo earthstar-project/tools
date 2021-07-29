@@ -25,10 +25,10 @@ export default function ThreadItem({ thread }: { thread: Thread }) {
   return <div
     className={`px-1 md:px-2 py-3 ${
       isActive
-        ? "bg-blue-100"
+        ? "bg-blue-100 dark:bg-blue-900"
         : !hasUnreadPosts
-        ? "bg-gray-100 text-gray-600"
-        : ""
+        ? "bg-gray-100 dark:bg-gray-900 text-gray-600"
+        : "bg-white dark:bg-black"
     }`}
   >
     <Link
@@ -45,16 +45,16 @@ export default function ThreadItem({ thread }: { thread: Thread }) {
       <div
         className="flex flex-col gap-1 flex-grow overflow-hidden overflow-ellipsis text-sm"
       >
-        <h1 className={"font-bold"}>
+        <h1 className={"font-bold dark:text-white"}>
           <ThreadTitle
             workspace={thread.root.doc.workspace}
             thread={thread}
           />
         </h1>
         {lastThreadItem
-          ? <div className="text-gray-500 overflow-ellipsis overflow-hidden">
+          ? <div className="text-gray-500 dark:text-gray-400 overflow-ellipsis overflow-hidden">
             <AuthorLabel
-              className="mr-1 text-gray-800"
+              className="mr-1 text-gray-800 dark:text-gray-200"
               address={lastThreadItem.doc.author}
             />
             {markdownMemo}

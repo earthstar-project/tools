@@ -11,7 +11,7 @@ function NewThreadBar() {
   const { workspaceLookup } = useParams();
 
   return <div
-    className="flex py-2 py-3 px-3 md:px-6 bg-white border-b shadow-sm justify-end sticky top-0 z-50 items-baseline"
+    className="flex py-2 py-3 px-3 md:px-6 bg-white border-b shadow-sm justify-end sticky top-0 z-50 items-baseline dark:bg-black dark:text-white dark:border-gray-800"
   >
     <Link
       className="md:hidden mr-2 text-blue-500 text-xl"
@@ -112,7 +112,7 @@ export default function NewThreadForm() {
       }}
     >
       <input
-        className="border mb-2 p-2 shadow-inner"
+        className="border mb-2 p-2 shadow-inner dark:bg-gray-800 dark:border-gray-700 dark:text-white"
         type={"text"}
         value={title}
         onChange={(e) => {
@@ -124,7 +124,7 @@ export default function NewThreadForm() {
       />
       <textarea
         required
-        className="border mb-2 p-2 shadow-inner"
+        className="border mb-2 p-2 shadow-inner dark:bg-gray-800 dark:border-gray-700 dark:text-white"
         placeholder={"Write the first post of a new thread. Accepts markdown."}
         rows={15}
         value={postVal}

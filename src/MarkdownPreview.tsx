@@ -6,9 +6,9 @@ export default function MarkdownPreview({ raw }: { raw: string }) {
 
   const mdMemo = React.useMemo(() => renderMarkdown(raw), [raw]);
 
-  return <div>
+  return <div className="dark:text-white">
     {enabled
-      ? <div className={"border p-2 border-dashed"}>
+      ? <div className={"border p-2 border-dashed dark:border-gray-700 mb-2"}>
         {mdMemo}
       </div>
       : null}

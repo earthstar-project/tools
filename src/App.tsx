@@ -29,7 +29,7 @@ function App() {
           return new StorageLocalStorage([ValidatorEs4], addr);
         }}
       >
-        <div className="flex flex-col h-screen">
+        <div className="flex flex-col h-screen bg-white dark:bg-black dark:text-white">
           <Earthbar>
             <MultiWorkspaceTab />
             <Spacer />

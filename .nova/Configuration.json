@@ -1,4 +1,7 @@
 {
+  "co.gwil.deno.config.enableLinting" : "false",
+  "co.gwil.deno.config.enableLsp" : "false",
+  "co.gwil.deno.config.formatOnSave" : "true",
   "co.gwil.deno.enable" : false,
   "workspace.color" : 0,
   "workspace.preview_append_paths" : false,

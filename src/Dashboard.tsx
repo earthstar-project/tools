@@ -32,9 +32,9 @@ function WorkspaceSection({ workspace }: { workspace: string }) {
   return <section
     className={`flex items-baseline text-base sm:text-sm space-x-1 ${
       isActive
-        ? "bg-blue-100"
+        ? "bg-blue-100 dark:bg-blue-900"
         : unreadThreadRoots.length === 0
-        ? "bg-gray-100"
+        ? "bg-gray-100 dark:bg-gray-900"
         : ""
     }`}
   >
@@ -75,7 +75,7 @@ export default function Dashboard() {
     className={"w-screen flex-grow grid lg:grid-cols-app-lg md:grid-cols-app-md app border-t md:h-app-md"}
   >
     <ul
-      className={`h-full flex-initial border-r-2 border-gray-300 display-none ${
+      className={`h-full flex-initial border-r-2 border-gray-300 dark:border-gray-700 display-none text-black dark:text-white ${
         isExactlyAtRoot
           ? `block`
           : isExactlyAtWorkspace
@@ -88,7 +88,7 @@ export default function Dashboard() {
           <li>
             <WorkspaceSection workspace={addr} />
           </li>
-          <hr />
+          <hr className="dark:border-gray-800"/>
         </React.Fragment>
       )}
     </ul>

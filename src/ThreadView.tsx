@@ -34,7 +34,7 @@ function ThreadBar({ thread }: { thread: Thread }) {
     : true;
 
   return <div
-    className="flex py-2 px-3 pl-6 bg-white border-b shadow-sm justify-between sticky top-0 z-50 items-baseline overflow-hidden"
+    className="flex py-2 px-3 pl-6 bg-white dark:bg-black border-b shadow-sm justify-between sticky top-0 z-50 items-baseline overflow-hidden dark:text-white dark:border-gray-800"
   >
     <div className="flex">
       <Link
@@ -85,12 +85,12 @@ function PostDetails(
   );
 
   return <div
-    className={"text-gray-500 flex justify-between items-baseline mb-1 w-full self-stretch overflow-hidden space-x-1 text-sm"}
+    className={"text-gray-500 dark:text-gray-400 flex justify-between items-baseline mb-1 w-full self-stretch overflow-hidden space-x-1 text-sm"}
   >
     {authorDisplayName
       ? <>
         <span
-          className="font-bold text-gray-800 truncate flex-shrink min-w-0"
+          className="font-bold text-gray-800 dark:text-gray-200 truncate flex-shrink min-w-0"
         >
           {authorDisplayName}
         </span>{" "}
@@ -181,7 +181,7 @@ function ThreadRootView({ root }: { root: ThreadRoot }) {
 
   return <article
     className={`p-3 py-4 pl-6 sm:py-6 ${
-      isUnread ? "" : "bg-gray-100 text-gray-600"
+      isUnread ? "bg-white dark:bg-black dark:text-gray-100" : "bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-300"
     }`}
   >
     <PostDetails
@@ -205,7 +205,7 @@ function PostView({ post, threadId }: { post: Post; threadId: string }) {
 
   return <article
     className={`p-3 py-4 pl-6 sm:py-6 ${
-      isUnread ? "" : "bg-gray-100 text-gray-600"
+      isUnread ? "bg-white dark:bg-black dark:text-gray-100" : "bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-300"
     }`}
   >
     <PostDetails
@@ -250,11 +250,11 @@ export default function ThreadView() {
     <ThreadBar thread={thread} />
     <ol>
       <ThreadRootView root={thread.root} key={thread.root.id} />
-      <hr className="border-gray-300" />
+      <hr className="border-gray-300 dark:border-gray-700" />
       {thread.replies.map((post) =>
         <React.Fragment key={post.doc.path}>
           <PostView post={post} threadId={thread.root.id} />
-          <hr className="border-gray-300" />
+          <hr className="border-gray-300 dark:border-gray-700" />
         </React.Fragment>
       )}
     </ol>

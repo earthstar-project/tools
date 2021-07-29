@@ -33,7 +33,7 @@ export default function ThreadReplyForm() {
 
   return <form
     ref={formRef}
-    className={"flex flex-col pt-0 p-3 lg:p-6 lg:pt-0  bg-white"}
+    className={"flex flex-col pt-0 p-3 lg:p-6 lg:pt-0"}
     onSubmit={(e) => {
       e.preventDefault();
 
@@ -53,7 +53,7 @@ export default function ThreadReplyForm() {
   >
     <textarea
       required
-      className={"border p-2 mb-2 shadow-inner"}
+      className={"border p-2 mb-2 shadow-inner dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"}
       value={replyText}
       placeholder={"Supports markdown"}
       rows={10}
@@ -64,7 +64,7 @@ export default function ThreadReplyForm() {
       }}
     />
     <div
-      className={`text-right text-gray-500 ${
+      className={`text-right text-gray-500 dark:text-gray-400 ${
         didSaveDraft ? "visible" : "invisible"
       }`}
     >
