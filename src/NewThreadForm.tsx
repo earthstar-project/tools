@@ -89,7 +89,7 @@ export default function NewThreadForm() {
     return <div>{"You must be signed in to make threads"}</div>;
   }
 
-  return <section>
+  return <section className="h-full overflow-scroll">
     <NewThreadBar />
     <form
       ref={formRef}
@@ -147,7 +147,7 @@ export default function NewThreadForm() {
     </form>
     {draftIds.length > 0
       ? <div className="flex flex-col px-6 py-3">
-        <hr />
+        <hr  className="dark:border-gray-800"/>
         <h1 className="font-bold text-xl my-3">Drafts</h1>
         <ul className="space-y-3">
           {draftIds.map((id) =>
@@ -188,15 +188,15 @@ function DraftItem(
   );
 
   return <div
-    className={`flex justify-between items-baseline border rounded ${
-      isSelected ? "bg-blue-50" : ""
+    className={`flex justify-between items-baseline border rounded dark:border-gray-800 ${
+      isSelected ? "bg-blue-50 dark:bg-blue-900" : ""
     }`}
   >
     <button
       onClick={onSelect}
       className="text-gray-500 p-2 flex-grow text-left"
     >
-      <h2 className="font-bold text-black">
+      <h2 className="font-bold text-black dark:text-white">
         {maybeParts?.title || "Untitled thread"}
       </h2>
 

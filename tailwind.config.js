@@ -9,7 +9,7 @@ module.exports = {
         "app": "1fr",
       },
       height: {
-        "app-md": "calc(100vh - 52px)",
+        "app": "calc(100vh - 52px)",
       },
     },
   },

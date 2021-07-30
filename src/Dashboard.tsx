@@ -72,7 +72,7 @@ export default function Dashboard() {
     workspaceMatch?.params["*"] === "";
 
   return <div
-    className={"w-screen flex-grow grid lg:grid-cols-app-lg md:grid-cols-app-md app border-t md:h-app-md"}
+    className={"w-screen flex-grow grid lg:grid-cols-app-lg md:grid-cols-app-md app border-t h-app"}
   >
     <ul
       className={`h-full flex-initial border-r-2 border-gray-300 dark:border-gray-700 display-none text-black dark:text-white ${
