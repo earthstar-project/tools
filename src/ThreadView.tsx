@@ -161,7 +161,7 @@ function PostEditForm(
   >
     <textarea
       value={content}
-      className="border p-2 mb-2 shadow-inner"
+      className="border p-2 mb-2 shadow-inner dark:bg-gray-800 dark:text-white dark:border-gray-700"
       onChange={(e) => {
         setContent(e.target.value);
       }}
