@@ -718,9 +718,7 @@ export function useLetterboxLayer(workspaceAddress?: string) {
   const storage = useStorage(workspaceAddress || inferredWorkspace);
   const [currentAuthor] = useCurrentAuthor();
 
-  const layer = React.useMemo(() => {
-    return new LetterboxLayer(storage, currentAuthor);
-  }, [storage, currentAuthor]);
+  const layer = new LetterboxLayer(storage, currentAuthor);
 
   return layer;
 }
