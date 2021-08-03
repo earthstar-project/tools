@@ -52,7 +52,9 @@ export default function ThreadItem({ thread }: { thread: Thread }) {
           />
         </h1>
         {lastThreadItem
-          ? <div className="text-gray-500 dark:text-gray-400 overflow-ellipsis overflow-hidden">
+          ? <div
+            className="text-gray-500 dark:text-gray-400 overflow-ellipsis overflow-hidden"
+          >
             <AuthorLabel
               className="mr-1 text-gray-800 dark:text-gray-200"
               address={lastThreadItem.doc.author}

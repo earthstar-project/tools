@@ -147,7 +147,7 @@ export default function NewThreadForm() {
     </form>
     {draftIds.length > 0
       ? <div className="flex flex-col px-6 py-3">
-        <hr  className="dark:border-gray-800"/>
+        <hr className="dark:border-gray-800" />
         <h1 className="font-bold text-xl my-3">Drafts</h1>
         <ul className="space-y-3">
           {draftIds.map((id) =>

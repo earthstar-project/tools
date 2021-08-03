@@ -58,7 +58,10 @@ function Link(props: any) {
 }
 
 function Code(props: any) {
-  return <code className="bg-gray-100 dark:bg-gray-700 text-sm p-1" {...props} />;
+  return <code
+    className="bg-gray-100 dark:bg-gray-700 text-sm p-1"
+    {...props}
+  />;
 }
 
 const processor = unified().use(parse)
@@ -135,7 +138,10 @@ function PreviewLink({ _href, ...rest }: any) {
 }
 
 function PreviewCode(props: any) {
-  return <code className="bg-gray-100 dark:bg-gray-700 text-sm p-1" {...props} />;
+  return <code
+    className="bg-gray-100 dark:bg-gray-700 text-sm p-1"
+    {...props}
+  />;
 }
 
 const previewProcessor = unified().use(parse)

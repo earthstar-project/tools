@@ -48,7 +48,7 @@ export default function ThreadListing() {
               <li>
                 <ThreadItem thread={thread} />
               </li>
-              <hr className="dark:border-gray-800"/>
+              <hr className="dark:border-gray-800" />
             </React.Fragment>;
           })}
         </ol>}

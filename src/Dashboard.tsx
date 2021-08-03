@@ -88,7 +88,7 @@ export default function Dashboard() {
           <li>
             <WorkspaceSection workspace={addr} />
           </li>
-          <hr className="dark:border-gray-800"/>
+          <hr className="dark:border-gray-800" />
         </React.Fragment>
       )}
     </ul>
