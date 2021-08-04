@@ -70,7 +70,7 @@ export default function Dashboard() {
   const isExactlyAtRoot = rootMatch?.path === "/";
   const isOneLevelDeep = workspaceMatch?.params.workspace;
 
-  const isAtThread = workspaceMatch?.params["*"].startsWith("thread");
+  const isAtWorkspace = ['add', 'join', 'settings'].includes(workspaceMatch?.params.workspace || '');
 
   return <div
     className={"w-screen flex-grow grid lg:grid-cols-app-lg md:grid-cols-app-md app border-t h-app"}
@@ -79,7 +79,7 @@ export default function Dashboard() {
       className={`h-full flex-initial border-r-2 border-gray-300 dark:border-gray-700 text-black dark:text-white ${
         isExactlyAtRoot
           ? "block"
-          : isOneLevelDeep && !isAtThread
+          : isOneLevelDeep && isAtWorkspace
           ? "hidden md:block"
           : "hidden lg:block"
       }`}
