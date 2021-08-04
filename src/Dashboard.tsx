@@ -68,17 +68,18 @@ export default function Dashboard() {
   const workspaceMatch = useMatch("/:workspace/*");
 
   const isExactlyAtRoot = rootMatch?.path === "/";
-  const isExactlyAtWorkspace = workspaceMatch?.params.workspace &&
-    workspaceMatch?.params["*"] === "";
+  const isOneLevelDeep = workspaceMatch?.params.workspace;
+  
+  const isAtThread = workspaceMatch?.params['*'].startsWith('thread')
 
   return <div
     className={"w-screen flex-grow grid lg:grid-cols-app-lg md:grid-cols-app-md app border-t h-app"}
   >
     <ul
-      className={`h-full flex-initial border-r-2 border-gray-300 dark:border-gray-700 display-none text-black dark:text-white ${
+      className={`h-full flex-initial border-r-2 border-gray-300 dark:border-gray-700 text-black dark:text-white ${
         isExactlyAtRoot
-          ? `block`
-          : isExactlyAtWorkspace
+          ? "block"
+          : isOneLevelDeep && !isAtThread
           ? "hidden md:block"
           : "hidden lg:block"
       }`}
@@ -91,11 +92,11 @@ export default function Dashboard() {
           <hr className="dark:border-gray-800" />
         </React.Fragment>
       )}
-      {workspaces.length === 0
-        ? <div className="p-3 md:p-3 text-gray-500 text-center">
-          You haven't added any spaces yet.
-        </div>
-        : null}
+      <div>
+        <Link className="block p-2 text-gray-500 text-sm" to="/add">
+          Add a space
+        </Link>
+      </div>
     </ul>
     <Outlet />
   </div>;

@@ -44,7 +44,7 @@ export default function SpaceSettings() {
       window.location.port !== "" ? `:${window.location.port}` : ""
     }/join/${invitationCode}`;
 
-  return <section className="p-6 space-y-3 col-span-2">
+  return <section className="p-6 space-y-3 lg:col-span-2">
     <h1 className="font-bold text-2xl">Settings</h1>
 
     <h2 className="font-bold text-xl">

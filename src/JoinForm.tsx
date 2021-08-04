@@ -3,30 +3,16 @@ import { useInvitation, useWorkspaces, WorkspaceLabel } from "react-earthstar";
 import { isErr, ValidatorEs4, WorkspaceParsed } from "earthstar";
 import BrowserPocketIcon from "./images/browser-pocket.svg";
 import CloudPocketIcon from "./images/cloud-pocket.svg";
+import PocketDesc from "./PocketDesc";
 
 function JoinBar({ address }: { address: string }) {
   return <div
-    className="flex py-2 px-3 pl-6 bg-white dark:bg-black border-b shadow-sm justify-end sticky top-0 z-50 items-baseline dark:text-white dark:border-gray-800"
+    className="flex py-2 px-3 bg-white dark:bg-black border-b shadow-sm justify-end sticky top-0 z-50 items-baseline dark:text-white dark:border-gray-800"
   >
-    <Link className="lg:hidden mr-2 text-blue-500 text-xl" to="/">⬅</Link>
+    <Link className="md:hidden mr-2 text-blue-500 text-xl" to="/">⬅</Link>
     <p className="flex-grow font-bold text-xl">
       Add <WorkspaceLabel address={address} />
     </p>
-  </div>;
-}
-
-function PocketDesc({ kind, address }: { address: string; kind: string }) {
-  return <div className="text-sm inline-block">
-    <span
-      className="p-1 rounded-l-lg shadow border-2 border-r-0 border-black font-bold bg-white"
-    >
-      {kind}
-    </span>
-    <span
-      className="bg-black text-white p-1.5 rounded-r-lg shadow border-1 border-black"
-    >
-      {address}
-    </span>
   </div>;
 }
 
@@ -52,18 +38,18 @@ export default function Redeemer() {
     ? false
     : workspaces.includes(result.workspace);
 
-  return <div className="h-app overflow w-full">
+  return <div className="h-app w-full h-overflow col-auto lg:col-span-2">
     {isErr(result)
       ? <div>The invitation code you pasted is no good: {result.message}</div>
       : alreadyHasWorkspace
       ? <div>
         <JoinBar address={result.workspace} />
-        <p>You're already a member of this space!</p>
+        <p className="p-2">You're already a member of this space!</p>
       </div>
       : <>
         <JoinBar address={result.workspace} />
         <form
-          className="col-span-2 p-6 space-y-3 max-w-prose"
+          className="p-3 space-y-3 max-w-prose"
           onSubmit={() => {
             result.redeem();
 
@@ -77,7 +63,7 @@ export default function Redeemer() {
           <p>If you choose to add this space, here's what will happen:</p>
 
           <ol>
-            <li className="bg-blue-50 p-4 space-y-4 inline-block rounded my-2">
+            <li className="bg-blue-50 dark:bg-blue-900 p-4 space-y-4 inline-block rounded my-2">
               <p>
                 A new pocket to hold{" "}
                 <b>
@@ -96,7 +82,7 @@ export default function Redeemer() {
             </li>
             {pubs.length > 0
               ? <li
-                className="bg-blue-50 p-4 space-y-4 inline-block rounded my-2"
+                className="bg-blue-50 dark:bg-blue-900 p-4 space-y-4 inline-block rounded my-2"
               >
                 <p>
                   It will then be synchronised with the following{" "}
