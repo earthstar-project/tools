@@ -91,6 +91,11 @@ export default function Dashboard() {
           <hr className="dark:border-gray-800" />
         </React.Fragment>
       )}
+      {workspaces.length === 0
+        ? <div className="p-3 md:p-3 text-gray-500 text-center">
+          You haven't added any spaces yet.
+        </div>
+        : null}
     </ul>
     <Outlet />
   </div>;
