@@ -63,7 +63,9 @@ export default function Redeemer() {
           <p>If you choose to add this space, here's what will happen:</p>
 
           <ol>
-            <li className="bg-blue-50 dark:bg-blue-900 p-4 space-y-4 inline-block rounded my-2">
+            <li
+              className="bg-blue-50 dark:bg-blue-900 p-4 space-y-4 inline-block rounded my-2"
+            >
               <p>
                 A new pocket to hold{" "}
                 <b>

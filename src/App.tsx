@@ -34,7 +34,6 @@ function App() {
           className="flex flex-col h-screen bg-white dark:bg-black dark:text-white"
         >
           <Earthbar>
-            <MultiWorkspaceTab />
             <Spacer />
             <AuthorTab />
           </Earthbar>

@@ -69,8 +69,8 @@ export default function Dashboard() {
 
   const isExactlyAtRoot = rootMatch?.path === "/";
   const isOneLevelDeep = workspaceMatch?.params.workspace;
-  
-  const isAtThread = workspaceMatch?.params['*'].startsWith('thread')
+
+  const isAtThread = workspaceMatch?.params["*"].startsWith("thread");
 
   return <div
     className={"w-screen flex-grow grid lg:grid-cols-app-lg md:grid-cols-app-md app border-t h-app"}

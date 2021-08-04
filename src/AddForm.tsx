@@ -104,8 +104,9 @@ export function WorkspaceCreatorForm({
               <span
                 className="p-1 rounded-l-lg shadow border-2 border-r-0 border-black font-bold bg-white flex items-center justify-center text-sm text-black"
               >
-              <span>
-                Browser pocket</span>
+                <span>
+                  Browser pocket
+                </span>
               </span>
               <div
                 className=" inline-block  bg-black text-white p-2 rounded-r-lg"
@@ -149,79 +150,81 @@ export function WorkspaceCreatorForm({
           </p>
         </div>
         <div className="my-3 p-4 rounded space-y-4 bg-blue-50 dark:bg-blue-900">
-          <p >
+          <p>
             And it will be synced with these cloud pockets.
           </p>
           <ul className="space-y-4">
-            {addedPubs.length === 0 ? <div className="text-gray-500">(None - you can always add some later!)</div>: null}
+            {addedPubs.length === 0
+              ? <div className="text-gray-500">
+                (None - you can always add some later!)
+              </div>
+              : null}
             {addedPubs.map((pubUrl) => (
               <li key={pubUrl} className="flex">
-                
-                  <div className="flex items-center gap-2">
-                    <img src={CloudPocketIcon} width={70} />
-                    <div className="flex flex-col space-y-2">
-                      <PocketDesc
-                        address={address}
-                        kind="Cloud pocket"
-                      />
-                      <div className="text-sm">{pubUrl}</div>
-                    </div>
+                <div className="flex items-center gap-2">
+                  <img src={CloudPocketIcon} width={70} />
+                  <div className="flex flex-col space-y-2">
+                    <PocketDesc
+                      address={address}
+                      kind="Cloud pocket"
+                    />
+                    <div className="text-sm">{pubUrl}</div>
                   </div>
-                  <button
+                </div>
+                <button
                   className="text-red-500 text-lg flex-grow text-right"
-                    onClick={() => {
-                      setAddedPubs((prev) =>
-                        prev.filter((url) => url !== pubUrl)
-                      );
-                    }}
-                  >
-                    {"✕"}
-                  </button>
-                
+                  onClick={() => {
+                    setAddedPubs((prev) =>
+                      prev.filter((url) => url !== pubUrl)
+                    );
+                  }}
+                >
+                  {"✕"}
+                </button>
               </li>
             ))}
           </ul>
           <div className="space-x-1 flex items-baseline">
-          <Combobox
-            className="inline-block rounded-lg flex-grow"
-            openOnFocus
-            onSelect={(item) => setAddedPubs((prev) => [...prev, item])}
-          >
-            <ComboboxInput
-            className="p-1 w-full"
-              selectOnClick
-              value={pubToAdd}
-              onChange={(e) => setPubToAdd(e.target.value)}
-              placeholder={"https://cloud.pocket"}
-            />
-            {selectablePubs.length > 0
-              ? (
-                <ComboboxPopover className="rounded border border-gray-50">
-                  <ComboboxList>
-                    {selectablePubs.map((pubUrl) => (
-                      <ComboboxOption
-                        key={pubUrl}
-                        value={pubUrl}
-                      >
-                        <span>{pubUrl}</span>
-                      </ComboboxOption>
-                    ))}
-                  </ComboboxList>
-                </ComboboxPopover>
-              )
-              : null}
-          </Combobox>
-          <button
-            className="text-white bg-black rounded-lg p-2"
-            disabled={pubToAdd.length === 0}
-            onClick={(e) => {
-              e.preventDefault();
-              setPubToAdd("");
-              setAddedPubs((prev) => [...prev, pubToAdd]);
-            }}
-          >
-            {"Add cloud pocket"}
-          </button>
+            <Combobox
+              className="inline-block rounded-lg flex-grow"
+              openOnFocus
+              onSelect={(item) => setAddedPubs((prev) => [...prev, item])}
+            >
+              <ComboboxInput
+                className="p-1 w-full"
+                selectOnClick
+                value={pubToAdd}
+                onChange={(e) => setPubToAdd(e.target.value)}
+                placeholder={"https://cloud.pocket"}
+              />
+              {selectablePubs.length > 0
+                ? (
+                  <ComboboxPopover className="rounded border border-gray-50">
+                    <ComboboxList>
+                      {selectablePubs.map((pubUrl) => (
+                        <ComboboxOption
+                          key={pubUrl}
+                          value={pubUrl}
+                        >
+                          <span>{pubUrl}</span>
+                        </ComboboxOption>
+                      ))}
+                    </ComboboxList>
+                  </ComboboxPopover>
+                )
+                : null}
+            </Combobox>
+            <button
+              className="text-white bg-black rounded-lg p-2"
+              disabled={pubToAdd.length === 0}
+              onClick={(e) => {
+                e.preventDefault();
+                setPubToAdd("");
+                setAddedPubs((prev) => [...prev, pubToAdd]);
+              }}
+            >
+              {"Add cloud pocket"}
+            </button>
           </div>
         </div>
         {isValid
@@ -231,7 +234,7 @@ export function WorkspaceCreatorForm({
               disabled={!isValid}
               type={"submit"}
             >
-              Add {<WorkspaceLabel address={address}/>}
+              Add {<WorkspaceLabel address={address} />}
             </button>
           )
           : null}

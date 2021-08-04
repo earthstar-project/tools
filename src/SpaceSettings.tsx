@@ -1,5 +1,10 @@
 import * as React from "react";
-import { useMakeInvitation, WorkspaceLabel } from "react-earthstar";
+import {
+  useMakeInvitation,
+  useRemoveWorkspace,
+  WorkspaceLabel,
+} from "react-earthstar";
+import { useNavigate } from "react-router-dom";
 import { useWorkspaceAddrFromRouter } from "./WorkspaceLookup";
 
 function CopyButton({
@@ -44,6 +49,10 @@ export default function SpaceSettings() {
       window.location.port !== "" ? `:${window.location.port}` : ""
     }/join/${invitationCode}`;
 
+  const remove = useRemoveWorkspace();
+
+  const navigate = useNavigate();
+
   return <section className="p-6 space-y-3 lg:col-span-2">
     <h1 className="font-bold text-2xl">Settings</h1>
 
@@ -61,6 +70,24 @@ export default function SpaceSettings() {
 
     <hr />
 
+    <h2 className="font-bold text-xl">Data deletion</h2>
+
+    <button
+      className="btn"
+      onClick={() => {
+        const isSure = window.confirm(
+          `Are you sure you want to remove ${inferredWorkspace} from your workspaces?`,
+        );
+
+        if (isSure) {
+          remove(inferredWorkspace);
+          navigate("/");
+        }
+      }}
+    >
+      {`Forget ${inferredWorkspace}`}
+    </button>
+
     <p className="max-w-prose">
       The below will come later - for now you can do all these things from the
       {" "}
@@ -69,6 +96,5 @@ export default function SpaceSettings() {
 
     <h2 className="font-bold text-xl">🚧 Display name</h2>
     <h2 className="font-bold text-xl">🚧 Replica servers</h2>
-    <h2 className="font-bold text-xl">🚧 Data deletion</h2>
   </section>;
 }
