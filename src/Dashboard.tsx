@@ -70,7 +70,9 @@ export default function Dashboard() {
   const isExactlyAtRoot = rootMatch?.path === "/";
   const isOneLevelDeep = workspaceMatch?.params.workspace;
 
-  const isAtWorkspace = ['add', 'join', 'settings'].includes(workspaceMatch?.params.workspace || '');
+  const isAtWorkspace = ["add", "join", "settings"].includes(
+    workspaceMatch?.params.workspace || "",
+  );
 
   return <div
     className={"w-screen flex-grow grid lg:grid-cols-app-lg md:grid-cols-app-md app border-t h-app"}

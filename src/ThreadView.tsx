@@ -61,11 +61,12 @@ function ThreadBar({ thread }: { thread: Thread }) {
 }
 
 function PostDetails(
-  { post, threadId, onEdit, isEditing }: {
+  { post, threadId, onEdit, isEditing, onDelete }: {
     post: Post | ThreadRoot;
     threadId: string;
     onEdit: () => void;
     isEditing: boolean;
+    onDelete: () => void;
   },
 ) {
   const workspace = useWorkspaceAddrFromRouter();
@@ -100,7 +101,7 @@ function PostDetails(
         />
       </>
       : <AuthorLabel
-        className="text-gray-800 font-bold"
+        className="text-gray-800 dark:text-gray-200 font-bold"
         address={post.doc.author}
       />}
     <span className="flex-initial whitespace-nowrap">
@@ -108,10 +109,19 @@ function PostDetails(
     </span>
     {isOwnPost
       ? <button
-        className={isEditing ? "text-red-600" : "text-blue-500"}
+        className={isEditing ? "text-purple-600" : "text-blue-500"}
         onClick={onEdit}
       >
         {isEditing ? "Cancel edit" : "Edit"}
+      </button>
+      : null}
+
+    {isOwnPost && post.doc.content.length > 0
+      ? <button
+        className={"text-red-900 dark:text-red-200"}
+        onClick={onDelete}
+      >
+        Delete
       </button>
       : null}
     <div className="flex-grow pl-5 text-right">
@@ -191,6 +201,15 @@ function ThreadRootView({ root }: { root: ThreadRoot }) {
       onEdit={() => setIsEditing((prev) => !prev)}
       post={root}
       threadId={root.id}
+      onDelete={() => {
+        const shouldDelete = window.confirm(
+          "Are you sure you want to delete this post?",
+        );
+
+        if (shouldDelete) {
+          letterBoxLayer.editPost(firstPostedTimestamp, "");
+        }
+      }}
     />
     {isEditing
       ? <PostEditForm onEdit={() => setIsEditing(false)} doc={root.doc} />
@@ -217,6 +236,9 @@ function PostView({ post, threadId }: { post: Post; threadId: string }) {
       onEdit={() => setIsEditing((prev) => !prev)}
       post={post}
       threadId={threadId}
+      onDelete={() => {
+        letterBoxLayer.editPost(firstPostedTimestamp, "");
+      }}
     />
     {isEditing
       ? <PostEditForm onEdit={() => setIsEditing(false)} doc={post.doc} />
@@ -225,12 +247,18 @@ function PostView({ post, threadId }: { post: Post; threadId: string }) {
 }
 
 function PostContent({ doc }: { doc: Document }) {
-  const mdMemo = React.useMemo(() => renderMarkdown(doc.content), [
+  const mdMemo = React.useMemo(() => {
+    if (doc.content.length > 0)return renderMarkdown(doc.content);
+    return null;
+  }, [
     doc.content,
   ]);
 
   return <div className="text-sm sm:text-base overflow-hidden">
-    {mdMemo}
+    {mdMemo ||
+      <span className="text-sm text-gray-500 dark:text-gray-400">
+        The author deleted this message.
+      </span>}
   </div>;
 }
 

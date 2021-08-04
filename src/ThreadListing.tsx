@@ -7,7 +7,7 @@ import { useWorkspaceAddrFromRouter } from "./WorkspaceLookup";
 
 function SpaceBar() {
   const workspace = useWorkspaceAddrFromRouter();
-  const [currentAuthor] = useCurrentAuthor()
+  const [currentAuthor] = useCurrentAuthor();
 
   return <div
     className="flex py-2 px-3 pl-6 bg-white dark:bg-black border-b shadow-sm justify-end sticky top-0 z-50 items-baseline dark:text-white dark:border-gray-800"
@@ -17,9 +17,11 @@ function SpaceBar() {
       className="flex-grow font-bold text-xl"
       address={workspace}
     />
-    { currentAuthor ?<Link className="p-1.5 bg-blue-800 text-white rounded" to="post">
-      New Thread
-    </Link> : null}
+    {currentAuthor
+      ? <Link className="p-1.5 bg-blue-800 text-white rounded" to="post">
+        New Thread
+      </Link>
+      : null}
   </div>;
 }
 
