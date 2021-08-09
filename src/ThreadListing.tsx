@@ -5,30 +5,51 @@ import { useLetterboxLayer } from "./letterbox-layer";
 import ThreadItem from "./ThreadRootItem";
 import { useWorkspaceAddrFromRouter } from "./WorkspaceLookup";
 
-function SpaceBar() {
+function SpaceBar(
+  props: { onlyUnread: boolean; setOnlyUnread: (newVal: boolean) => void },
+) {
   const workspace = useWorkspaceAddrFromRouter();
   const [currentAuthor] = useCurrentAuthor();
 
   return <div
-    className="flex py-2 px-3 pl-6 bg-white dark:bg-black border-b shadow-sm justify-end sticky top-0 z-50 items-baseline dark:text-white dark:border-gray-800"
+    className="flex flex-col py-2 px-3 pl-6 bg-white dark:bg-black border-b shadow-sm justify-end sticky top-0 z-50 items-baseline dark:text-white dark:border-gray-800"
   >
-    <Link className="lg:hidden mr-2 text-blue-500 text-xl" to="/">⬅</Link>
-    <WorkspaceLabel
-      className="flex-grow font-bold text-xl"
-      address={workspace}
-    />
-    {currentAuthor
-      ? <Link className="p-1.5 bg-blue-800 text-white rounded" to="post">
-        New Thread
-      </Link>
-      : null}
+    <div className="flex justify-between items-baseline self-stretch">
+      <Link className="lg:hidden mr-2 text-blue-500 text-xl" to="/">⬅</Link>
+      <WorkspaceLabel
+        className="flex-grow font-bold text-xl"
+        address={workspace}
+      />
+
+      {currentAuthor
+        ? <Link className="p-1.5 bg-blue-800 text-white rounded" to="post">
+          New Thread
+        </Link>
+        : null}
+    </div>
+    <label className="text-gray-500 dark:text-gray-300 self-end mt-1 text-sm">
+      <input
+        type="checkbox"
+        checked={props.onlyUnread}
+        onChange={() => {
+          props.setOnlyUnread(!props.onlyUnread);
+        }}
+      />
+      <span className="ml-2">Unread only</span>
+    </label>
   </div>;
 }
 
 export default function ThreadListing() {
   const letterbox = useLetterboxLayer();
 
+  const [onlyUnread, setOnlyUnread] = React.useState<boolean>(false);
+
   const threads = letterbox.getThreads();
+
+  const threadsToUse = onlyUnread
+    ? threads.filter((thread) => letterbox.threadHasUnreadPosts(thread))
+    : threads;
 
   const match = useMatch("/:workspacePath/*");
 
@@ -40,13 +61,13 @@ export default function ThreadListing() {
         isExactlyOnSpacePath ? "block" : "hidden md:block"
       }`}
     >
-      <SpaceBar />
+      <SpaceBar onlyUnread={onlyUnread} setOnlyUnread={setOnlyUnread} />
       {threads.length === 0
         ? <div className="p-1 md:p-3 text-gray-500 text-center">
           No threads have been posted yet.
         </div>
         : <ol>
-          {threads.map((thread) => {
+          {threadsToUse.map((thread) => {
             return <React.Fragment key={thread.root.id}>
               <li>
                 <ThreadItem thread={thread} />
