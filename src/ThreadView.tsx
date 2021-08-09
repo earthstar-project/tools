@@ -248,7 +248,7 @@ function PostView({ post, threadId }: { post: Post; threadId: string }) {
 
 function PostContent({ doc }: { doc: Document }) {
   const mdMemo = React.useMemo(() => {
-    if (doc.content.length > 0)return renderMarkdown(doc.content);
+    if (doc.content.length > 0) return renderMarkdown(doc.content);
     return null;
   }, [
     doc.content,
