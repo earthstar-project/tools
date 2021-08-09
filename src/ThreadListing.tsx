@@ -1,8 +1,8 @@
 import * as React from "react";
 import { useCurrentAuthor, WorkspaceLabel } from "react-earthstar";
 import { Link, Outlet, useMatch } from "react-router-dom";
-import { useLetterboxLayer } from "./letterbox-layer";
 import ThreadItem from "./ThreadRootItem";
+import { useLetterboxLayer } from "./util/use-letterbox-layer";
 import { useWorkspaceAddrFromRouter } from "./WorkspaceLookup";
 
 function SpaceBar(

@@ -2,18 +2,18 @@ import * as React from "react";
 import { Document, isErr } from "earthstar";
 import { Link, Outlet, useMatch, useParams } from "react-router-dom";
 import LetterboxLayer, {
-  getDocPublishedTimestamp,
+
   Post,
   Thread,
   ThreadRoot,
-  useLetterboxLayer,
-} from "./letterbox-layer";
+} from "@earthstar-project/rich-threads-layer";
 import { formatDistanceToNow } from "date-fns";
 import { AuthorLabel, useCurrentAuthor, useStorage } from "react-earthstar";
 import { renderMarkdown } from "./util/markdown";
 import ThreadTitle from "./ThreadTitle";
 import MarkdownPreview from "./MarkdownPreview";
 import { useWorkspaceAddrFromRouter } from "./WorkspaceLookup";
+import { useLetterboxLayer } from "./util/use-letterbox-layer";
 
 function ThreadBar({ thread }: { thread: Thread }) {
   const match = useMatch("/:lookup/*");
@@ -24,7 +24,7 @@ function ThreadBar({ thread }: { thread: Thread }) {
 
   const lastThreadItem = letterboxLayer.lastThreadItem(thread);
 
-  const lastItemTimestamp = getDocPublishedTimestamp(lastThreadItem.doc);
+  const lastItemTimestamp = letterboxLayer.getDocPublishedTimestamp(lastThreadItem.doc);
 
   const mostRecentIsUnread = lastThreadItem
     ? letterboxLayer.isUnread(
@@ -76,7 +76,7 @@ function PostDetails(
 
   const letterboxLayer = new LetterboxLayer(storage, currentAuthor);
 
-  const firstPostedTimestamp = getDocPublishedTimestamp(post.doc);
+  const firstPostedTimestamp = letterboxLayer.getDocPublishedTimestamp(post.doc);
   const isUnread = letterboxLayer.isUnread(threadId, firstPostedTimestamp);
 
   const isOwnPost = currentAuthor?.address === post.doc.author;
@@ -153,7 +153,7 @@ function PostEditForm(
 
   const letterboxLayer = useLetterboxLayer();
 
-  const publishedTimestamp = getDocPublishedTimestamp(doc);
+  const publishedTimestamp = letterboxLayer.getDocPublishedTimestamp(doc);
 
   return <form
     className="flex flex-col mt-3"
@@ -183,9 +183,9 @@ function PostEditForm(
 }
 
 function ThreadRootView({ root }: { root: ThreadRoot }) {
-  const letterBoxLayer = useLetterboxLayer();
-  const firstPostedTimestamp = getDocPublishedTimestamp(root.doc);
-  const isUnread = letterBoxLayer.isUnread(root.id, firstPostedTimestamp);
+  const letterboxLayer = useLetterboxLayer();
+  const firstPostedTimestamp = letterboxLayer.getDocPublishedTimestamp(root.doc);
+  const isUnread = letterboxLayer.isUnread(root.id, firstPostedTimestamp);
 
   const [isEditing, setIsEditing] = React.useState(false);
 
@@ -207,7 +207,7 @@ function ThreadRootView({ root }: { root: ThreadRoot }) {
         );
 
         if (shouldDelete) {
-          letterBoxLayer.editPost(firstPostedTimestamp, "");
+          letterboxLayer.editPost(firstPostedTimestamp, "");
         }
       }}
     />
@@ -218,9 +218,9 @@ function ThreadRootView({ root }: { root: ThreadRoot }) {
 }
 
 function PostView({ post, threadId }: { post: Post; threadId: string }) {
-  const letterBoxLayer = useLetterboxLayer();
-  const firstPostedTimestamp = getDocPublishedTimestamp(post.doc);
-  const isUnread = letterBoxLayer.isUnread(threadId, firstPostedTimestamp);
+  const letterboxLayer = useLetterboxLayer();
+  const firstPostedTimestamp = letterboxLayer.getDocPublishedTimestamp(post.doc);
+  const isUnread = letterboxLayer.isUnread(threadId, firstPostedTimestamp);
 
   const [isEditing, setIsEditing] = React.useState(false);
 
@@ -237,7 +237,7 @@ function PostView({ post, threadId }: { post: Post; threadId: string }) {
       post={post}
       threadId={threadId}
       onDelete={() => {
-        letterBoxLayer.editPost(firstPostedTimestamp, "");
+        letterboxLayer.editPost(firstPostedTimestamp, "");
       }}
     />
     {isEditing

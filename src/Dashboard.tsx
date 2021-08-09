@@ -6,7 +6,7 @@ import {
   WorkspaceLabel,
 } from "react-earthstar";
 import { Link, Outlet, useMatch } from "react-router-dom";
-import LetterboxLayer from "./letterbox-layer";
+import LetterboxLayer from "@earthstar-project/rich-threads-layer";
 import { PathWorkspaceLookupContext } from "./WorkspaceLookup";
 
 function WorkspaceSection({ workspace }: { workspace: string }) {

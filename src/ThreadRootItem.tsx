@@ -1,9 +1,10 @@
+import { Thread } from "@earthstar-project/rich-threads-layer";
 import * as React from "react";
-import { Thread, ThreadRoot, useLetterboxLayer } from "./letterbox-layer";
 import { AuthorLabel } from "react-earthstar";
 import { Link, useMatch } from "react-router-dom";
 import ThreadTitle from "./ThreadTitle";
 import { renderMarkdownPreview } from "./util/markdown";
+import { useLetterboxLayer } from "./util/use-letterbox-layer";
 import { PathWorkspaceLookupContext } from "./WorkspaceLookup";
 
 export default function ThreadItem({ thread }: { thread: Thread }) {

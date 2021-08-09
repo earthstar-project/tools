@@ -3,9 +3,9 @@ import * as React from "react";
 import { useCurrentAuthor } from "react-earthstar";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDebounce, useDebouncedCallback } from "use-debounce";
-import { useLetterboxLayer } from "./letterbox-layer";
 import MarkdownPreview from "./MarkdownPreview";
 import { renderMarkdownPreview } from "./util/markdown";
+import { useLetterboxLayer } from "./util/use-letterbox-layer";
 
 function NewThreadBar() {
   const { workspaceLookup } = useParams();

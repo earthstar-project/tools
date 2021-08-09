@@ -3,8 +3,8 @@ import * as React from "react";
 import { useCurrentAuthor } from "react-earthstar";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDebouncedCallback } from "use-debounce";
-import { useLetterboxLayer } from "./letterbox-layer";
 import MarkdownPreview from "./MarkdownPreview";
+import { useLetterboxLayer } from "./util/use-letterbox-layer";
 
 export default function ThreadReplyForm() {
   const { authorPubKey, timestamp } = useParams();
