@@ -8,12 +8,13 @@ import { useLetterboxLayer } from "./util/use-letterbox-layer";
 
 export default function ThreadReplyForm() {
   const { authorPubKey, timestamp } = useParams();
-  const threadId = `${authorPubKey}/${timestamp}`;
+  
+  const timestampInt = parseInt(timestamp)
 
   const [currentAuthor] = useCurrentAuthor();
   const letterboxLayer = useLetterboxLayer();
   const [replyText, setReplyText] = React.useState(
-    letterboxLayer.getReplyDraft(threadId) || "",
+    letterboxLayer.getReplyDraft(timestampInt, authorPubKey) || "",
   );
   const navigate = useNavigate();
   const [didSaveDraft, setDidSaveDraft] = React.useState(false);
@@ -26,7 +27,7 @@ export default function ThreadReplyForm() {
   }, []);
 
   const writeDraft = useDebouncedCallback((content) => {
-    letterboxLayer.setReplyDraft(threadId, content);
+    letterboxLayer.setReplyDraft(timestampInt, authorPubKey, content);
 
     setDidSaveDraft(true);
   }, 1000);
@@ -38,14 +39,15 @@ export default function ThreadReplyForm() {
       e.preventDefault();
 
       const result = letterboxLayer.createReply(
-        threadId,
+        timestampInt,
+        authorPubKey,
         replyText,
       );
 
       if (isErr(result)) {
         alert("Something went wrong with creating this reply.");
       } else {
-        letterboxLayer.clearReplyDraft(threadId);
+        letterboxLayer.clearReplyDraft(timestampInt, authorPubKey);
       }
 
       navigate("..");

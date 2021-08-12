@@ -68,7 +68,7 @@ export default function ThreadListing() {
         </div>
         : <ol>
           {threadsToUse.map((thread) => {
-            return <React.Fragment key={thread.root.id}>
+            return <React.Fragment key={thread.root.doc.path}>
               <li>
                 <ThreadItem thread={thread} />
               </li>

@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@craco/craco": "^6.2.0",
-    "@earthstar-project/rich-threads-layer": "^0.1.1",
+    "@earthstar-project/rich-threads-layer": "^1.2.0",
     "@reach/combobox": "^0.16.1",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
