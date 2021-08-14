@@ -1,8 +1,8 @@
 import * as React from "react";
 import { useCurrentAuthor, WorkspaceLabel } from "react-earthstar";
 import { Link, Outlet, useMatch } from "react-router-dom";
-import { useLetterboxLayer } from "./letterbox-layer";
 import ThreadItem from "./ThreadRootItem";
+import { useLetterboxLayer } from "./util/use-letterbox-layer";
 import { useWorkspaceAddrFromRouter } from "./WorkspaceLookup";
 
 function SpaceBar(
@@ -68,7 +68,7 @@ export default function ThreadListing() {
         </div>
         : <ol>
           {threadsToUse.map((thread) => {
-            return <React.Fragment key={thread.root.id}>
+            return <React.Fragment key={thread.root.doc.path}>
               <li>
                 <ThreadItem thread={thread} />
               </li>

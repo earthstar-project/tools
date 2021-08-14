@@ -3,9 +3,9 @@ import * as React from "react";
 import { useCurrentAuthor } from "react-earthstar";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDebounce, useDebouncedCallback } from "use-debounce";
-import { useLetterboxLayer } from "./letterbox-layer";
 import MarkdownPreview from "./MarkdownPreview";
 import { renderMarkdownPreview } from "./util/markdown";
+import { useLetterboxLayer } from "./util/use-letterbox-layer";
 
 function NewThreadBar() {
   const { workspaceLookup } = useParams();
@@ -49,8 +49,6 @@ export default function NewThreadForm() {
       return;
     }
 
-    console.log();
-
     setTitle(defaults?.title);
     setPostVal(defaults?.content);
   }, [currentDraftId, defaults?.title, defaults?.content]);
@@ -66,14 +64,12 @@ export default function NewThreadForm() {
       return;
     }
 
-    console.log({ content });
-
     const newDraftId = letterboxLayer.setThreadRootDraft(
       content,
       currentDraftId,
     );
 
-    if (!isErr(newDraftId)) {
+    if (!isErr(newDraftId)) {      
       setCurrentDraftId(newDraftId);
       setDidSaveDraft(true);
     }
@@ -107,8 +103,12 @@ export default function NewThreadForm() {
         if (currentDraftId) {
           letterboxLayer.clearThreadRootDraft(currentDraftId);
         }
+        
+        const author = res.root.doc.author;
+        const timestamp = letterboxLayer.getThreadRootTimestamp(res.root.doc);
+        const id = `${author}/${timestamp}`;
 
-        navigate(`/${workspaceLookup}/thread/${res.id}`);
+        navigate(`/${workspaceLookup}/thread/${id}`);
       }}
     >
       <input

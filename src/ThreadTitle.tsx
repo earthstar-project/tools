@@ -1,4 +1,6 @@
-import { Thread, useLetterboxLayer } from "./letterbox-layer";
+import { Thread } from "@earthstar-project/rich-threads-layer";
+import { useLetterboxLayer } from "./util/use-letterbox-layer";
+
 
 export default function ThreadTitle(
   { thread, workspace }: { thread: Thread; workspace?: string },

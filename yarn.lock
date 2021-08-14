@@ -1480,6 +1480,14 @@
   resolved "https://registry.yarnpkg.com/@csstools/normalize.css/-/normalize.css-10.1.0.tgz#f0950bba18819512d42f7197e56c518aa491cf18"
   integrity sha512-ij4wRiunFfaJxjB0BdrYHIH8FxBJpOwNPhhAcunlmPdXudL1WQV1qoP9un6JsEBAgQH+7UXyyjh0g7jTxXK6tg==
 
+"@earthstar-project/rich-threads-layer@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@earthstar-project/rich-threads-layer/-/rich-threads-layer-1.2.0.tgz#50216d2a03560948e51a703592a260eabb369123"
+  integrity sha512-fcqMPADTVbMeWDz1YXgAZdwwZCwo8dBdyaySf6zbKzUfLybTIEFB8wbwQ05/MJDFmfdhR9HhizFPYg0yRnPqPw==
+  dependencies:
+    earthstar "^6.8.5"
+    earthstar-graph-db "^2.0.0"
+
 "@eslint/eslintrc@^0.4.3":
   version "0.4.3"
   resolved "https://registry.yarnpkg.com/@eslint/eslintrc/-/eslintrc-0.4.3.tgz#9e42981ef035beb3dd49add17acb96e8ff6f394c"

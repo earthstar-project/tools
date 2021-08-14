@@ -1,9 +1,11 @@
+import { Thread } from "@earthstar-project/rich-threads-layer";
 import * as React from "react";
-import { Thread, ThreadRoot, useLetterboxLayer } from "./letterbox-layer";
 import { AuthorLabel } from "react-earthstar";
 import { Link, useMatch } from "react-router-dom";
 import ThreadTitle from "./ThreadTitle";
 import { renderMarkdownPreview } from "./util/markdown";
+import { useLetterboxLayer } from "./util/use-letterbox-layer";
+import useThreadId from "./util/use-thread-id";
 import { PathWorkspaceLookupContext } from "./WorkspaceLookup";
 
 export default function ThreadItem({ thread }: { thread: Thread }) {
@@ -15,7 +17,9 @@ export default function ThreadItem({ thread }: { thread: Thread }) {
   const match = useMatch("/:workspace/thread/:pubKey/:timestamp/*");
 
   const isActive =
-    thread.root.id === `${match?.params.pubKey}/${match?.params.timestamp}`;
+    thread.root.doc.author === match?.params.pubKey && letterboxLayer.getThreadRootTimestamp(thread.root.doc) === parseInt(match?.params.timestamp);
+    
+  const id = useThreadId(thread)
 
   const markdownMemo = React.useMemo(
     () => renderMarkdownPreview(lastThreadItem.doc.content),
@@ -35,7 +39,7 @@ export default function ThreadItem({ thread }: { thread: Thread }) {
       className={"flex items-center gap-2"}
       to={`/${
         lookup.addrsToPaths[thread.root.doc.workspace]
-      }/thread/${thread.root.id}`}
+      }/thread/${id}`}
     >
       <div
         className={hasUnreadPosts
