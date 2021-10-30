@@ -8,7 +8,7 @@ import {
 import { isErr, ValidatorEs4 } from "earthstar";
 import * as React from "react";
 import { useAddWorkspace, usePubs, WorkspaceLabel } from "react-earthstar";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import BrowserPocketIcon from "./images/browser-pocket.svg";
 import CloudPocketIcon from "./images/cloud-pocket.svg";
 import PocketDesc from "./PocketDesc";
@@ -67,6 +67,8 @@ export function WorkspaceCreatorForm({
   );
 
   const [pubToAdd, setPubToAdd] = React.useState("");
+  
+  const navigate = useNavigate()
 
   return (
     <>
@@ -76,6 +78,7 @@ export function WorkspaceCreatorForm({
           e.preventDefault();
 
           add(address);
+           
           setWorkspaceName("");
           setWorkspaceSuffix(generateSuffix());
 
@@ -89,6 +92,8 @@ export function WorkspaceCreatorForm({
           if (onCreate) {
             onCreate(address);
           }
+          
+          navigate(`/${workspaceName}`)
         }}
       >
         <p>
@@ -191,7 +196,7 @@ export function WorkspaceCreatorForm({
               onSelect={(item) => setAddedPubs((prev) => [...prev, item])}
             >
               <ComboboxInput
-                className="p-1 w-full"
+                className="w-full border mb-2 p-2 shadow-inner p-1 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
                 selectOnClick
                 value={pubToAdd}
                 onChange={(e) => setPubToAdd(e.target.value)}

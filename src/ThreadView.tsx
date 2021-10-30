@@ -16,7 +16,7 @@ import { useLetterboxLayer } from "./util/use-letterbox-layer";
 
 function ThreadBar({ thread }: { thread: Thread }) {
 
-  const { lookup, authorPubKey, timestamp } = useParams();
+  const { workspaceLookup, authorPubKey, timestamp } = useParams();
 
   
 
@@ -30,7 +30,7 @@ function ThreadBar({ thread }: { thread: Thread }) {
     )
     : true;
     
-   console.log(lastThreadItem) 
+   
     
   const lastItemTimestamp = letterboxLayer.getPostTimestamp(lastThreadItem.doc)
 
@@ -40,7 +40,7 @@ function ThreadBar({ thread }: { thread: Thread }) {
     <div className="flex">
       <Link
         className="md:hidden mr-2 text-blue-500 text-xl"
-        to={`/${lookup}` || "/"}
+        to={`/${workspaceLookup}` || "/"}
       >
         ⬅
       </Link>
@@ -64,7 +64,6 @@ function ThreadBar({ thread }: { thread: Thread }) {
 function PostDetails(
   { post, onEdit, isEditing, onDelete }: {
     post: Post;
-
     onEdit: () => void;
     isEditing: boolean;
     onDelete: () => void;
@@ -78,7 +77,7 @@ function PostDetails(
   const letterboxLayer = new LetterboxLayer(storage, currentAuthor);
 
   const firstPostedTimestamp = letterboxLayer.getPostTimestamp(post.doc);
-  const { lookup, authorPubKey, timestamp } = useParams();
+  const { authorPubKey, timestamp } = useParams();
   
   const isUnread = letterboxLayer.isUnread(post);
 
@@ -266,8 +265,9 @@ export default function ThreadView() {
 
   const letterboxLayer = useLetterboxLayer();
 
-  
+  console.group('🧵 ThreadView');
   const thread = letterboxLayer.getThread(parseInt(timestamp), authorPubKey);
+  console.groupEnd()
 
   const match = useMatch("/:workspace/thread/:pubKey/:timestamp/reply");
 

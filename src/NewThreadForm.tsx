@@ -77,7 +77,7 @@ export default function NewThreadForm() {
 
   React.useEffect(() => {
     onContentChange(combinedContent);
-  }, [combinedContent]);
+  }, [combinedContent, onContentChange]);
 
   const formRef = React.useRef<HTMLFormElement | null>(null);
 
