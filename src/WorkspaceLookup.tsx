@@ -59,5 +59,5 @@ export function useWorkspaceAddrFromRouter() {
   const { workspaceLookup } = useParams();
   const lookup = React.useContext(PathWorkspaceLookupContext);
 
-  return lookup.pathsToAddrs[workspaceLookup];
+  return lookup.pathsToAddrs[workspaceLookup || ''];
 }

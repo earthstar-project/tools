@@ -30,16 +30,14 @@ function App() {
           return new StorageLocalStorage([ValidatorEs4], addr);
         }}
       >
-        <div
-          className="flex flex-col h-screen bg-white dark:bg-black dark:text-white"
-        >
+        <div className="flex flex-col h-screen bg-white dark:bg-black dark:text-white">
           <Earthbar>
             <Spacer />
             <AuthorTab />
           </Earthbar>
           <WorkspaceLookup>
             <Routes>
-              <Route element={<Dashboard />}>
+              <Route path={"/"} element={<Dashboard />}>
                 <Route
                   path={":workspaceLookup/*"}
                   element={<WorkspaceRoutes />}
