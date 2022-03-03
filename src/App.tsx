@@ -1,15 +1,10 @@
-import { StorageLocalStorage, ValidatorEs4 } from "earthstar";
+import { Replica, FormatValidatorEs4 } from "earthstar";
+import { ReplicaDriverIndexedDB } from 'earthstar/browser'
 import {
-  AuthorTab,
-  Earthbar,
-  EarthstarPeer,
+  Peer,
   LocalStorageSettingsWriter,
-  MultiWorkspaceTab,
-  Spacer,
   useLocalStorageEarthstarSettings,
 } from "react-earthstar";
-import "react-earthstar/styles/layout.css";
-import "react-earthstar/styles/junior.css";
 import WorkspaceRoutes from "./WorkspaceRoutes";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import WorkspaceLookup from "./WorkspaceLookup";
@@ -24,17 +19,15 @@ function App() {
 
   return (
     <Router>
-      <EarthstarPeer
+      <Peer
         {...settings}
-        onCreateWorkspace={(addr) => {
-          return new StorageLocalStorage([ValidatorEs4], addr);
+        onCreateShare={(addr) => {
+          return new Replica(addr, FormatValidatorEs4, new ReplicaDriverIndexedDB(addr))
+          
         }}
       >
         <div className="flex flex-col h-screen bg-white dark:bg-black dark:text-white">
-          <Earthbar>
-            <Spacer />
-            <AuthorTab />
-          </Earthbar>
+          
           <WorkspaceLookup>
             <Routes>
               <Route path={"/"} element={<Dashboard />}>
@@ -49,7 +42,7 @@ function App() {
           </WorkspaceLookup>
           <LocalStorageSettingsWriter storageKey={STORAGE_KEY} />
         </div>
-      </EarthstarPeer>
+      </Peer>
     </Router>
   );
 }

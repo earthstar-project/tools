@@ -1,19 +1,19 @@
 import * as React from "react";
 import {
-  useCurrentAuthor,
-  useStorage,
-  useWorkspaces,
-  WorkspaceLabel,
+  useCurrentIdentity,
+  useReplica,
+  usePeer,
+  ShareLabel
 } from "react-earthstar";
 import { Link, Outlet, useMatch } from "react-router-dom";
-import LetterboxLayer from "@earthstar-project/rich-threads-layer";
+import { LetterboxLayerCache} from "@earthstar-project/rich-threads-layer";
 import { PathWorkspaceLookupContext } from "./WorkspaceLookup";
 
 function WorkspaceSection({ workspace }: { workspace: string }) {
-  const storage = useStorage(workspace);
-  const [currentAuthor] = useCurrentAuthor();
+  const replica = useReplica(workspace);
+  const [currentAuthor] = useCurrentIdentity();
 
-  const layer = new LetterboxLayer(storage, currentAuthor);
+  const layer = new LetterboxLayerCache(replica, currentAuthor);
 
   const unreadThreadRoots = layer
     .getThreads()
@@ -42,7 +42,7 @@ function WorkspaceSection({ workspace }: { workspace: string }) {
         className="flex flex-grow items-baseline justify-between p-2 pr-0"
       >
         <h2>
-          <WorkspaceLabel address={workspace} />
+          <ShareLabel address={workspace} />
         </h2>
         <div className="flex items-baseline space-x-1">
           {unreadThreadRoots.length ? (
@@ -58,7 +58,8 @@ function WorkspaceSection({ workspace }: { workspace: string }) {
 }
 
 export default function Dashboard() {
-  const workspaces = useWorkspaces();
+  const peer = usePeer();
+  const shares = peer.shares();
 
   // if size is less than lg AND path is not '/' this should be hidden.
 
@@ -87,7 +88,7 @@ export default function Dashboard() {
             : "hidden lg:block"
         }`}
       >
-        {workspaces.map((addr) => (
+        {shares.map((addr) => (
           <React.Fragment key={addr}>
             <li>
               <WorkspaceSection workspace={addr} />

@@ -1,10 +1,10 @@
-import { ValidatorEs4, WorkspaceAddress, WorkspaceParsed } from "earthstar";
+import { ShareAddress, ParsedAddress, parseShareAddress } from "earthstar";
 import * as React from "react";
-import { useWorkspaces } from "react-earthstar";
+import { usePeer } from "react-earthstar";
 import { useParams } from "react-router-dom";
 
-type PathToWorkspaceLookup = Record<string, WorkspaceAddress>;
-type WorkspaceToPathLookup = Record<WorkspaceAddress, string>;
+type PathToWorkspaceLookup = Record<string, ShareAddress>;
+type WorkspaceToPathLookup = Record<ShareAddress, string>;
 type Lookup = {
   pathsToAddrs: PathToWorkspaceLookup;
   addrsToPaths: WorkspaceToPathLookup;
@@ -18,12 +18,13 @@ export const PathWorkspaceLookupContext = React.createContext<Lookup>({
 export default function WorkspaceLookup(
   { children }: { children: React.ReactNode },
 ) {
-  const workspaces = useWorkspaces();
+  const peer = usePeer();
+  const shares = peer.shares();
 
-  const pathsToAddrs = workspaces.reduce((lookup, workspaceAddr) => {
-    const { name } = ValidatorEs4.parseWorkspaceAddress(
+  const pathsToAddrs = shares.reduce((lookup, workspaceAddr) => {
+    const { name } = parseShareAddress(
       workspaceAddr,
-    ) as WorkspaceParsed;
+    ) as ParsedAddress;
 
     if (lookup[name]) {
       return {

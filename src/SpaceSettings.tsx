@@ -2,13 +2,12 @@ import * as React from "react";
 import {
   useMakeInvitation,
   usePubs,
-  useRemoveWorkspace,
-  useWorkspacePubs,
-  WorkspaceLabel,
-  useStorage,
-  useCurrentAuthor,
+  ShareLabel,
+  useReplica,
+  useCurrentIdentity,
+  usePeer
 } from "react-earthstar";
-import { AuthorParsed, ValidatorEs4 } from "earthstar";
+import { ParsedAddress, parseAuthorAddress } from "earthstar";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Combobox,
@@ -63,7 +62,7 @@ function SpaceSettingsBar() {
         ⬅
       </Link>
       <p className="flex-grow font-bold text-xl">
-        Settings for <WorkspaceLabel address={workspace} />
+        Settings for <ShareLabel address={workspace} />
       </p>
     </div>
   );
@@ -79,9 +78,11 @@ export default function SpaceSettings() {
     window.location.port !== "" ? `:${window.location.port}` : ""
   }/join/${invitationCode}`;
 
-  const remove = useRemoveWorkspace();
+  const peer = usePeer()
 
-  const [currentAuthor] = useCurrentAuthor();
+  
+
+  const [currentAuthor] = useCurrentIdentity();
 
   const navigate = useNavigate();
 
@@ -97,15 +98,6 @@ export default function SpaceSettings() {
           </>
         ) : null}
 
-        <h2 className="font-bold text-xl">Cloud pockets</h2>
-
-        <p>
-          For your posts to reach others — and for theirs to reach you — you'll
-          need the URLs of cloud pockets to sync with.
-        </p>
-
-        <PocketEditor />
-
         <p>
           Want to run your own cloud pocket for you and your friends?{" "}
           <a
@@ -119,7 +111,7 @@ export default function SpaceSettings() {
         <hr />
 
         <h2 className="font-bold text-xl">
-          Invite someone to <WorkspaceLabel address={inferredWorkspace} />
+          Invite someone to <ShareLabel address={inferredWorkspace} />
         </h2>
         <p className="max-w-prose">
           If you'd like to invite someone you trust to this space, you can share
@@ -142,7 +134,7 @@ export default function SpaceSettings() {
             );
 
             if (isSure) {
-              remove(inferredWorkspace);
+              peer.removeReplicaByShare(inferredWorkspace);
               navigate("/");
             }
           }}
@@ -154,6 +146,7 @@ export default function SpaceSettings() {
   );
 }
 
+/*
 function PocketEditor() {
   const inferredWorkspace = useWorkspaceAddrFromRouter();
   const [pubs, setPubs] = useWorkspacePubs(inferredWorkspace);
@@ -253,15 +246,16 @@ function PocketEditor() {
     </div>
   );
 }
+*/
 
 function DisplayNameForm() {
-  const [currentAuthor] = useCurrentAuthor();
+  const [currentAuthor] = useCurrentIdentity();
   const inferredWorkspace = useWorkspaceAddrFromRouter();
-  const storage = useStorage(inferredWorkspace);
+  const replica = useReplica(inferredWorkspace);
 
   const displayNamePath = `/about/~${currentAuthor?.address}/displayName.txt`;
 
-  const displayNameDoc = storage?.getDocument(displayNamePath);
+  const displayNameDoc = replica.getLatestDocAtPath(displayNamePath);
 
   const [newDisplayName, setNewDisplayName] = React.useState("");
 
@@ -276,7 +270,7 @@ function DisplayNameForm() {
         e.preventDefault();
         setNewDisplayName("");
 
-        storage?.set(currentAuthor, {
+        replica?.set(currentAuthor, {
           format: "es.4",
           content: newDisplayName,
           path: displayNamePath,
@@ -290,10 +284,10 @@ function DisplayNameForm() {
         placeholder={
           displayNameDoc?.content ||
           (
-            ValidatorEs4.parseAuthorAddress(
+            parseAuthorAddress(
               currentAuthor.address
-            ) as AuthorParsed
-          ).shortname
+            ) as ParsedAddress
+          ).name
         }
       />
       <button className="btn whitespace-nowrap" type={"submit"}>

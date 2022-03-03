@@ -5,9 +5,9 @@ import {
   ComboboxOption,
   ComboboxPopover,
 } from "@reach/combobox";
-import { isErr, ValidatorEs4 } from "earthstar";
+import { isErr, checkShareIsValid } from "earthstar";
 import * as React from "react";
-import { useAddWorkspace, usePubs, WorkspaceLabel } from "react-earthstar";
+import { usePubs, ShareLabel, useAddShare } from "react-earthstar";
 import { Link, useNavigate } from "react-router-dom";
 import BrowserPocketIcon from "./images/browser-pocket.svg";
 import CloudPocketIcon from "./images/cloud-pocket.svg";
@@ -52,12 +52,11 @@ export function WorkspaceCreatorForm({
   onCreate?: (workspace: string) => void;
 }) {
   const [pubs, setPubs] = usePubs();
-  const add = useAddWorkspace();
 
-  const [workspaceName, setWorkspaceName] = React.useState("");
-  const [workspaceSuffix, setWorkspaceSuffix] = React.useState(generateSuffix);
-  const address = `+${workspaceName}.${workspaceSuffix}`;
-  const validResult = ValidatorEs4._checkWorkspaceIsValid(address);
+  const [shareName, setShareName] = React.useState("");
+  const [shareSuffix, setShareSuffix] = React.useState(generateSuffix);
+  const address = `+${shareName}.${shareSuffix}`;
+  const validResult = checkShareIsValid(address);
   const isValid = !isErr(validResult);
 
   const allPubs = Array.from(new Set(Object.values(pubs).flat()));
@@ -70,6 +69,8 @@ export function WorkspaceCreatorForm({
   
   const navigate = useNavigate()
 
+  const add = useAddShare()
+
   return (
     <>
       <form
@@ -79,8 +80,8 @@ export function WorkspaceCreatorForm({
 
           add(address);
            
-          setWorkspaceName("");
-          setWorkspaceSuffix(generateSuffix());
+          setShareName("");
+          setShareSuffix(generateSuffix());
 
           setPubs((prev) => ({
             ...prev,
@@ -93,7 +94,7 @@ export function WorkspaceCreatorForm({
             onCreate(address);
           }
           
-          navigate(`/${workspaceName}`)
+          navigate(`/${shareName}`)
         }}
       >
         <p>
@@ -120,20 +121,20 @@ export function WorkspaceCreatorForm({
                   <span>{"+"}</span>
                   <input
                     className="p-1  w-32 bg-gray-800 text-white"
-                    value={workspaceName}
-                    onChange={(e) => setWorkspaceName(e.target.value)}
+                    value={shareName}
+                    onChange={(e) => setShareName(e.target.value)}
                     placeholder={"myspace"}
                   />
                   <span>{"."}</span>
                   <input
                     className="p-1  w-32 bg-gray-800 text-white"
-                    value={workspaceSuffix}
-                    onChange={(e) => setWorkspaceSuffix(e.target.value)}
+                    value={shareSuffix}
+                    onChange={(e) => setShareSuffix(e.target.value)}
                   />
                   <button
                     onClick={(e) => {
                       e.preventDefault();
-                      setWorkspaceSuffix(generateSuffix());
+                      setShareSuffix(generateSuffix());
                     }}
                   >
                     {"↻"}
@@ -143,7 +144,7 @@ export function WorkspaceCreatorForm({
             </div>
           </div>
 
-          {isErr(validResult) && workspaceName.length > 0
+          {isErr(validResult) && shareName.length > 0
             ? (
               <p className="text-red-600 text-sm my-1">{validResult.message}</p>
             )
@@ -193,14 +194,14 @@ export function WorkspaceCreatorForm({
             <Combobox
               className="inline-block rounded-lg flex-grow"
               openOnFocus
-              onSelect={(item) => setAddedPubs((prev) => [...prev, item])}
+              onSelect={(item: string) => setAddedPubs((prev) => [...prev, item])}
             >
               <ComboboxInput
                 className="w-full border mb-2 p-2 shadow-inner p-1 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
                 selectOnClick
                 value={pubToAdd}
                 onChange={(e) => setPubToAdd(e.target.value)}
-                placeholder={"https://cloud.pocket"}
+                placeholder={"https://my.server"}
               />
               {selectablePubs.length > 0
                 ? (
@@ -239,7 +240,7 @@ export function WorkspaceCreatorForm({
               disabled={!isValid}
               type={"submit"}
             >
-              Add {<WorkspaceLabel address={address} />}
+              Add {<ShareLabel address={address} />}
             </button>
           )
           : null}

@@ -1,12 +1,13 @@
 import * as React from "react";
-import { Document, isErr } from "earthstar";
+import { Doc, isErr } from "earthstar";
 import { Link, Outlet, useMatch, useParams } from "react-router-dom";
-import LetterboxLayer, {
+import {
+  LetterboxLayerCache,
   Post,
   Thread,
 } from "@earthstar-project/rich-threads-layer";
 import { formatDistanceToNow } from "date-fns";
-import { AuthorLabel, useCurrentAuthor, useStorage } from "react-earthstar";
+import { AuthorLabel, useCurrentIdentity, useReplica } from "react-earthstar";
 import { renderMarkdown } from "./util/markdown";
 import ThreadTitle from "./ThreadTitle";
 import MarkdownPreview from "./MarkdownPreview";
@@ -71,10 +72,10 @@ function PostDetails({
 }) {
   const workspace = useWorkspaceAddrFromRouter();
 
-  const storage = useStorage(workspace);
-  const [currentAuthor] = useCurrentAuthor();
+  const storage = useReplica(workspace);
+  const [currentAuthor] = useCurrentIdentity();
 
-  const letterboxLayer = new LetterboxLayer(storage, currentAuthor);
+  const letterboxLayer = new LetterboxLayerCache(storage, currentAuthor);
 
   const firstPostedTimestamp = letterboxLayer.getPostTimestamp(post.doc);
   const { authorPubKey, timestamp } = useParams();
@@ -83,7 +84,7 @@ function PostDetails({
 
   const isOwnPost = currentAuthor?.address === post.doc.author;
 
-  const authorDisplayName = storage.getContent(
+  const authorDisplayNameDoc = storage.getLatestDocAtPath(
     `/about/~${post.doc.author}/displayName.txt`
   );
 
@@ -93,10 +94,10 @@ function PostDetails({
         "text-gray-500 dark:text-gray-400 flex justify-between items-baseline mb-1 w-full self-stretch overflow-hidden space-x-1 text-sm"
       }
     >
-      {authorDisplayName ? (
+      {authorDisplayNameDoc ? (
         <>
           <span className="font-bold text-gray-800 dark:text-gray-200 truncate flex-shrink min-w-0">
-            {authorDisplayName}
+            {authorDisplayNameDoc.content}
           </span>{" "}
           <AuthorLabel className="font-bold" address={post.doc.author} />
         </>
@@ -250,7 +251,7 @@ function PostView({ post }: { post: Post }) {
   );
 }
 
-function PostContent({ doc }: { doc: Document }) {
+function PostContent({ doc }: { doc: Doc }) {
   const mdMemo = React.useMemo(() => {
     if (doc.content.length > 0) return renderMarkdown(doc.content);
     return null;
@@ -270,7 +271,7 @@ function PostContent({ doc }: { doc: Document }) {
 export default function ThreadView() {
   const { authorPubKey, timestamp } = useParams();
 
-  const [currentAuthor] = useCurrentAuthor();
+  const [currentAuthor] = useCurrentIdentity();
 
   const letterboxLayer = useLetterboxLayer();
 

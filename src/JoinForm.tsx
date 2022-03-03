@@ -1,6 +1,6 @@
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { useInvitation, useWorkspaces, WorkspaceLabel } from "react-earthstar";
-import { isErr, ValidatorEs4, WorkspaceParsed } from "earthstar";
+import { useInvitation, ShareLabel, usePeer } from "react-earthstar";
+import { isErr, FormatValidatorEs4, ParsedAddress, parseShareAddress } from "earthstar";
 import BrowserPocketIcon from "./images/browser-pocket.svg";
 import CloudPocketIcon from "./images/cloud-pocket.svg";
 import PocketDesc from "./PocketDesc";
@@ -11,7 +11,7 @@ function JoinBar({ address }: { address: string }) {
   >
     <Link className="md:hidden mr-2 text-blue-500 text-xl" to="/">⬅</Link>
     <p className="flex-grow font-bold text-xl">
-      Add <WorkspaceLabel address={address} />
+      Add <ShareLabel address={address} />
     </p>
   </div>;
 }
@@ -19,7 +19,8 @@ function JoinBar({ address }: { address: string }) {
 export default function Redeemer() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const workspaces = useWorkspaces();
+  const peer = usePeer();
+  const shares = peer.shares();
 
   const [workspace] = searchParams.getAll("workspace");
   const pubs = searchParams.getAll("pub");
@@ -36,7 +37,7 @@ export default function Redeemer() {
 
   const alreadyHasWorkspace = isErr(result)
     ? false
-    : workspaces.includes(result.workspace);
+    : shares.includes(result.workspace);
 
   return <div className="h-app w-full h-overflow col-auto lg:col-span-2">
     {isErr(result)
@@ -53,9 +54,9 @@ export default function Redeemer() {
           onSubmit={() => {
             result.redeem();
 
-            const { name } = ValidatorEs4.parseWorkspaceAddress(
+            const { name } = parseShareAddress(
               result.workspace,
-            ) as WorkspaceParsed;
+            ) as ParsedAddress;
 
             navigate(`/${name}`);
           }}
@@ -69,7 +70,7 @@ export default function Redeemer() {
               <p>
                 A new pocket to hold{" "}
                 <b>
-                  <WorkspaceLabel address={result.workspace} />
+                  <ShareLabel address={result.workspace} />
                 </b>'s data will be created in your browser.
               </p>
               <div className="flex items-center gap-2">
@@ -112,13 +113,13 @@ export default function Redeemer() {
 
           <p>
             You will then be able to write and view posts made to{" "}
-            <WorkspaceLabel address={result.workspace} />.
+            <ShareLabel address={result.workspace} />.
           </p>
 
           <p>More cloud pockets to sync with can always be added later!</p>
 
           <button type="submit" className="btn">
-            Add <WorkspaceLabel address={result.workspace} />
+            Add <ShareLabel address={result.workspace} />
           </button>
         </form>
       </>}

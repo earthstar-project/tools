@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useCurrentAuthor, WorkspaceLabel } from "react-earthstar";
+import { useCurrentIdentity, ShareLabel } from "react-earthstar";
 import { Link, Outlet, useMatch } from "react-router-dom";
 import ThreadItem from "./ThreadRootItem";
 import { useLetterboxLayer } from "./util/use-letterbox-layer";
@@ -10,7 +10,7 @@ function SpaceBar(props: {
   setOnlyUnread: (newVal: boolean) => void;
 }) {
   const workspace = useWorkspaceAddrFromRouter();
-  const [currentAuthor] = useCurrentAuthor();
+  const [currentAuthor] = useCurrentIdentity();
 
   return (
     <div className="flex flex-col py-2 px-3 pl-6 bg-white dark:bg-black border-b shadow-sm justify-end sticky top-0 z-50 items-baseline dark:text-white dark:border-gray-800">
@@ -18,7 +18,7 @@ function SpaceBar(props: {
         <Link className="lg:hidden mr-2 text-blue-500 text-xl" to="/">
           ⬅
         </Link>
-        <WorkspaceLabel
+        <ShareLabel
           className="flex-grow font-bold text-xl"
           address={workspace}
         />

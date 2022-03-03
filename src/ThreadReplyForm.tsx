@@ -1,6 +1,6 @@
 import { isErr } from "earthstar";
 import * as React from "react";
-import { useCurrentAuthor } from "react-earthstar";
+import { useCurrentIdentity } from "react-earthstar";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDebouncedCallback } from "use-debounce";
 import MarkdownPreview from "./MarkdownPreview";
@@ -12,7 +12,7 @@ export default function ThreadReplyForm() {
   const timestampInt = parseInt(timestamp || '0');
   const threadAuthorPubKey = authorPubKey || ""
 
-  const [currentAuthor] = useCurrentAuthor();
+  const [currentAuthor] = useCurrentIdentity();
   const letterboxLayer = useLetterboxLayer();
   const [replyText, setReplyText] = React.useState(
     letterboxLayer.getReplyDraft(timestampInt, threadAuthorPubKey) || "",

@@ -1,6 +1,6 @@
 import { isErr } from "earthstar";
 import * as React from "react";
-import { useCurrentAuthor } from "react-earthstar";
+import { useCurrentIdentity } from "react-earthstar";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDebounce, useDebouncedCallback } from "use-debounce";
 import MarkdownPreview from "./MarkdownPreview";
@@ -25,7 +25,7 @@ function NewThreadBar() {
 }
 
 export default function NewThreadForm() {
-  const [currentAuthor] = useCurrentAuthor();
+  const [currentAuthor] = useCurrentIdentity();
   const letterboxLayer = useLetterboxLayer();
 
   const { workspaceLookup } = useParams();
@@ -64,15 +64,17 @@ export default function NewThreadForm() {
       return;
     }
 
-    const newDraftId = letterboxLayer.setThreadRootDraft(
+    letterboxLayer.setThreadRootDraft(
       content,
       currentDraftId,
-    );
+    ).then((res) => {
+      if (!isErr(res)) {      
+        setCurrentDraftId(res);
+        setDidSaveDraft(true);
+      }
+    });
 
-    if (!isErr(newDraftId)) {      
-      setCurrentDraftId(newDraftId);
-      setDidSaveDraft(true);
-    }
+   
   }, 1000);
 
   React.useEffect(() => {
@@ -90,8 +92,8 @@ export default function NewThreadForm() {
     <form
       ref={formRef}
       className="flex flex-col  p-3 md:p-6"
-      onSubmit={() => {
-        const res = letterboxLayer.createThread(combinedContent);
+      onSubmit={async () => {
+        const res = await letterboxLayer.createThread(combinedContent);
 
         if (isErr(res)) {
           alert("Couldn't create the new thread.");
