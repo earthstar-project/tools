@@ -1,19 +1,24 @@
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { useInvitation, ShareLabel, usePeer } from "react-earthstar";
-import { isErr, FormatValidatorEs4, ParsedAddress, parseShareAddress } from "earthstar";
+import { ShareLabel, useInvitation, usePeer } from "react-earthstar";
+import {
+  FormatValidatorEs4,
+  isErr,
+  ParsedAddress,
+  parseShareAddress,
+} from "earthstar";
 import BrowserPocketIcon from "./images/browser-pocket.svg";
 import CloudPocketIcon from "./images/cloud-pocket.svg";
 import PocketDesc from "./PocketDesc";
 
 function JoinBar({ address }: { address: string }) {
-  return <div
-    className="flex py-2 px-3 bg-white dark:bg-black border-b shadow-sm justify-end sticky top-0 z-50 items-baseline dark:text-white dark:border-gray-800"
-  >
-    <Link className="md:hidden mr-2 text-blue-500 text-xl" to="/">⬅</Link>
-    <p className="flex-grow font-bold text-xl">
-      Add <ShareLabel address={address} />
-    </p>
-  </div>;
+  return (
+    <div className="flex py-2 px-3 bg-white dark:bg-black border-b shadow-sm justify-end sticky top-0 z-50 items-baseline dark:text-white dark:border-gray-800">
+      <Link className="md:hidden mr-2 text-blue-500 text-xl" to="/">⬅</Link>
+      <p className="flex-grow font-bold text-xl">
+        Add <ShareLabel address={address} />
+      </p>
+    </div>
+  );
 }
 
 export default function Redeemer() {
@@ -39,89 +44,93 @@ export default function Redeemer() {
     ? false
     : shares.includes(result.workspace);
 
-  return <div className="h-app w-full h-overflow col-auto lg:col-span-2">
-    {isErr(result)
-      ? <div>The invitation code you pasted is no good: {result.message}</div>
-      : alreadyHasWorkspace
-      ? <div>
-        <JoinBar address={result.workspace} />
-        <p className="p-2">You're already a member of this space!</p>
-      </div>
-      : <>
-        <JoinBar address={result.workspace} />
-        <form
-          className="p-3 space-y-3 max-w-prose"
-          onSubmit={() => {
-            result.redeem();
+  return (
+    <div className="h-app w-full h-overflow col-auto lg:col-span-2">
+      {isErr(result)
+        ? <div>The invitation code you pasted is no good: {result.message}</div>
+        : alreadyHasWorkspace
+        ? (
+          <div>
+            <JoinBar address={result.workspace} />
+            <p className="p-2">You're already a member of this space!</p>
+          </div>
+        )
+        : (
+          <>
+            <JoinBar address={result.workspace} />
+            <form
+              className="p-3 space-y-3 max-w-prose"
+              onSubmit={() => {
+                result.redeem();
 
-            const { name } = parseShareAddress(
-              result.workspace,
-            ) as ParsedAddress;
+                const { name } = parseShareAddress(
+                  result.workspace,
+                ) as ParsedAddress;
 
-            navigate(`/${name}`);
-          }}
-        >
-          <p>If you choose to add this space, here's what will happen:</p>
-
-          <ol>
-            <li
-              className="bg-blue-50 dark:bg-blue-900 p-4 space-y-4 inline-block rounded my-2"
+                navigate(`/${name}`);
+              }}
             >
-              <p>
-                A new pocket to hold{" "}
-                <b>
-                  <ShareLabel address={result.workspace} />
-                </b>'s data will be created in your browser.
-              </p>
-              <div className="flex items-center gap-2">
-                <img src={BrowserPocketIcon} width={50} />
-                <div className="flex flex-col">
-                  <PocketDesc
-                    address={result.workspace}
-                    kind="Browser pocket"
-                  />
-                </div>
-              </div>
-            </li>
-            {pubs.length > 0
-              ? <li
-                className="bg-blue-50 dark:bg-blue-900 p-4 space-y-4 inline-block rounded my-2"
-              >
-                <p>
-                  It will then be synchronised with the following{" "}
-                  <b>cloud pockets</b>:
-                </p>
+              <p>If you choose to add this space, here's what will happen:</p>
 
-                {result.pubs.map((url) =>
+              <ol>
+                <li className="bg-blue-50 dark:bg-blue-900 p-4 space-y-4 inline-block rounded my-2">
+                  <p>
+                    A new pocket to hold{" "}
+                    <b>
+                      <ShareLabel address={result.workspace} />
+                    </b>'s data will be created in your browser.
+                  </p>
                   <div className="flex items-center gap-2">
-                    <img src={CloudPocketIcon} width={70} />
-                    <div className="flex flex-col space-y-2">
+                    <img src={BrowserPocketIcon} width={50} />
+                    <div className="flex flex-col">
                       <PocketDesc
                         address={result.workspace}
-                        kind="Cloud pocket"
                       />
-                      <div className="text-sm">{url}</div>
                     </div>
                   </div>
-                )}
-              </li>
-              : <p>
-                No cloud pockets to sync with were included with this
-                invitation, so anything you do will stay on this device.
-              </p>}
-          </ol>
+                </li>
+                {pubs.length > 0
+                  ? (
+                    <li className="bg-blue-50 dark:bg-blue-900 p-4 space-y-4 inline-block rounded my-2">
+                      <p>
+                        It will then be synchronised with the following{" "}
+                        <b>cloud pockets</b>:
+                      </p>
 
-          <p>
-            You will then be able to write and view posts made to{" "}
-            <ShareLabel address={result.workspace} />.
-          </p>
+                      {result.pubs.map((url) => (
+                        <div className="flex items-center gap-2">
+                          <img src={CloudPocketIcon} width={70} />
+                          <div className="flex flex-col space-y-2">
+                            <PocketDesc
+                              address={result.workspace}
+                            />
+                            <div className="text-sm">{url}</div>
+                          </div>
+                        </div>
+                      ))}
+                    </li>
+                  )
+                  : (
+                    <p>
+                      No cloud pockets to sync with were included with this
+                      invitation, so anything you do will stay on this device.
+                    </p>
+                  )}
+              </ol>
 
-          <p>More cloud pockets to sync with can always be added later!</p>
+              <p>
+                You will then be able to write and view posts made to{" "}
+                <ShareLabel address={result.workspace} />.
+              </p>
 
-          <button type="submit" className="btn">
-            Add <ShareLabel address={result.workspace} />
-          </button>
-        </form>
-      </>}
-  </div>;
+              <p>More cloud pockets to sync with can always be added later!</p>
+
+              <button type="submit" className="btn">
+                Add <ShareLabel address={result.workspace} />
+              </button>
+            </form>
+          </>
+        )}
+    </div>
+  );
 }

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useCurrentIdentity, ShareLabel } from "react-earthstar";
+import { ShareLabel, useCurrentIdentity } from "react-earthstar";
 import { Link, Outlet, useMatch } from "react-router-dom";
 import ThreadItem from "./ThreadRootItem";
 import { useLetterboxLayer } from "./util/use-letterbox-layer";
@@ -23,11 +23,13 @@ function SpaceBar(props: {
           address={workspace}
         />
 
-        {currentAuthor ? (
-          <Link className="p-1.5 bg-blue-800 text-white rounded" to="post">
-            New Thread
-          </Link>
-        ) : null}
+        {currentAuthor
+          ? (
+            <Link className="p-1.5 bg-blue-800 text-white rounded" to="post">
+              New Thread
+            </Link>
+          )
+          : null}
       </div>
       <label className="text-gray-500 dark:text-gray-300 self-end mt-1 text-sm">
         <input
@@ -66,24 +68,26 @@ export default function ThreadListing() {
         }`}
       >
         <SpaceBar onlyUnread={onlyUnread} setOnlyUnread={setOnlyUnread} />
-        {threads.length === 0 ? (
-          <div className="p-1 md:p-3 text-gray-500 text-center">
-            No threads have been posted yet.
-          </div>
-        ) : (
-          <ol>
-            {threadsToUse.map((thread) => {
-              return (
-                <React.Fragment key={thread.root.doc.path}>
-                  <li>
-                    <ThreadItem thread={thread} />
-                  </li>
-                  <hr className="dark:border-gray-800" />
-                </React.Fragment>
-              );
-            })}
-          </ol>
-        )}
+        {threads.length === 0
+          ? (
+            <div className="p-1 md:p-3 text-gray-500 text-center">
+              No threads have been posted yet.
+            </div>
+          )
+          : (
+            <ol>
+              {threadsToUse.map((thread) => {
+                return (
+                  <React.Fragment key={thread.root.doc.path}>
+                    <li>
+                      <ThreadItem thread={thread} />
+                    </li>
+                    <hr className="dark:border-gray-800" />
+                  </React.Fragment>
+                );
+              })}
+            </ol>
+          )}
       </section>
       <Outlet />
     </>

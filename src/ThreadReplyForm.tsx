@@ -8,9 +8,9 @@ import { useLetterboxLayer } from "./util/use-letterbox-layer";
 
 export default function ThreadReplyForm() {
   const { authorPubKey, timestamp } = useParams();
-  
-  const timestampInt = parseInt(timestamp || '0');
-  const threadAuthorPubKey = authorPubKey || ""
+
+  const timestampInt = parseInt(timestamp || "0");
+  const threadAuthorPubKey = authorPubKey || "";
 
   const [currentAuthor] = useCurrentIdentity();
   const letterboxLayer = useLetterboxLayer();
@@ -33,51 +33,53 @@ export default function ThreadReplyForm() {
     setDidSaveDraft(true);
   }, 1000);
 
-  return <form
-    ref={formRef}
-    className={"flex flex-col pt-0 p-3 lg:p-6 lg:pt-0"}
-    onSubmit={(e) => {
-      e.preventDefault();
+  return (
+    <form
+      ref={formRef}
+      className={"flex flex-col pt-0 p-3 lg:p-6 lg:pt-0"}
+      onSubmit={(e) => {
+        e.preventDefault();
 
-      const result = letterboxLayer.createReply(
-        timestampInt,
-        threadAuthorPubKey,
-        replyText,
-      );
+        const result = letterboxLayer.createReply(
+          timestampInt,
+          threadAuthorPubKey,
+          replyText,
+        );
 
-      if (isErr(result)) {
-        alert("Something went wrong with creating this reply.");
-      } else {
-        letterboxLayer.clearReplyDraft(timestampInt, threadAuthorPubKey);
-      }
+        if (isErr(result)) {
+          alert("Something went wrong with creating this reply.");
+        } else {
+          letterboxLayer.clearReplyDraft(timestampInt, threadAuthorPubKey);
+        }
 
-      navigate("..");
-    }}
-  >
-    <textarea
-      required
-      className={"border p-2 mb-2 shadow-inner dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"}
-      value={replyText}
-      placeholder={"Supports markdown"}
-      rows={10}
-      onChange={(e) => {
-        setDidSaveDraft(false);
-        setReplyText(e.target.value);
-        writeDraft(e.target.value);
+        navigate("..");
       }}
-    />
-    <div
-      className={`text-right text-gray-500 dark:text-gray-400 ${
-        didSaveDraft ? "visible" : "invisible"
-      }`}
     >
-      ✔ Draft saved
-    </div>
+      <textarea
+        required
+        className={"border p-2 mb-2 shadow-inner dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"}
+        value={replyText}
+        placeholder={"Supports markdown"}
+        rows={10}
+        onChange={(e) => {
+          setDidSaveDraft(false);
+          setReplyText(e.target.value);
+          writeDraft(e.target.value);
+        }}
+      />
+      <div
+        className={`text-right text-gray-500 dark:text-gray-400 ${
+          didSaveDraft ? "visible" : "invisible"
+        }`}
+      >
+        ✔ Draft saved
+      </div>
 
-    <MarkdownPreview raw={replyText} />
+      <MarkdownPreview raw={replyText} />
 
-    <button disabled={!currentAuthor} className={"btn mt-2"} type={"submit"}>
-      Post reply
-    </button>
-  </form>;
+      <button disabled={!currentAuthor} className={"btn mt-2"} type={"submit"}>
+        Post reply
+      </button>
+    </form>
+  );
 }

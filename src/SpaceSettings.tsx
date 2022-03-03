@@ -1,13 +1,13 @@
 import * as React from "react";
 import {
-  useMakeInvitation,
-  usePubs,
   ShareLabel,
-  useReplica,
   useCurrentIdentity,
-  usePeer
+  useMakeInvitation,
+  usePeer,
+  usePubs,
+  useReplica,
 } from "react-earthstar";
-import { ParsedAddress, parseAuthorAddress } from "earthstar";
+import { parseAuthorAddress, ParsedAddress } from "earthstar";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Combobox,
@@ -72,15 +72,12 @@ export default function SpaceSettings() {
   const inferredWorkspace = useWorkspaceAddrFromRouter();
   const invitationCode = useMakeInvitation([], inferredWorkspace);
 
-  const invitationUrl = `${window.location.protocol}//${
-    window.location.hostname
-  }${
-    window.location.port !== "" ? `:${window.location.port}` : ""
-  }/join/${invitationCode}`;
+  const invitationUrl =
+    `${window.location.protocol}//${window.location.hostname}${
+      window.location.port !== "" ? `:${window.location.port}` : ""
+    }/join/${invitationCode}`;
 
-  const peer = usePeer()
-
-  
+  const peer = usePeer();
 
   const [currentAuthor] = useCurrentIdentity();
 
@@ -90,13 +87,15 @@ export default function SpaceSettings() {
     <div className="h-full overflow-auto md:col-span-2">
       <SpaceSettingsBar />
       <section className="p-3 space-y-4">
-        {currentAuthor ? (
-          <>
-            <h2 className="font-bold text-xl">Display name</h2>{" "}
-            <DisplayNameForm />
-            <hr />
-          </>
-        ) : null}
+        {currentAuthor
+          ? (
+            <>
+              <h2 className="font-bold text-xl">Display name</h2>{" "}
+              <DisplayNameForm />
+              <hr />
+            </>
+          )
+          : null}
 
         <p>
           Want to run your own cloud pocket for you and your friends?{" "}
@@ -130,7 +129,7 @@ export default function SpaceSettings() {
           className="btn"
           onClick={() => {
             const isSure = window.confirm(
-              `Are you sure you want to remove ${inferredWorkspace} from your workspaces?`
+              `Are you sure you want to remove ${inferredWorkspace} from your workspaces?`,
             );
 
             if (isSure) {
@@ -281,14 +280,12 @@ function DisplayNameForm() {
         value={newDisplayName}
         className="w-full border p-2 shadow-inner p-1 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
         onChange={(e) => setNewDisplayName(e.target.value)}
-        placeholder={
-          displayNameDoc?.content ||
+        placeholder={displayNameDoc?.content ||
           (
             parseAuthorAddress(
-              currentAuthor.address
+              currentAuthor.address,
             ) as ParsedAddress
-          ).name
-        }
+          ).name}
       />
       <button className="btn whitespace-nowrap" type={"submit"}>
         {"Set display name"}

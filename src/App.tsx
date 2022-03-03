@@ -1,8 +1,8 @@
-import { Replica, FormatValidatorEs4 } from "earthstar";
-import { ReplicaDriverIndexedDB } from 'earthstar/browser'
+import { FormatValidatorEs4, Replica } from "earthstar";
+import { ReplicaDriverIndexedDB } from "earthstar/browser";
 import {
-  Peer,
   LocalStorageSettingsWriter,
+  Peer,
   useLocalStorageEarthstarSettings,
 } from "react-earthstar";
 import WorkspaceRoutes from "./WorkspaceRoutes";
@@ -22,12 +22,14 @@ function App() {
       <Peer
         {...settings}
         onCreateShare={(addr) => {
-          return new Replica(addr, FormatValidatorEs4, new ReplicaDriverIndexedDB(addr))
-          
+          return new Replica(
+            addr,
+            FormatValidatorEs4,
+            new ReplicaDriverIndexedDB(addr),
+          );
         }}
       >
         <div className="flex flex-col h-screen bg-white dark:bg-black dark:text-white">
-          
           <WorkspaceLookup>
             <Routes>
               <Route path={"/"} element={<Dashboard />}>

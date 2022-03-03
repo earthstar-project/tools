@@ -1,4 +1,4 @@
-import { ShareAddress, ParsedAddress, parseShareAddress } from "earthstar";
+import { ParsedAddress, parseShareAddress, ShareAddress } from "earthstar";
 import * as React from "react";
 import { usePeer } from "react-earthstar";
 import { useParams } from "react-router-dom";
@@ -49,16 +49,21 @@ export default function WorkspaceLookup(
     {} as WorkspaceToPathLookup,
   );
 
-  return <PathWorkspaceLookupContext.Provider
-    value={{ addrsToPaths, pathsToAddrs }}
-  >
-    {children}
-  </PathWorkspaceLookupContext.Provider>;
+  return (
+    <PathWorkspaceLookupContext.Provider
+      value={{ addrsToPaths, pathsToAddrs }}
+    >
+      {children}
+    </PathWorkspaceLookupContext.Provider>
+  );
 }
 
 export function useWorkspaceAddrFromRouter() {
   const { workspaceLookup } = useParams();
-  const lookup = React.useContext(PathWorkspaceLookupContext);
 
-  return lookup.pathsToAddrs[workspaceLookup || ''];
+  const lookup = React.useContext(PathWorkspaceLookupContext);
+  
+  console.log({lookup})
+
+  return lookup.pathsToAddrs[workspaceLookup || ""];
 }

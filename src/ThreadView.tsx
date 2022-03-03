@@ -41,20 +41,21 @@ function ThreadBar({ thread }: { thread: Thread }) {
         </div>
       </div>
 
-      {mostRecentIsUnread ? (
-        <button
-          className="p-1.5 bg-blue-800 text-white rounded"
-          onClick={() =>
-            letterboxLayer.markReadUpTo(
-              parseInt(timestamp || ""),
-              authorPubKey || "",
-              lastItemTimestamp
-            )
-          }
-        >
-          Mark thread as read
-        </button>
-      ) : null}
+      {mostRecentIsUnread
+        ? (
+          <button
+            className="p-1.5 bg-blue-800 text-white rounded"
+            onClick={() =>
+              letterboxLayer.markReadUpTo(
+                parseInt(timestamp || ""),
+                authorPubKey || "",
+                lastItemTimestamp,
+              )}
+          >
+            Mark thread as read
+          </button>
+        )
+        : null}
     </div>
   );
 }
@@ -85,63 +86,72 @@ function PostDetails({
   const isOwnPost = currentAuthor?.address === post.doc.author;
 
   const authorDisplayNameDoc = storage.getLatestDocAtPath(
-    `/about/~${post.doc.author}/displayName.txt`
+    `/about/~${post.doc.author}/displayName.txt`,
   );
 
   return (
     <div
-      className={
-        "text-gray-500 dark:text-gray-400 flex justify-between items-baseline mb-1 w-full self-stretch overflow-hidden space-x-1 text-sm"
-      }
+      className={"text-gray-500 dark:text-gray-400 flex justify-between items-baseline mb-1 w-full self-stretch overflow-hidden space-x-1 text-sm"}
     >
-      {authorDisplayNameDoc ? (
-        <>
-          <span className="font-bold text-gray-800 dark:text-gray-200 truncate flex-shrink min-w-0">
-            {authorDisplayNameDoc.content}
-          </span>{" "}
-          <AuthorLabel className="font-bold" address={post.doc.author} />
-        </>
-      ) : (
-        <AuthorLabel
-          className="text-gray-800 dark:text-gray-200 font-bold"
-          address={post.doc.author}
-        />
-      )}
+      {authorDisplayNameDoc
+        ? (
+          <>
+            <span className="font-bold text-gray-800 dark:text-gray-200 truncate flex-shrink min-w-0">
+              {authorDisplayNameDoc.content}
+            </span>{" "}
+            <AuthorLabel className="font-bold" address={post.doc.author} />
+          </>
+        )
+        : (
+          <AuthorLabel
+            className="text-gray-800 dark:text-gray-200 font-bold"
+            address={post.doc.author}
+          />
+        )}
       <span className="flex-initial whitespace-nowrap">
         {formatDistanceToNow(post.firstPosted, { addSuffix: true })}
       </span>
-      {isOwnPost ? (
-        <button
-          className={isEditing ? "text-purple-600" : "text-blue-500"}
-          onClick={onEdit}
-        >
-          {isEditing ? "Cancel edit" : "Edit"}
-        </button>
-      ) : null}
+      {isOwnPost
+        ? (
+          <button
+            className={isEditing ? "text-purple-600" : "text-blue-500"}
+            onClick={onEdit}
+          >
+            {isEditing ? "Cancel edit" : "Edit"}
+          </button>
+        )
+        : null}
 
-      {isOwnPost && post.doc.content.length > 0 ? (
-        <button className={"text-red-900 dark:text-red-200"} onClick={onDelete}>
-          Delete
-        </button>
-      ) : null}
+      {isOwnPost && post.doc.content.length > 0
+        ? (
+          <button
+            className={"text-red-900 dark:text-red-200"}
+            onClick={onDelete}
+          >
+            Delete
+          </button>
+        )
+        : null}
       <div className="flex-grow pl-5 text-right">
-        {currentAuthor ? (
-          <label>
-            <span>Read</span>
-            <input
-              type="checkbox"
-              className="ml-1"
-              checked={!isUnread}
-              onChange={() => {
-                letterboxLayer.markReadUpTo(
-                  parseInt(timestamp || ""),
-                  authorPubKey || "",
-                  isUnread ? firstPostedTimestamp : firstPostedTimestamp - 1
-                );
-              }}
-            />
-          </label>
-        ) : null}
+        {currentAuthor
+          ? (
+            <label>
+              <span>Read</span>
+              <input
+                type="checkbox"
+                className="ml-1"
+                checked={!isUnread}
+                onChange={() => {
+                  letterboxLayer.markReadUpTo(
+                    parseInt(timestamp || ""),
+                    authorPubKey || "",
+                    isUnread ? firstPostedTimestamp : firstPostedTimestamp - 1,
+                  );
+                }}
+              />
+            </label>
+          )
+          : null}
       </div>
     </div>
   );
@@ -203,7 +213,7 @@ function ThreadRootView({ root }: { root: Post }) {
         post={root}
         onDelete={() => {
           const shouldDelete = window.confirm(
-            "Are you sure you want to delete this post?"
+            "Are you sure you want to delete this post?",
           );
 
           if (shouldDelete) {
@@ -211,11 +221,9 @@ function ThreadRootView({ root }: { root: Post }) {
           }
         }}
       />
-      {isEditing ? (
-        <PostEditForm onEdit={() => setIsEditing(false)} post={root} />
-      ) : (
-        <PostContent doc={root.doc} />
-      )}
+      {isEditing
+        ? <PostEditForm onEdit={() => setIsEditing(false)} post={root} />
+        : <PostContent doc={root.doc} />}
     </article>
   );
 }
@@ -242,11 +250,9 @@ function PostView({ post }: { post: Post }) {
           letterboxLayer.editPost(post, "");
         }}
       />
-      {isEditing ? (
-        <PostEditForm onEdit={() => setIsEditing(false)} post={post} />
-      ) : (
-        <PostContent doc={post.doc} />
-      )}
+      {isEditing
+        ? <PostEditForm onEdit={() => setIsEditing(false)} post={post} />
+        : <PostContent doc={post.doc} />}
     </article>
   );
 }
@@ -277,7 +283,7 @@ export default function ThreadView() {
 
   const thread = letterboxLayer.getThread(
     parseInt(timestamp || ""),
-    authorPubKey || ""
+    authorPubKey || "",
   );
 
   const match = useMatch("/:workspace/thread/:pubKey/:timestamp/reply");
@@ -300,11 +306,13 @@ export default function ThreadView() {
         ))}
       </ol>
       <footer className="flex gap-2 p-3 lg:px-6 justify-between py-3">
-        {!match && currentAuthor ? (
-          <Link className="link-btn" to={"reply"}>
-            Reply
-          </Link>
-        ) : null}
+        {!match && currentAuthor
+          ? (
+            <Link className="link-btn" to={"reply"}>
+              Reply
+            </Link>
+          )
+          : null}
       </footer>
       <Outlet />
     </div>

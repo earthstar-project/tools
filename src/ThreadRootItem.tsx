@@ -46,9 +46,7 @@ export default function ThreadItem({ thread }: { thread: Thread }) {
             ? "flex-shrink-0 bg-blue-500 rounded-full w-3 h-3"
             : "flex-shrink-0 w-3"}
         />
-        <div
-          className="flex flex-col gap-1 flex-grow overflow-hidden overflow-ellipsis text-sm"
-        >
+        <div className="flex flex-col gap-1 flex-grow overflow-hidden overflow-ellipsis text-sm">
           <h1 className={"font-bold dark:text-white"}>
             <ThreadTitle
               workspace={thread.root.doc.workspace}
@@ -57,9 +55,7 @@ export default function ThreadItem({ thread }: { thread: Thread }) {
           </h1>
           {lastThreadItem
             ? (
-              <div
-                className="text-gray-500 dark:text-gray-400 overflow-ellipsis overflow-hidden"
-              >
+              <div className="text-gray-500 dark:text-gray-400 overflow-ellipsis overflow-hidden">
                 <AuthorLabel
                   className="mr-1 text-gray-800 dark:text-gray-200"
                   address={lastThreadItem.doc.author}

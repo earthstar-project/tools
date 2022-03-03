@@ -1,12 +1,12 @@
 import * as React from "react";
 import {
+  ShareLabel,
   useCurrentIdentity,
-  useReplica,
   usePeer,
-  ShareLabel
+  useReplica,
 } from "react-earthstar";
 import { Link, Outlet, useMatch } from "react-router-dom";
-import { LetterboxLayerCache} from "@earthstar-project/rich-threads-layer";
+import { LetterboxLayerCache } from "@earthstar-project/rich-threads-layer";
 import { PathWorkspaceLookupContext } from "./WorkspaceLookup";
 
 function WorkspaceSection({ workspace }: { workspace: string }) {
@@ -45,11 +45,13 @@ function WorkspaceSection({ workspace }: { workspace: string }) {
           <ShareLabel address={workspace} />
         </h2>
         <div className="flex items-baseline space-x-1">
-          {unreadThreadRoots.length ? (
-            <div className="text-white bg-blue-500 px-2 py-1 rounded-full shadow-sm">
-              {unreadThreadRoots.length}
-            </div>
-          ) : null}
+          {unreadThreadRoots.length
+            ? (
+              <div className="text-white bg-blue-500 px-2 py-1 rounded-full shadow-sm">
+                {unreadThreadRoots.length}
+              </div>
+            )
+            : null}
         </div>
       </Link>
       <Link to={`/${workspacePath}/settings`}>⚙️</Link>
@@ -70,14 +72,12 @@ export default function Dashboard() {
   const isOneLevelDeep = workspaceMatch?.params.workspace;
 
   const isAtWorkspace = ["add", "join"].includes(
-    workspaceMatch?.params.workspace || ""
+    workspaceMatch?.params.workspace || "",
   );
 
   return (
     <div
-      className={
-        "w-screen flex-grow grid lg:grid-cols-app-lg md:grid-cols-app-md app border-t h-app"
-      }
+      className={"w-screen flex-grow grid lg:grid-cols-app-lg md:grid-cols-app-md app border-t h-app"}
     >
       <ul
         className={`h-full flex-initial border-r-2 border-gray-300 dark:border-gray-700 text-black dark:text-white ${
