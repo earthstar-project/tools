@@ -12,7 +12,7 @@ export default function SettingsManager() {
   const navigate = useNavigate();
 
   return (
-    <div className="h-app w-full h-overflow col-auto lg:col-span-2">
+    <div className="h-app w-full h-overflow col-span-2">
       <PageBar backLink="/settings">
         <div className="font-bold text-xl flex-grow">
           Use an existing identity
@@ -54,7 +54,7 @@ export default function SettingsManager() {
                 <input
                   value={address}
                   placeholder="@xxxx.xxxx"
-                  className="border p-2 w-full"
+                  className="input w-full ml-2"
                   onChange={(e) => setAddress(e.target.value)}
                 />
               </td>
@@ -66,7 +66,7 @@ export default function SettingsManager() {
               <td>
                 <input
                   value={secret}
-                  className="border p-2 w-full"
+                  className="input w-full ml-2"
                   type="password"
                   onChange={(e) => setSecret(e.target.value)}
                 />

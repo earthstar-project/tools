@@ -15,7 +15,7 @@ function PostPreview({ content }: { content: string }) {
   return <>{markdownMemo}</>
 }
 
-export default function ThreadItem({ author, timestamp }: { author: string, timestamp: number }) {
+export default function ThreadItem({ author, timestamp, hideIfRead }: { author: string, timestamp: number, hideIfRead: boolean }) {
   const letterboxLayer = useLetterboxLayer();
 
   const thread = letterboxLayer.getThread(timestamp, author);
@@ -30,6 +30,10 @@ export default function ThreadItem({ author, timestamp }: { author: string, time
   const isActive = author === match?.params.pubKey &&
     timestamp ===
     parseInt(match?.params.timestamp || "");
+
+  if (hideIfRead) {
+    return null
+  }
 
   return (
     thread ?

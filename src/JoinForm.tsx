@@ -44,7 +44,7 @@ export default function Redeemer() {
     : shares.includes(result.workspace);
 
   return (
-    <div className="h-app w-full h-overflow col-auto lg:col-span-2">
+    <div className="h-app w-full h-overflow w-full  col-auto md:col-span-2">
       {isErr(result)
         ? <div>The invitation code you pasted is no good: {result.message}</div>
         : alreadyHasWorkspace
@@ -72,7 +72,7 @@ export default function Redeemer() {
                 <p>If you choose to join this share, here's what will happen:</p>
 
                 <ol>
-                  <li className="bg-blue-50 dark:bg-blue-900 p-4 space-y-4 inline-block rounded my-2">
+                  <li className="bg-blue-50 dark:bg-blue-900 p-3 space-y-4 inline-block rounded-xl my-2 border dark:border-blue-600">
                     <p>
                       A new replica to hold{" "}
                       <b>
@@ -82,7 +82,7 @@ export default function Redeemer() {
                   </li>
                   {pubs.length > 0
                     ? (
-                      <li className="bg-blue-50 dark:bg-blue-900 p-4 space-y-4 inline-block rounded my-2">
+                      <li className="bg-blue-50 dark:bg-blue-900 p-3 space-y-4 inline-block rounded-xl my-2 border dark:border-blue-600">
                         <p>
                           The following replica servers will be added:
                         </p>

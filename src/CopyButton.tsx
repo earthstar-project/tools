@@ -20,6 +20,8 @@ export default function CopyButton({
       className={props.className || "btn"}
       {...props}
       onClick={(e) => {
+        e.preventDefault()
+
         if (onClick) {
           onClick(e);
         }

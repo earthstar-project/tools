@@ -13,7 +13,7 @@ export default function SettingsManager() {
   const navigate = useNavigate()
 
   return (
-    <div className="h-app w-full h-overflow col-auto lg:col-span-2">
+    <div className="h-app w-full h-overflow col-auto md:col-span-2">
       <PageBar backLink="/settings">
         <div className="font-bold text-xl flex-grow">Create a new identity</div>
 
@@ -33,15 +33,15 @@ export default function SettingsManager() {
 
 
         }}>
-          <div className="space-y-2 p-2 bg-gray-100 rounded border-2 border-gray-200">
-            <label className="font-bold">A four-character shortname, used as a permanent part of your address.</label>
+          <div className="space-y-2 p-2 bg-gray-100 dark:bg-gray-900 rounded border-2 border-gray-200 dark:border-gray-800">
+            <label className="font-bold block">A four-character shortname, used as a permanent part of your address.</label>
 
             <input
               value={shortName}
               spellCheck="false"
               placeholder={'abcd'}
               style={{ width: 'calc(4ch + 1.25rem)' }}
-              className="border border-2 p-2 font-mono text-2xl rounded"
+              className="border border-2 p-2 font-mono text-2xl rounded dark:text-black"
               onChange={async (e) => {
                 setShortName(e.target.value)
 
@@ -68,7 +68,7 @@ export default function SettingsManager() {
           </div>
           {error ? <p className="text-red-700 text-sm">{error}</p> : null}
           {proposedKeypair ? <><div className="text-4xl font-bold text-gray-300 text-center">⬇</div><IdentityCard keypair={proposedKeypair} />
-            <p className="text-sm text-gray-800">Make sure to save the generated address and secret someplace safe. Only you have access to it, so it can never be recovered or reset?</p>
+            <p className="text-sm text-gray-800 dark:text-gray-200">Make sure to save the generated address and secret someplace safe. Only you have access to it, so it can never be recovered or reset!</p>
             <button className="btn">Use this identity</button></> : null}
         </form>
 

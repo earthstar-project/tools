@@ -6,7 +6,7 @@ export default function IdentityCard({ keypair }: { keypair: AuthorKeypair }) {
 	const [currentIdentity, setCurrentIdentity] = useIdentity()
 
 	return (
-		<div className="bg-blue-50 border-2 border-blue-200 shadow p-3 rounded-lg space-y-3 max-w-prose">
+		<div className="bg-blue-50 dark:bg-blue-900 border-2 border-blue-200 dark:border-blue-700 shadow p-3 rounded-lg space-y-3 w-max-prose">
 			<div className="flex items-baseline justify-between"><IdentityLabel className="text-2xl font-bold font-mono" address={keypair.address} />
 				{
 					currentIdentity?.address === keypair.address ? <button className="text-red-500 border border-red-500 text-sm p-1 rounded" onClick={() => {
@@ -19,10 +19,10 @@ export default function IdentityCard({ keypair }: { keypair: AuthorKeypair }) {
 				}
 			</div>
 			<hr className="border-gray-400" />
-			<div className="space-y-1">
-				<div className="flex items-baseline space-x-2">
+			<div className="space-y-1 w-max-prose">
+				<div className="flex items-baseline space-x-2 w-full">
 					<div className="font-bold">Address</div>
-					<div className="px-2 overflow-hidden text-ellipsis font-mono text-sm">
+					<div className="px-2 overflow-hidden text-ellipsis font-mono text-sm shrink">
 						{keypair.address}
 					</div>
 
@@ -37,7 +37,7 @@ export default function IdentityCard({ keypair }: { keypair: AuthorKeypair }) {
 				<div className="flex items-baseline space-x-2">
 					<div className="font-bold">Secret</div>
 					<input
-						className="bg-transparent flex-grow"
+						className="bg-transparent shrink grow  overflow-hidden ellipsis"
 						type="password"
 						readOnly
 						value={keypair.secret}

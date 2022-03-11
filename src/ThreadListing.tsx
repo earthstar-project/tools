@@ -41,8 +41,8 @@ function FilterBar(props: {
 }) {
 
   return <div
-    className="sticky bottom-0 p-2 text-right bg-white border-t"
-  ><label className="text-gray-500 dark:text-gray-300 self-end mt-1 text-sm">
+    className="sticky bottom-0 p-2 text-right bg-white dark:bg-black border-t dark:border-gray-700"
+  ><label className="mt-1 text-sm">
       <input
         type="checkbox"
         checked={props.onlyUnread}
@@ -50,7 +50,7 @@ function FilterBar(props: {
           props.setOnlyUnread(!props.onlyUnread);
         }}
       />
-      <span className="ml-2">Show unread only</span>
+      <span className="ml-2 text-gray-500">Show unread only</span>
     </label></div>
 }
 
@@ -75,7 +75,6 @@ export default function ThreadListing() {
   const isHeated = useIsCacheHeated(threadRoots);
 
   console.log('changed', match?.params['workspacePath']);
-  console.log(threadRoots)
 
   React.useEffect(() => {
     const unsub = replica.onCacheUpdated(() => {
@@ -87,8 +86,6 @@ export default function ThreadListing() {
       unsub()
     }
   }, [replica])
-
-
 
   return (
     <React.Fragment key={match ? match.params['workspacePath'] : 'none'}>
@@ -114,7 +111,7 @@ export default function ThreadListing() {
                   return (
                     <React.Fragment key={threadRoot.doc.path}>
                       <li>
-                        <ThreadItem author={threadRoot.doc.author} timestamp={letterbox.getThreadRootTimestamp(threadRoot.doc)} />
+                        <ThreadItem author={threadRoot.doc.author} timestamp={letterbox.getThreadRootTimestamp(threadRoot.doc)} hideIfRead={onlyUnread} />
                       </li>
                       <hr className="dark:border-gray-800" />
                     </React.Fragment>

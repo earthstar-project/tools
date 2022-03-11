@@ -6,7 +6,7 @@ import IdentityCard from './IdentityCard'
 function ManagerBar() {
   return (
     <div className="flex py-2 px-3 bg-white dark:bg-black border-b shadow-sm justify-end sticky top-0 z-50 items-baseline dark:text-white dark:border-gray-800">
-      <Link className="md:hidden mr-2 text-blue-500 text-xl" to="/">⬅</Link>
+      <Link className="lg:hidden mr-2 text-blue-500 text-xl" to="/">⬅</Link>
       <p className="flex-grow font-bold text-xl">
         Your settings
       </p>
@@ -24,7 +24,7 @@ function ReplicaServerManager() {
     <div className="space-y-3">
       {replicaServers.length === 0
         ? (
-          <p className="bg-gray-100 text-gray-600 text-sm p-2 rounded inline-block border">
+          <p className="bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 text-sm p-2 rounded inline-block border dark:border-gray-800">
             You haven't specified any replica servers to sync with yet.
           </p>
         )
@@ -45,7 +45,7 @@ function ReplicaServerManager() {
         <input
           value={newReplicaServer}
           onChange={(e) => setNewReplicaServer(e.target.value)}
-          className="border p-2"
+          className="input mr-2"
           placeholder="wss://my.server"
           type="url"
         />
@@ -59,16 +59,15 @@ export default function SettingsManager() {
   const [identity] = useIdentity();
 
   return (
-    <div className="h-app w-full h-overflow col-auto lg:col-span-2">
+    <div className="h-app w-full h-overflow col-auto md:col-span-2">
       <ManagerBar />
       <div className="p-3 space-y-3">
         <h2 className="font-bold text-xl">Identity</h2>
         {identity
           ? (
-            <div className="space-y-2">
-              <IdentityCard keypair={identity} />
 
-            </div>
+            <IdentityCard keypair={identity} />
+
           )
           : (
             <div>
