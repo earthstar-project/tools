@@ -22,24 +22,30 @@ function Paragraph(props: any) {
 }
 
 function Pre(props: any) {
-  return <pre
-    className="my-3 border p-4 text-sm bg-gray-50 overflow-scroll"
-    {...props}
-  />;
+  return (
+    <pre
+      className="my-3 border p-4 text-sm bg-gray-50 overflow-scroll"
+      {...props}
+    />
+  );
 }
 
 function UnorderedList(props: any) {
-  return <ul
-    className="pl-6 my-1 list-disc max-w-prose leading-relaxed"
-    {...props}
-  />;
+  return (
+    <ul
+      className="pl-6 my-1 list-disc max-w-prose leading-relaxed"
+      {...props}
+    />
+  );
 }
 
 function OrderedList(props: any) {
-  return <ol
-    className="pl-6 my-1 list-decimal max-w-prose leading-relaxed"
-    {...props}
-  />;
+  return (
+    <ol
+      className="pl-6 my-1 list-decimal max-w-prose leading-relaxed"
+      {...props}
+    />
+  );
 }
 
 function ListItem(props: any) {
@@ -47,10 +53,12 @@ function ListItem(props: any) {
 }
 
 function BlockQuote(props: any) {
-  return <blockquote
-    className="border-l-2 border-gray-300 pl-2 my-4 text-gray-500"
-    {...props}
-  />;
+  return (
+    <blockquote
+      className="border-l-2 border-gray-300 pl-2 my-4 text-gray-500"
+      {...props}
+    />
+  );
 }
 
 function Link(props: any) {
@@ -58,10 +66,12 @@ function Link(props: any) {
 }
 
 function Code(props: any) {
-  return <code
-    className="bg-gray-100 dark:bg-gray-700 text-sm p-1"
-    {...props}
-  />;
+  return (
+    <code
+      className="bg-gray-100 dark:bg-gray-700 text-sm p-1"
+      {...props}
+    />
+  );
 }
 
 const processor = unified().use(parse)
@@ -104,10 +114,12 @@ function PreviewParagraph(props: any) {
 }
 
 function PreviewPre(props: any) {
-  return <pre
-    className="inline text-sm bg-gray-50 dark:bg-gray-700 whitespace-nowrap"
-    {...props}
-  />;
+  return (
+    <pre
+      className="inline text-sm bg-gray-50 dark:bg-gray-700 whitespace-nowrap"
+      {...props}
+    />
+  );
 }
 
 function PreviewUnorderedList(props: any) {
@@ -123,14 +135,16 @@ function PreviewListItem(props: any) {
 }
 
 function PreviewBlockQuote({ children, ...rest }: any) {
-  return <blockquote
-    className="inline"
-    {...rest}
-  >
-    {"“"}
-    {children}
-    {"”"}
-  </blockquote>;
+  return (
+    <blockquote
+      className="inline"
+      {...rest}
+    >
+      {"“"}
+      {children}
+      {"”"}
+    </blockquote>
+  );
 }
 
 function PreviewLink({ _href, ...rest }: any) {
@@ -138,10 +152,12 @@ function PreviewLink({ _href, ...rest }: any) {
 }
 
 function PreviewCode(props: any) {
-  return <code
-    className="bg-gray-100 dark:bg-gray-700 text-sm p-1"
-    {...props}
-  />;
+  return (
+    <code
+      className="bg-gray-100 dark:bg-gray-700 text-sm p-1"
+      {...props}
+    />
+  );
 }
 
 const previewProcessor = unified().use(parse)

@@ -1,34 +1,26 @@
-import {
-  Combobox,
-  ComboboxInput,
-  ComboboxList,
-  ComboboxOption,
-  ComboboxPopover,
-} from "@reach/combobox";
-import { isErr, ValidatorEs4 } from "earthstar";
+import { checkShareIsValid, isErr } from "earthstar";
 import * as React from "react";
-import { useAddWorkspace, usePubs, WorkspaceLabel } from "react-earthstar";
+import { ShareLabel, useAddShare } from "react-earthstar";
 import { Link, useNavigate } from "react-router-dom";
-import BrowserPocketIcon from "./images/browser-pocket.svg";
-import CloudPocketIcon from "./images/cloud-pocket.svg";
-import PocketDesc from "./PocketDesc";
 
 function AddBar() {
-  return <div
-    className="flex py-2 px-3 bg-white dark:bg-black border-b shadow-sm justify-end sticky top-0 z-50 items-baseline dark:text-white dark:border-gray-800"
-  >
-    <Link className="md:hidden mr-2 text-blue-500 text-xl" to="/">⬅</Link>
-    <p className="flex-grow font-bold text-xl">
-      Add space
-    </p>
-  </div>;
+  return (
+    <div className="flex py-2 px-3 bg-white dark:bg-black border-b shadow-sm justify-end sticky top-0 z-50 items-baseline dark:text-white dark:border-gray-800">
+      <Link className="md:hidden mr-2 text-blue-500 text-xl" to="/">⬅</Link>
+      <p className="flex-grow font-bold text-xl">
+        Add share
+      </p>
+    </div>
+  );
 }
 
 export default function AddForm() {
-  return <div className="h-app w-full h-overflow col-auto lg:col-span-2">
-    <AddBar />
-    <WorkspaceCreatorForm />
-  </div>;
+  return (
+    <div className="h-app w-full h-overflow col-auto lg:col-span-2">
+      <AddBar />
+      <ShareCreatorForm />
+    </div>
+  );
 }
 
 const LETTERS = "abcdefghijklmnopqrstuvwxyz";
@@ -46,94 +38,72 @@ function generateSuffix() {
   return `${firstLetter}${rest}`;
 }
 
-export function WorkspaceCreatorForm({
+export function ShareCreatorForm({
   onCreate,
 }: {
   onCreate?: (workspace: string) => void;
 }) {
-  const [pubs, setPubs] = usePubs();
-  const add = useAddWorkspace();
+  const [shareName, setShareName] = React.useState("");
+  const [shareSuffix, setShareSuffix] = React.useState(generateSuffix);
+  const address = `+${shareName}.${shareSuffix}`;
+  const validResult = checkShareIsValid(address);
 
-  const [workspaceName, setWorkspaceName] = React.useState("");
-  const [workspaceSuffix, setWorkspaceSuffix] = React.useState(generateSuffix);
-  const address = `+${workspaceName}.${workspaceSuffix}`;
-  const validResult = ValidatorEs4._checkWorkspaceIsValid(address);
-  const isValid = !isErr(validResult);
+  const navigate = useNavigate();
 
-  const allPubs = Array.from(new Set(Object.values(pubs).flat()));
-  const [addedPubs, setAddedPubs] = React.useState<string[]>([]);
-  const selectablePubs = allPubs.filter((pubUrl) =>
-    !addedPubs.includes(pubUrl)
-  );
-
-  const [pubToAdd, setPubToAdd] = React.useState("");
-  
-  const navigate = useNavigate()
+  const add = useAddShare();
 
   return (
     <>
       <form
         className="p-3 md:p-3 max-w-prose space-y-3"
-        onSubmit={(e) => {
+        onSubmit={async (e) => {
           e.preventDefault();
 
-          add(address);
-           
-          setWorkspaceName("");
-          setWorkspaceSuffix(generateSuffix());
+          await add(address);
 
-          setPubs((prev) => ({
-            ...prev,
-            [address]: addedPubs,
-          }));
-
-          setAddedPubs([]);
+          setShareName("");
+          setShareSuffix(generateSuffix());
 
           if (onCreate) {
             onCreate(address);
           }
-          
-          navigate(`/${workspaceName}`)
+
+          navigate(`/${shareName}`);
         }}
       >
         <p>
-          Here you can create a new space, or manually add a space you already
-          know of.
+          A <b>share</b> is like a shared folder you sync with people you trust.
         </p>
+        <p>
+          You keep a copy of the share's data in your own <b>replica</b>{" "}
+          so it's always accessible.
+        </p>
+        <p>Here you can make a replica for a new or existing share.</p>
 
         <div className="my-3 p-4 bg-blue-50 dark:bg-blue-900 space-y-4">
-          <p>A new pocket will be created for this space.</p>
+          <p className="font-bold">Enter share address</p>
           <div className="flex gap-2 items-center">
-            <img src={BrowserPocketIcon} width={50} />
             <div className="flex items-stretch">
-              <span
-                className="p-1 rounded-l-lg shadow border-2 border-r-0 border-black font-bold bg-white flex items-center justify-center text-sm text-black"
-              >
-                <span>
-                  Browser pocket
-                </span>
-              </span>
-              <div
-                className=" inline-block  bg-black text-white p-2 rounded-r-lg"
-              >
+              <div className=" inline-block  bg-black text-white p-2 rounded-lg">
                 <div className="flex gap-1 items-baseline">
                   <span>{"+"}</span>
                   <input
                     className="p-1  w-32 bg-gray-800 text-white"
-                    value={workspaceName}
-                    onChange={(e) => setWorkspaceName(e.target.value)}
-                    placeholder={"myspace"}
+                    value={shareName}
+                    onChange={(e) => setShareName(e.target.value)}
+                    placeholder={"myshare"}
                   />
                   <span>{"."}</span>
                   <input
                     className="p-1  w-32 bg-gray-800 text-white"
-                    value={workspaceSuffix}
-                    onChange={(e) => setWorkspaceSuffix(e.target.value)}
+                    value={shareSuffix}
+                    onChange={(e) => setShareSuffix(e.target.value)}
                   />
                   <button
+                    className="bg-blue-800 rounded-xl px-2 py-1"
                     onClick={(e) => {
                       e.preventDefault();
-                      setWorkspaceSuffix(generateSuffix());
+                      setShareSuffix(generateSuffix());
                     }}
                   >
                     {"↻"}
@@ -143,104 +113,32 @@ export function WorkspaceCreatorForm({
             </div>
           </div>
 
-          {isErr(validResult) && workspaceName.length > 0
-            ? (
-              <p className="text-red-600 text-sm my-1">{validResult.message}</p>
-            )
+          {isErr(validResult) && shareName.length > 0
+            ? <p className="text-red-600 text-sm my-1">{validResult.message}</p>
             : null}
 
           <p className="text-sm my-1">
-            A space address is made of two parts: an identifier and suffix. The
-            identifier should be memorable. The suffix should be hard to guess.
+            Creating a new share? Make the first part memorable, and the second
+            bit hard to guess. Only share this address with people you trust.
           </p>
         </div>
-        <div className="my-3 p-4 rounded space-y-4 bg-blue-50 dark:bg-blue-900">
-          <p>
-            And it will be synced with these cloud pockets.
-          </p>
-          <ul className="space-y-4">
-            {addedPubs.length === 0
-              ? <div className="text-gray-500">
-                (None - you can always add some later!)
-              </div>
-              : null}
-            {addedPubs.map((pubUrl) => (
-              <li key={pubUrl} className="flex">
-                <div className="flex items-center gap-2">
-                  <img src={CloudPocketIcon} width={70} />
-                  <div className="flex flex-col space-y-2">
-                    <PocketDesc
-                      address={address}
-                      kind="Cloud pocket"
-                    />
-                    <div className="text-sm">{pubUrl}</div>
-                  </div>
-                </div>
-                <button
-                  className="text-red-500 text-lg flex-grow text-right"
-                  onClick={() => {
-                    setAddedPubs((prev) =>
-                      prev.filter((url) => url !== pubUrl)
-                    );
-                  }}
-                >
-                  {"✕"}
-                </button>
-              </li>
-            ))}
-          </ul>
-          <div className="space-x-1 flex items-baseline">
-            <Combobox
-              className="inline-block rounded-lg flex-grow"
-              openOnFocus
-              onSelect={(item) => setAddedPubs((prev) => [...prev, item])}
-            >
-              <ComboboxInput
-                className="w-full border mb-2 p-2 shadow-inner p-1 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-                selectOnClick
-                value={pubToAdd}
-                onChange={(e) => setPubToAdd(e.target.value)}
-                placeholder={"https://cloud.pocket"}
-              />
-              {selectablePubs.length > 0
-                ? (
-                  <ComboboxPopover className="rounded border border-gray-50">
-                    <ComboboxList>
-                      {selectablePubs.map((pubUrl) => (
-                        <ComboboxOption
-                          key={pubUrl}
-                          value={pubUrl}
-                        >
-                          <span>{pubUrl}</span>
-                        </ComboboxOption>
-                      ))}
-                    </ComboboxList>
-                  </ComboboxPopover>
-                )
-                : null}
-            </Combobox>
-            <button
-              className="text-white bg-black rounded-lg p-2"
-              disabled={pubToAdd.length === 0}
-              onClick={(e) => {
-                e.preventDefault();
-                setPubToAdd("");
-                setAddedPubs((prev) => [...prev, pubToAdd]);
-              }}
-            >
-              {"Add cloud pocket"}
-            </button>
-          </div>
-        </div>
-        {isValid
+
+        {validResult === true
           ? (
-            <button
-              className="btn"
-              disabled={!isValid}
-              type={"submit"}
-            >
-              Add {<WorkspaceLabel address={address} />}
-            </button>
+            <>
+              <button
+                className="btn"
+                disabled={validResult !== true}
+                type={"submit"}
+              >
+                Add {<ShareLabel address={address} />}
+              </button>
+              <p className="text-sm">
+                This will create a new in-browser replica of{" "}
+                <ShareLabel address={address} />, and begin syncing with any
+                peers which already know of this share.
+              </p>
+            </>
           )
           : null}
       </form>

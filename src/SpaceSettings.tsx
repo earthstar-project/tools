@@ -1,58 +1,17 @@
 import * as React from "react";
 import {
+  ShareLabel,
+  useIdentity,
   useMakeInvitation,
-  usePubs,
-  useRemoveWorkspace,
-  useWorkspacePubs,
-  WorkspaceLabel,
-  useStorage,
-  useCurrentAuthor,
+  usePeer,
+  useReplicaServers,
+  useReplica,
 } from "react-earthstar";
-import { AuthorParsed, ValidatorEs4 } from "earthstar";
+import { parseAuthorAddress, ParsedAddress } from "earthstar";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  Combobox,
-  ComboboxInput,
-  ComboboxList,
-  ComboboxOption,
-  ComboboxPopover,
-} from "@reach/combobox";
+
 import { useWorkspaceAddrFromRouter } from "./WorkspaceLookup";
-import PocketDesc from "./PocketDesc";
-import CloudPocketIcon from "./images/cloud-pocket.svg";
-
-function CopyButton({
-  children,
-  copyValue,
-  onClick,
-  ...props
-}: React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  copyValue: any;
-}) {
-  const [copied, setCopied] = React.useState(false);
-
-  React.useEffect(() => {
-    let id = setTimeout(() => setCopied(false), 2000);
-    return () => clearTimeout(id);
-  }, [copied]);
-
-  return (
-    <button
-      className="btn"
-      {...props}
-      onClick={(e) => {
-        if (onClick) {
-          onClick(e);
-        }
-
-        navigator.clipboard.writeText(copyValue);
-        setCopied(true);
-      }}
-    >
-      {copied ? "Copied to clipboard!" : children || "Copy"}
-    </button>
-  );
-}
+import CopyButton from "./CopyButton";
 
 function SpaceSettingsBar() {
   const workspace = useWorkspaceAddrFromRouter();
@@ -63,7 +22,7 @@ function SpaceSettingsBar() {
         ⬅
       </Link>
       <p className="flex-grow font-bold text-xl">
-        Settings for <WorkspaceLabel address={workspace} />
+        Settings for <ShareLabel address={workspace} />
       </p>
     </div>
   );
@@ -71,17 +30,16 @@ function SpaceSettingsBar() {
 
 export default function SpaceSettings() {
   const inferredWorkspace = useWorkspaceAddrFromRouter();
-  const invitationCode = useMakeInvitation([], inferredWorkspace);
+  const [replicaServers] = useReplicaServers()
+  const invitationCode = useMakeInvitation(replicaServers, inferredWorkspace);
 
-  const invitationUrl = `${window.location.protocol}//${
-    window.location.hostname
-  }${
-    window.location.port !== "" ? `:${window.location.port}` : ""
-  }/join/${invitationCode}`;
+  const invitationUrl =
+    `${window.location.protocol}//${window.location.hostname}${window.location.port !== "" ? `:${window.location.port}` : ""
+    }/join/${invitationCode}`;
 
-  const remove = useRemoveWorkspace();
+  const peer = usePeer();
 
-  const [currentAuthor] = useCurrentAuthor();
+  const [currentAuthor] = useIdentity();
 
   const navigate = useNavigate();
 
@@ -89,37 +47,18 @@ export default function SpaceSettings() {
     <div className="h-full overflow-auto md:col-span-2">
       <SpaceSettingsBar />
       <section className="p-3 space-y-4">
-        {currentAuthor ? (
-          <>
-            <h2 className="font-bold text-xl">Display name</h2>{" "}
-            <DisplayNameForm />
-            <hr />
-          </>
-        ) : null}
-
-        <h2 className="font-bold text-xl">Cloud pockets</h2>
-
-        <p>
-          For your posts to reach others — and for theirs to reach you — you'll
-          need the URLs of cloud pockets to sync with.
-        </p>
-
-        <PocketEditor />
-
-        <p>
-          Want to run your own cloud pocket for you and your friends?{" "}
-          <a
-            className="underline text-blue-500"
-            href="https://github.com/earthstar-project/earthstar-pub#readme"
-          >
-            Find out how!
-          </a>
-        </p>
-
-        <hr />
+        {currentAuthor
+          ? (
+            <>
+              <h2 className="font-bold text-xl">Display name</h2>{" "}
+              <DisplayNameForm />
+              <hr />
+            </>
+          )
+          : null}
 
         <h2 className="font-bold text-xl">
-          Invite someone to <WorkspaceLabel address={inferredWorkspace} />
+          Invite someone to <ShareLabel address={inferredWorkspace} />
         </h2>
         <p className="max-w-prose">
           If you'd like to invite someone you trust to this space, you can share
@@ -138,11 +77,11 @@ export default function SpaceSettings() {
           className="btn"
           onClick={() => {
             const isSure = window.confirm(
-              `Are you sure you want to remove ${inferredWorkspace} from your workspaces?`
+              `Are you sure you want to delete your replica for ${inferredWorkspace}?`,
             );
 
             if (isSure) {
-              remove(inferredWorkspace);
+              peer.removeReplicaByShare(inferredWorkspace);
               navigate("/");
             }
           }}
@@ -154,6 +93,7 @@ export default function SpaceSettings() {
   );
 }
 
+/*
 function PocketEditor() {
   const inferredWorkspace = useWorkspaceAddrFromRouter();
   const [pubs, setPubs] = useWorkspacePubs(inferredWorkspace);
@@ -253,15 +193,16 @@ function PocketEditor() {
     </div>
   );
 }
+*/
 
 function DisplayNameForm() {
-  const [currentAuthor] = useCurrentAuthor();
+  const [currentAuthor] = useIdentity();
   const inferredWorkspace = useWorkspaceAddrFromRouter();
-  const storage = useStorage(inferredWorkspace);
+  const replica = useReplica(inferredWorkspace);
 
   const displayNamePath = `/about/~${currentAuthor?.address}/displayName.txt`;
 
-  const displayNameDoc = storage?.getDocument(displayNamePath);
+  const displayNameDoc = replica.getLatestDocAtPath(displayNamePath);
 
   const [newDisplayName, setNewDisplayName] = React.useState("");
 
@@ -276,7 +217,7 @@ function DisplayNameForm() {
         e.preventDefault();
         setNewDisplayName("");
 
-        storage?.set(currentAuthor, {
+        replica?.set(currentAuthor, {
           format: "es.4",
           content: newDisplayName,
           path: displayNamePath,
@@ -287,14 +228,12 @@ function DisplayNameForm() {
         value={newDisplayName}
         className="w-full border p-2 shadow-inner p-1 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
         onChange={(e) => setNewDisplayName(e.target.value)}
-        placeholder={
-          displayNameDoc?.content ||
+        placeholder={displayNameDoc?.content ||
           (
-            ValidatorEs4.parseAuthorAddress(
-              currentAuthor.address
-            ) as AuthorParsed
-          ).shortname
-        }
+            parseAuthorAddress(
+              currentAuthor.address,
+            ) as ParsedAddress
+          ).name}
       />
       <button className="btn whitespace-nowrap" type={"submit"}>
         {"Set display name"}

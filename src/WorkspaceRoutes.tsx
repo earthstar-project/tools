@@ -6,19 +6,21 @@ import ThreadListing from "./ThreadListing";
 import SpaceSettings from "./SpaceSettings";
 
 export default function WorkspaceRoutes() {
-  return <Routes>
-    <Route path={"/settings"} element={<SpaceSettings />} />
-    <Route path={"/"} element={<ThreadListing />}>
-      <Route path={"post"} element={<NewThreadForm />} />
-      <Route
-        path={"thread/:authorPubKey/:timestamp"}
-        element={<ThreadView />}
-      >
+  return (
+    <Routes>
+      <Route path={"/settings"} element={<SpaceSettings />} />
+      <Route path={"/"} element={<ThreadListing />}>
+        <Route path={"post"} element={<NewThreadForm />} />
         <Route
-          path={"reply"}
-          element={<ThreadReplyForm />}
-        />
+          path={"thread/:authorPubKey/:timestamp"}
+          element={<ThreadView />}
+        >
+          <Route
+            path={"reply"}
+            element={<ThreadReplyForm />}
+          />
+        </Route>
       </Route>
-    </Route>
-  </Routes>;
+    </Routes>
+  );
 }

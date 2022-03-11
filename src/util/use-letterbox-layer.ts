@@ -1,17 +1,15 @@
-import * as React from "react";
-import { useCurrentAuthor, useStorage } from "react-earthstar";
+import * as React from 'react'
+import { useIdentity, useReplica } from "react-earthstar";
 import { useWorkspaceAddrFromRouter } from "../WorkspaceLookup";
 
-import LetterboxLayer from "@earthstar-project/rich-threads-layer";
+import { LetterboxLayerCache } from "@earthstar-project/rich-threads-layer";
 
 export function useLetterboxLayer(workspaceAddress?: string) {
   const inferredWorkspace = useWorkspaceAddrFromRouter();
 
-  const storage = useStorage(workspaceAddress || inferredWorkspace);
+  const replica = useReplica(workspaceAddress || inferredWorkspace);
 
-  const [currentAuthor] = useCurrentAuthor();
+  const [identity] = useIdentity();
 
-  const layer = new LetterboxLayer(storage, currentAuthor);
-
-  return layer;
+  return new LetterboxLayerCache(replica, identity);
 }

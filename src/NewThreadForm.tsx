@@ -1,6 +1,6 @@
 import { isErr } from "earthstar";
 import * as React from "react";
-import { useCurrentAuthor } from "react-earthstar";
+import { useIdentity } from "react-earthstar";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDebounce, useDebouncedCallback } from "use-debounce";
 import MarkdownPreview from "./MarkdownPreview";
@@ -10,22 +10,22 @@ import { useLetterboxLayer } from "./util/use-letterbox-layer";
 function NewThreadBar() {
   const { workspaceLookup } = useParams();
 
-  return <div
-    className="flex py-2 py-3 px-3 md:px-6 bg-white border-b shadow-sm justify-end sticky top-0 z-50 items-baseline dark:bg-black dark:text-white dark:border-gray-800"
-  >
-    <Link
-      className="md:hidden mr-2 text-blue-500 text-xl"
-      to={`/${workspaceLookup}`}
-    >
-      ⬅
-    </Link>
+  return (
+    <div className="flex py-2 py-3 px-3 md:px-6 bg-white border-b shadow-sm justify-end sticky top-0 z-50 items-baseline dark:bg-black dark:text-white dark:border-gray-800">
+      <Link
+        className="md:hidden mr-2 text-blue-500 text-xl"
+        to={`/${workspaceLookup}`}
+      >
+        ⬅
+      </Link>
 
-    <div className="flex-grow font-bold text-xl">New thread</div>
-  </div>;
+      <div className="flex-grow font-bold text-xl">New thread</div>
+    </div>
+  );
 }
 
 export default function NewThreadForm() {
-  const [currentAuthor] = useCurrentAuthor();
+  const [currentAuthor] = useIdentity();
   const letterboxLayer = useLetterboxLayer();
 
   const { workspaceLookup } = useParams();
@@ -64,15 +64,15 @@ export default function NewThreadForm() {
       return;
     }
 
-    const newDraftId = letterboxLayer.setThreadRootDraft(
+    letterboxLayer.setThreadRootDraft(
       content,
       currentDraftId,
-    );
-
-    if (!isErr(newDraftId)) {      
-      setCurrentDraftId(newDraftId);
-      setDidSaveDraft(true);
-    }
+    ).then((res) => {
+      if (!isErr(res)) {
+        setCurrentDraftId(res);
+        setDidSaveDraft(true);
+      }
+    });
   }, 1000);
 
   React.useEffect(() => {
@@ -85,90 +85,95 @@ export default function NewThreadForm() {
     return <div>{"You must be signed in to make threads"}</div>;
   }
 
-  return <section className="h-full overflow-scroll">
-    <NewThreadBar />
-    <form
-      ref={formRef}
-      className="flex flex-col  p-3 md:p-6"
-      onSubmit={() => {
-        const res = letterboxLayer.createThread(combinedContent);
+  return (
+    <section className="h-full overflow-scroll">
+      <NewThreadBar />
+      <form
+        ref={formRef}
+        className="flex flex-col  p-3 md:p-6"
+        onSubmit={async (e) => {
+          e.preventDefault();
 
-        if (isErr(res)) {
-          alert("Couldn't create the new thread.");
-          console.error(res);
+          const res = await letterboxLayer.createThread(combinedContent);
 
-          return;
-        }
+          if (isErr(res)) {
+            alert("Couldn't create the new thread.");
+            console.error(res);
 
-        if (currentDraftId) {
-          letterboxLayer.clearThreadRootDraft(currentDraftId);
-        }
-        
-        const author = res.root.doc.author;
-        const timestamp = letterboxLayer.getThreadRootTimestamp(res.root.doc);
-        const id = `${author}/${timestamp}`;
+            return;
+          }
 
-        navigate(`/${workspaceLookup}/thread/${id}`);
-      }}
-    >
-      <input
-        className="border mb-2 p-2 shadow-inner dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-        type={"text"}
-        value={title}
-        onChange={(e) => {
-          setDidSaveDraft(false);
-          setTitle(e.target.value);
+          if (currentDraftId) {
+            letterboxLayer.clearThreadRootDraft(currentDraftId);
+          }
+
+          const author = res.root.doc.author;
+          const timestamp = letterboxLayer.getThreadRootTimestamp(res.root.doc);
+          const id = `${author}/${timestamp}`;
+
+          navigate(`/${workspaceLookup}/thread/${id}`);
         }}
-        placeholder={"Thread title"}
-        required
-      />
-      <textarea
-        required
-        className="border mb-2 p-2 shadow-inner dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-        placeholder={"Write the first post of a new thread. Accepts markdown."}
-        rows={15}
-        value={postVal}
-        onChange={(e) => {
-          setDidSaveDraft(false);
-          setPostVal(e.target.value);
-        }}
-      />
-      <div
-        className={`text-right text-gray-500 ${
-          didSaveDraft ? "visible" : "invisible"
-        }`}
       >
-        ✔ Draft saved
-      </div>
-      <MarkdownPreview raw={[`# ${title}`, ``, postVal].join("\n")} />
-      <button className="btn mt-2" type={"submit"}>
-        Create new thread
-      </button>
-    </form>
-    {draftIds.length > 0
-      ? <div className="flex flex-col px-6 py-3">
-        <hr className="dark:border-gray-800" />
-        <h1 className="font-bold text-xl my-3">Drafts</h1>
-        <ul className="space-y-3">
-          {draftIds.map((id) =>
-            <DraftItem
-              draftId={id}
-              key={id}
-              isSelected={id === currentDraftId}
-              onDelete={() => setCurrentDraftId(undefined)}
-              onSelect={() => {
-                setCurrentDraftId(id);
+        <input
+          className="border mb-2 p-2 shadow-inner dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+          type={"text"}
+          value={title}
+          onChange={(e) => {
+            setDidSaveDraft(false);
+            setTitle(e.target.value);
+          }}
+          placeholder={"Thread title"}
+          required
+        />
+        <textarea
+          required
+          className="border mb-2 p-2 shadow-inner dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+          placeholder={"Write the first post of a new thread. Accepts markdown."}
+          rows={15}
+          value={postVal}
+          onChange={(e) => {
+            setDidSaveDraft(false);
+            setPostVal(e.target.value);
+          }}
+        />
+        <div
+          className={`text-right text-gray-500 ${didSaveDraft ? "visible" : "invisible"
+            }`}
+        >
+          ✔ Draft saved
+        </div>
+        <MarkdownPreview raw={[`# ${title}`, ``, postVal].join("\n")} />
+        <button className="btn mt-2" type={"submit"}>
+          Create new thread
+        </button>
+      </form>
+      {draftIds.length > 0
+        ? (
+          <div className="flex flex-col px-6 py-3">
+            <hr className="dark:border-gray-800" />
+            <h1 className="font-bold text-xl my-3">Drafts</h1>
+            <ul className="space-y-3">
+              {draftIds.map((id) => (
+                <DraftItem
+                  draftId={id}
+                  key={id}
+                  isSelected={id === currentDraftId}
+                  onDelete={() => setCurrentDraftId(undefined)}
+                  onSelect={() => {
+                    setCurrentDraftId(id);
 
-                if (formRef.current) {
-                  formRef.current.scrollIntoView();
-                }
-              }}
-            />
-          )}
-        </ul>
-      </div>
-      : null}
-  </section>;
+                    if (formRef.current) {
+                      formRef.current.scrollIntoView();
+                    }
+                  }}
+                />
+              ))}
+            </ul>
+          </div>
+        )
+        : null}
+    </section>
+  );
 }
 
 function DraftItem(
@@ -187,38 +192,39 @@ function DraftItem(
     [maybeParts?.content],
   );
 
-  return <div
-    className={`flex justify-between items-baseline border rounded dark:border-gray-800 ${
-      isSelected ? "bg-blue-50 dark:bg-blue-900" : ""
-    }`}
-  >
-    <button
-      onClick={onSelect}
-      className="text-gray-500 p-2 flex-grow text-left"
+  return (
+    <div
+      className={`flex justify-between items-baseline border rounded dark:border-gray-800 ${isSelected ? "bg-blue-50 dark:bg-blue-900" : ""
+        }`}
     >
-      <h2 className="font-bold text-black dark:text-white">
-        {maybeParts?.title || "Untitled thread"}
-      </h2>
+      <button
+        onClick={onSelect}
+        className="text-gray-500 p-2 flex-grow text-left"
+      >
+        <h2 className="font-bold text-black dark:text-white">
+          {maybeParts?.title || "Untitled thread"}
+        </h2>
 
-      {markdownMemo}
-    </button>
-    <button
-      className="text-red-600 text-sm p-2"
-      onClick={(e) => {
-        onDelete();
-        e.preventDefault();
-        const isSure = window.confirm(
-          "Is it really OK to delete this draft?",
-        );
+        {markdownMemo}
+      </button>
+      <button
+        className="text-red-600 text-sm p-2"
+        onClick={(e) => {
+          onDelete();
+          e.preventDefault();
+          const isSure = window.confirm(
+            "Is it really OK to delete this draft?",
+          );
 
-        if (!isSure) {
-          return;
-        }
+          if (!isSure) {
+            return;
+          }
 
-        letterboxLayer.clearThreadRootDraft(draftId);
-      }}
-    >
-      Delete
-    </button>
-  </div>;
+          letterboxLayer.clearThreadRootDraft(draftId);
+        }}
+      >
+        Delete
+      </button>
+    </div>
+  );
 }

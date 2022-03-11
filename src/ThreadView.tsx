@@ -1,17 +1,15 @@
 import * as React from "react";
-import { Document, isErr } from "earthstar";
+import { Doc, isErr } from "earthstar";
 import { Link, Outlet, useMatch, useParams } from "react-router-dom";
-import LetterboxLayer, {
-  Post,
-  Thread,
-} from "@earthstar-project/rich-threads-layer";
+import { Post, Thread } from "@earthstar-project/rich-threads-layer";
 import { formatDistanceToNow } from "date-fns";
-import { AuthorLabel, useCurrentAuthor, useStorage } from "react-earthstar";
+import { IdentityLabel, useIdentity, useReplica } from "react-earthstar";
 import { renderMarkdown } from "./util/markdown";
 import ThreadTitle from "./ThreadTitle";
 import MarkdownPreview from "./MarkdownPreview";
 import { useWorkspaceAddrFromRouter } from "./WorkspaceLookup";
 import { useLetterboxLayer } from "./util/use-letterbox-layer";
+import { useIsCacheHeated } from "./util/use-cache-heated";
 
 function ThreadBar({ thread }: { thread: Thread }) {
   const { workspaceLookup, authorPubKey, timestamp } = useParams();
@@ -40,20 +38,21 @@ function ThreadBar({ thread }: { thread: Thread }) {
         </div>
       </div>
 
-      {mostRecentIsUnread ? (
-        <button
-          className="p-1.5 bg-blue-800 text-white rounded"
-          onClick={() =>
-            letterboxLayer.markReadUpTo(
-              parseInt(timestamp || ""),
-              authorPubKey || "",
-              lastItemTimestamp
-            )
-          }
-        >
-          Mark thread as read
-        </button>
-      ) : null}
+      {mostRecentIsUnread
+        ? (
+          <button
+            className="p-1.5 bg-blue-800 text-white rounded"
+            onClick={() =>
+              letterboxLayer.markReadUpTo(
+                parseInt(timestamp || ""),
+                authorPubKey || "",
+                lastItemTimestamp,
+              )}
+          >
+            Mark thread as read
+          </button>
+        )
+        : null}
     </div>
   );
 }
@@ -71,10 +70,10 @@ function PostDetails({
 }) {
   const workspace = useWorkspaceAddrFromRouter();
 
-  const storage = useStorage(workspace);
-  const [currentAuthor] = useCurrentAuthor();
+  const storage = useReplica(workspace);
+  const [currentAuthor] = useIdentity();
 
-  const letterboxLayer = new LetterboxLayer(storage, currentAuthor);
+  const letterboxLayer = useLetterboxLayer(workspace);
 
   const firstPostedTimestamp = letterboxLayer.getPostTimestamp(post.doc);
   const { authorPubKey, timestamp } = useParams();
@@ -83,64 +82,73 @@ function PostDetails({
 
   const isOwnPost = currentAuthor?.address === post.doc.author;
 
-  const authorDisplayName = storage.getContent(
-    `/about/~${post.doc.author}/displayName.txt`
+  const authorDisplayNameDoc = storage.getLatestDocAtPath(
+    `/about/~${post.doc.author}/displayName.txt`,
   );
 
   return (
     <div
-      className={
-        "text-gray-500 dark:text-gray-400 flex justify-between items-baseline mb-1 w-full self-stretch overflow-hidden space-x-1 text-sm"
-      }
+      className={"text-gray-500 dark:text-gray-400 flex justify-between items-baseline mb-1 w-full self-stretch overflow-hidden space-x-1 text-sm"}
     >
-      {authorDisplayName ? (
-        <>
-          <span className="font-bold text-gray-800 dark:text-gray-200 truncate flex-shrink min-w-0">
-            {authorDisplayName}
-          </span>{" "}
-          <AuthorLabel className="font-bold" address={post.doc.author} />
-        </>
-      ) : (
-        <AuthorLabel
-          className="text-gray-800 dark:text-gray-200 font-bold"
-          address={post.doc.author}
-        />
-      )}
+      {authorDisplayNameDoc
+        ? (
+          <>
+            <span className="font-bold text-gray-800 dark:text-gray-200 truncate flex-shrink min-w-0">
+              {authorDisplayNameDoc.content}
+            </span>{" "}
+            <IdentityLabel className="font-bold" address={post.doc.author} />
+          </>
+        )
+        : (
+          <IdentityLabel
+            className="text-gray-800 dark:text-gray-200 font-bold"
+            address={post.doc.author}
+          />
+        )}
       <span className="flex-initial whitespace-nowrap">
         {formatDistanceToNow(post.firstPosted, { addSuffix: true })}
       </span>
-      {isOwnPost ? (
-        <button
-          className={isEditing ? "text-purple-600" : "text-blue-500"}
-          onClick={onEdit}
-        >
-          {isEditing ? "Cancel edit" : "Edit"}
-        </button>
-      ) : null}
+      {isOwnPost
+        ? (
+          <button
+            className={isEditing ? "text-purple-600" : "text-blue-500"}
+            onClick={onEdit}
+          >
+            {isEditing ? "Cancel edit" : "Edit"}
+          </button>
+        )
+        : null}
 
-      {isOwnPost && post.doc.content.length > 0 ? (
-        <button className={"text-red-900 dark:text-red-200"} onClick={onDelete}>
-          Delete
-        </button>
-      ) : null}
+      {isOwnPost && post.doc.content.length > 0
+        ? (
+          <button
+            className={"text-red-900 dark:text-red-200"}
+            onClick={onDelete}
+          >
+            Delete
+          </button>
+        )
+        : null}
       <div className="flex-grow pl-5 text-right">
-        {currentAuthor ? (
-          <label>
-            <span>Read</span>
-            <input
-              type="checkbox"
-              className="ml-1"
-              checked={!isUnread}
-              onChange={() => {
-                letterboxLayer.markReadUpTo(
-                  parseInt(timestamp || ""),
-                  authorPubKey || "",
-                  isUnread ? firstPostedTimestamp : firstPostedTimestamp - 1
-                );
-              }}
-            />
-          </label>
-        ) : null}
+        {currentAuthor
+          ? (
+            <label>
+              <span>Read</span>
+              <input
+                type="checkbox"
+                className="ml-1"
+                checked={!isUnread}
+                onChange={() => {
+                  letterboxLayer.markReadUpTo(
+                    parseInt(timestamp || ""),
+                    authorPubKey || "",
+                    isUnread ? firstPostedTimestamp : firstPostedTimestamp - 1,
+                  );
+                }}
+              />
+            </label>
+          )
+          : null}
       </div>
     </div>
   );
@@ -190,11 +198,10 @@ function ThreadRootView({ root }: { root: Post }) {
 
   return (
     <article
-      className={`p-3 py-4 pl-6 sm:py-6 ${
-        isUnread
-          ? "bg-white dark:bg-black dark:text-gray-100"
-          : "bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-300"
-      }`}
+      className={`p-3 py-4 pl-6 sm:py-6 ${isUnread
+        ? "bg-white dark:bg-black dark:text-gray-100"
+        : "bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-300"
+        }`}
     >
       <PostDetails
         isEditing={isEditing}
@@ -202,7 +209,7 @@ function ThreadRootView({ root }: { root: Post }) {
         post={root}
         onDelete={() => {
           const shouldDelete = window.confirm(
-            "Are you sure you want to delete this post?"
+            "Are you sure you want to delete this post?",
           );
 
           if (shouldDelete) {
@@ -210,11 +217,9 @@ function ThreadRootView({ root }: { root: Post }) {
           }
         }}
       />
-      {isEditing ? (
-        <PostEditForm onEdit={() => setIsEditing(false)} post={root} />
-      ) : (
-        <PostContent doc={root.doc} />
-      )}
+      {isEditing
+        ? <PostEditForm onEdit={() => setIsEditing(false)} post={root} />
+        : <PostContent doc={root.doc} />}
     </article>
   );
 }
@@ -227,11 +232,10 @@ function PostView({ post }: { post: Post }) {
 
   return (
     <article
-      className={`p-3 py-4 pl-6 sm:py-6 ${
-        isUnread
-          ? "bg-white dark:bg-black dark:text-gray-100"
-          : "bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-300"
-      }`}
+      className={`p-3 py-4 pl-6 sm:py-6 ${isUnread
+        ? "bg-white dark:bg-black dark:text-gray-100"
+        : "bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-300"
+        }`}
     >
       <PostDetails
         isEditing={isEditing}
@@ -241,16 +245,14 @@ function PostView({ post }: { post: Post }) {
           letterboxLayer.editPost(post, "");
         }}
       />
-      {isEditing ? (
-        <PostEditForm onEdit={() => setIsEditing(false)} post={post} />
-      ) : (
-        <PostContent doc={post.doc} />
-      )}
+      {isEditing
+        ? <PostEditForm onEdit={() => setIsEditing(false)} post={post} />
+        : <PostContent doc={post.doc} />}
     </article>
   );
 }
 
-function PostContent({ doc }: { doc: Document }) {
+function PostContent({ doc }: { doc: Doc }) {
   const mdMemo = React.useMemo(() => {
     if (doc.content.length > 0) return renderMarkdown(doc.content);
     return null;
@@ -270,19 +272,29 @@ function PostContent({ doc }: { doc: Document }) {
 export default function ThreadView() {
   const { authorPubKey, timestamp } = useParams();
 
-  const [currentAuthor] = useCurrentAuthor();
+  const [currentAuthor] = useIdentity();
 
   const letterboxLayer = useLetterboxLayer();
 
   const thread = letterboxLayer.getThread(
     parseInt(timestamp || ""),
-    authorPubKey || ""
+    authorPubKey || "",
   );
 
   const match = useMatch("/:workspace/thread/:pubKey/:timestamp/reply");
 
-  if (!thread) {
+  const isHeated = useIsCacheHeated(thread)
+
+  if (!isHeated) {
+    return <div className="h-full w-full flex text-gray-500 items-center justify-center bg-gray-50"><div>Loading thread...</div></div>
+  }
+
+  if (!thread && isHeated) {
     return <p>No thread found.</p>;
+  }
+
+  if (!thread) {
+    return null
   }
 
   return (
@@ -299,11 +311,13 @@ export default function ThreadView() {
         ))}
       </ol>
       <footer className="flex gap-2 p-3 lg:px-6 justify-between py-3">
-        {!match && currentAuthor ? (
-          <Link className="link-btn" to={"reply"}>
-            Reply
-          </Link>
-        ) : null}
+        {!match && currentAuthor
+          ? (
+            <Link className="link-btn" to={"reply"}>
+              Reply
+            </Link>
+          )
+          : null}
       </footer>
       <Outlet />
     </div>

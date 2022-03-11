@@ -1,25 +1,31 @@
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { useInvitation, useWorkspaces, WorkspaceLabel } from "react-earthstar";
-import { isErr, ValidatorEs4, WorkspaceParsed } from "earthstar";
+import { ShareLabel, useInvitation, usePeer } from "react-earthstar";
+import {
+  FormatValidatorEs4,
+  isErr,
+  ParsedAddress,
+  parseShareAddress,
+} from "earthstar";
 import BrowserPocketIcon from "./images/browser-pocket.svg";
 import CloudPocketIcon from "./images/cloud-pocket.svg";
 import PocketDesc from "./PocketDesc";
 
 function JoinBar({ address }: { address: string }) {
-  return <div
-    className="flex py-2 px-3 bg-white dark:bg-black border-b shadow-sm justify-end sticky top-0 z-50 items-baseline dark:text-white dark:border-gray-800"
-  >
-    <Link className="md:hidden mr-2 text-blue-500 text-xl" to="/">⬅</Link>
-    <p className="flex-grow font-bold text-xl">
-      Add <WorkspaceLabel address={address} />
-    </p>
-  </div>;
+  return (
+    <div className="flex py-2 px-3 bg-white dark:bg-black border-b shadow-sm justify-end sticky top-0 z-50 items-baseline dark:text-white dark:border-gray-800">
+      <Link className="md:hidden mr-2 text-blue-500 text-xl" to="/">⬅</Link>
+      <p className="flex-grow font-bold text-xl">
+        Join <ShareLabel address={address} />
+      </p>
+    </div>
+  );
 }
 
 export default function Redeemer() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const workspaces = useWorkspaces();
+  const peer = usePeer();
+  const shares = peer.shares();
 
   const [workspace] = searchParams.getAll("workspace");
   const pubs = searchParams.getAll("pub");
@@ -27,8 +33,7 @@ export default function Redeemer() {
   const workspaceAddr = "+" + workspace.trimLeft();
 
   const reconstituted = workspace
-    ? `earthstar:///?workspace=+${workspaceAddr.substr(1)}${
-      pubs.map((url) => `&pub=${url}`).join("")
+    ? `earthstar:///?workspace=+${workspaceAddr.substr(1)}${pubs.map((url) => `&pub=${url}`).join("")
     }&v=1`
     : "";
 
@@ -36,91 +41,77 @@ export default function Redeemer() {
 
   const alreadyHasWorkspace = isErr(result)
     ? false
-    : workspaces.includes(result.workspace);
+    : shares.includes(result.workspace);
 
-  return <div className="h-app w-full h-overflow col-auto lg:col-span-2">
-    {isErr(result)
-      ? <div>The invitation code you pasted is no good: {result.message}</div>
-      : alreadyHasWorkspace
-      ? <div>
-        <JoinBar address={result.workspace} />
-        <p className="p-2">You're already a member of this space!</p>
-      </div>
-      : <>
-        <JoinBar address={result.workspace} />
-        <form
-          className="p-3 space-y-3 max-w-prose"
-          onSubmit={() => {
-            result.redeem();
+  return (
+    <div className="h-app w-full h-overflow w-full  col-auto md:col-span-2">
+      {isErr(result)
+        ? <div>The invitation code you pasted is no good: {result.message}</div>
+        : alreadyHasWorkspace
+          ? (
+            <div>
+              <JoinBar address={result.workspace} />
+              <p className="p-2">You're already a member of this share!</p>
+            </div>
+          )
+          : (
+            <>
+              <JoinBar address={result.workspace} />
+              <form
+                className="p-3 space-y-3 max-w-prose"
+                onSubmit={() => {
+                  result.redeem();
 
-            const { name } = ValidatorEs4.parseWorkspaceAddress(
-              result.workspace,
-            ) as WorkspaceParsed;
+                  const { name } = parseShareAddress(
+                    result.workspace,
+                  ) as ParsedAddress;
 
-            navigate(`/${name}`);
-          }}
-        >
-          <p>If you choose to add this space, here's what will happen:</p>
-
-          <ol>
-            <li
-              className="bg-blue-50 dark:bg-blue-900 p-4 space-y-4 inline-block rounded my-2"
-            >
-              <p>
-                A new pocket to hold{" "}
-                <b>
-                  <WorkspaceLabel address={result.workspace} />
-                </b>'s data will be created in your browser.
-              </p>
-              <div className="flex items-center gap-2">
-                <img src={BrowserPocketIcon} width={50} />
-                <div className="flex flex-col">
-                  <PocketDesc
-                    address={result.workspace}
-                    kind="Browser pocket"
-                  />
-                </div>
-              </div>
-            </li>
-            {pubs.length > 0
-              ? <li
-                className="bg-blue-50 dark:bg-blue-900 p-4 space-y-4 inline-block rounded my-2"
+                  navigate(`/${name}`);
+                }}
               >
+                <p>If you choose to join this share, here's what will happen:</p>
+
+                <ol>
+                  <li className="bg-blue-50 dark:bg-blue-900 p-3 space-y-4 inline-block rounded-xl my-2 border dark:border-blue-600">
+                    <p>
+                      A new replica to hold{" "}
+                      <b>
+                        <ShareLabel address={result.workspace} />
+                      </b>'s data will be stored in your browser.
+                    </p>
+                  </li>
+                  {pubs.length > 0
+                    ? (
+                      <li className="bg-blue-50 dark:bg-blue-900 p-3 space-y-4 inline-block rounded-xl my-2 border dark:border-blue-600">
+                        <p>
+                          The following replica servers will be added:
+                        </p>
+
+                        <ul className="list-disc pl-4">
+                          {result.pubs.map((url) => (
+                            <li key={url} className="list-disc">
+                              <a href={url} target="_blank" className="text-blue-600 underline">{url}</a>
+                            </li>
+                          ))}
+                        </ul>
+                      </li>
+                    )
+                    : null}
+                </ol>
+
                 <p>
-                  It will then be synchronised with the following{" "}
-                  <b>cloud pockets</b>:
+                  You will then be able to write and view posts made to{" "}
+                  <ShareLabel address={result.workspace} />.
                 </p>
 
-                {result.pubs.map((url) =>
-                  <div className="flex items-center gap-2">
-                    <img src={CloudPocketIcon} width={70} />
-                    <div className="flex flex-col space-y-2">
-                      <PocketDesc
-                        address={result.workspace}
-                        kind="Cloud pocket"
-                      />
-                      <div className="text-sm">{url}</div>
-                    </div>
-                  </div>
-                )}
-              </li>
-              : <p>
-                No cloud pockets to sync with were included with this
-                invitation, so anything you do will stay on this device.
-              </p>}
-          </ol>
 
-          <p>
-            You will then be able to write and view posts made to{" "}
-            <WorkspaceLabel address={result.workspace} />.
-          </p>
 
-          <p>More cloud pockets to sync with can always be added later!</p>
-
-          <button type="submit" className="btn">
-            Add <WorkspaceLabel address={result.workspace} />
-          </button>
-        </form>
-      </>}
-  </div>;
+                <button type="submit" className="btn">
+                  Join <ShareLabel address={result.workspace} />
+                </button>
+              </form>
+            </>
+          )}
+    </div>
+  );
 }
