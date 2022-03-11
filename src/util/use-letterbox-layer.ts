@@ -1,5 +1,5 @@
-import * as React from "react";
-import { useCurrentIdentity, useReplica } from "react-earthstar";
+import * as React from 'react'
+import { useIdentity, useReplica } from "react-earthstar";
 import { useWorkspaceAddrFromRouter } from "../WorkspaceLookup";
 
 import { LetterboxLayerCache } from "@earthstar-project/rich-threads-layer";
@@ -7,13 +7,9 @@ import { LetterboxLayerCache } from "@earthstar-project/rich-threads-layer";
 export function useLetterboxLayer(workspaceAddress?: string) {
   const inferredWorkspace = useWorkspaceAddrFromRouter();
 
-  console.log({ inferredWorkspace });
-
   const replica = useReplica(workspaceAddress || inferredWorkspace);
 
-  const [currentAuthor] = useCurrentIdentity();
+  const [identity] = useIdentity();
 
-  const layer = new LetterboxLayerCache(replica, currentAuthor);
-
-  return layer;
+  return new LetterboxLayerCache(replica, identity);
 }

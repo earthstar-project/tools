@@ -136,7 +136,7 @@ export function ShareCreatorForm({
               <p className="text-sm">
                 This will create a new in-browser replica of{" "}
                 <ShareLabel address={address} />, and begin syncing with any
-                peers which also know of this share.
+                peers which already know of this share.
               </p>
             </>
           )

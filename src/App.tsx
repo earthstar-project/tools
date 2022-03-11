@@ -11,6 +11,9 @@ import WorkspaceLookup from "./WorkspaceLookup";
 import Dashboard from "./Dashboard";
 import JoinForm from "./JoinForm";
 import AddForm from "./AddForm";
+import SettingsManager from "./SettingsManager";
+import IdentityCreatorForm from "./IdentityCreatorForm";
+import ExistingIdentityForm from "./ExistingIdentityForm";
 
 const STORAGE_KEY = "letterbox";
 
@@ -39,6 +42,15 @@ function App() {
                 />
                 <Route path={"join/*"} element={<JoinForm />} />
                 <Route path={"add"} element={<AddForm />} />
+                <Route path={"settings"} element={<SettingsManager />} />
+                <Route
+                  path={"new-identity"}
+                  element={<IdentityCreatorForm />}
+                />
+                <Route
+                  path={"existing-identity"}
+                  element={<ExistingIdentityForm />}
+                />
               </Route>
             </Routes>
           </WorkspaceLookup>

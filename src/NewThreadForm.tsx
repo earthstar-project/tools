@@ -1,6 +1,6 @@
 import { isErr } from "earthstar";
 import * as React from "react";
-import { useCurrentIdentity } from "react-earthstar";
+import { useIdentity } from "react-earthstar";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDebounce, useDebouncedCallback } from "use-debounce";
 import MarkdownPreview from "./MarkdownPreview";
@@ -25,7 +25,7 @@ function NewThreadBar() {
 }
 
 export default function NewThreadForm() {
-  const [currentAuthor] = useCurrentIdentity();
+  const [currentAuthor] = useIdentity();
   const letterboxLayer = useLetterboxLayer();
 
   const { workspaceLookup } = useParams();
@@ -91,7 +91,9 @@ export default function NewThreadForm() {
       <form
         ref={formRef}
         className="flex flex-col  p-3 md:p-6"
-        onSubmit={async () => {
+        onSubmit={async (e) => {
+          e.preventDefault();
+
           const res = await letterboxLayer.createThread(combinedContent);
 
           if (isErr(res)) {
@@ -135,9 +137,8 @@ export default function NewThreadForm() {
           }}
         />
         <div
-          className={`text-right text-gray-500 ${
-            didSaveDraft ? "visible" : "invisible"
-          }`}
+          className={`text-right text-gray-500 ${didSaveDraft ? "visible" : "invisible"
+            }`}
         >
           ✔ Draft saved
         </div>
@@ -193,9 +194,8 @@ function DraftItem(
 
   return (
     <div
-      className={`flex justify-between items-baseline border rounded dark:border-gray-800 ${
-        isSelected ? "bg-blue-50 dark:bg-blue-900" : ""
-      }`}
+      className={`flex justify-between items-baseline border rounded dark:border-gray-800 ${isSelected ? "bg-blue-50 dark:bg-blue-900" : ""
+        }`}
     >
       <button
         onClick={onSelect}

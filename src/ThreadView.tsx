@@ -1,18 +1,15 @@
 import * as React from "react";
 import { Doc, isErr } from "earthstar";
 import { Link, Outlet, useMatch, useParams } from "react-router-dom";
-import {
-  LetterboxLayerCache,
-  Post,
-  Thread,
-} from "@earthstar-project/rich-threads-layer";
+import { Post, Thread } from "@earthstar-project/rich-threads-layer";
 import { formatDistanceToNow } from "date-fns";
-import { AuthorLabel, useCurrentIdentity, useReplica } from "react-earthstar";
+import { IdentityLabel, useIdentity, useReplica } from "react-earthstar";
 import { renderMarkdown } from "./util/markdown";
 import ThreadTitle from "./ThreadTitle";
 import MarkdownPreview from "./MarkdownPreview";
 import { useWorkspaceAddrFromRouter } from "./WorkspaceLookup";
 import { useLetterboxLayer } from "./util/use-letterbox-layer";
+import { useIsCacheHeated } from "./util/use-cache-heated";
 
 function ThreadBar({ thread }: { thread: Thread }) {
   const { workspaceLookup, authorPubKey, timestamp } = useParams();
@@ -74,9 +71,9 @@ function PostDetails({
   const workspace = useWorkspaceAddrFromRouter();
 
   const storage = useReplica(workspace);
-  const [currentAuthor] = useCurrentIdentity();
+  const [currentAuthor] = useIdentity();
 
-  const letterboxLayer = new LetterboxLayerCache(storage, currentAuthor);
+  const letterboxLayer = useLetterboxLayer(workspace);
 
   const firstPostedTimestamp = letterboxLayer.getPostTimestamp(post.doc);
   const { authorPubKey, timestamp } = useParams();
@@ -99,11 +96,11 @@ function PostDetails({
             <span className="font-bold text-gray-800 dark:text-gray-200 truncate flex-shrink min-w-0">
               {authorDisplayNameDoc.content}
             </span>{" "}
-            <AuthorLabel className="font-bold" address={post.doc.author} />
+            <IdentityLabel className="font-bold" address={post.doc.author} />
           </>
         )
         : (
-          <AuthorLabel
+          <IdentityLabel
             className="text-gray-800 dark:text-gray-200 font-bold"
             address={post.doc.author}
           />
@@ -201,11 +198,10 @@ function ThreadRootView({ root }: { root: Post }) {
 
   return (
     <article
-      className={`p-3 py-4 pl-6 sm:py-6 ${
-        isUnread
-          ? "bg-white dark:bg-black dark:text-gray-100"
-          : "bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-300"
-      }`}
+      className={`p-3 py-4 pl-6 sm:py-6 ${isUnread
+        ? "bg-white dark:bg-black dark:text-gray-100"
+        : "bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-300"
+        }`}
     >
       <PostDetails
         isEditing={isEditing}
@@ -236,11 +232,10 @@ function PostView({ post }: { post: Post }) {
 
   return (
     <article
-      className={`p-3 py-4 pl-6 sm:py-6 ${
-        isUnread
-          ? "bg-white dark:bg-black dark:text-gray-100"
-          : "bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-300"
-      }`}
+      className={`p-3 py-4 pl-6 sm:py-6 ${isUnread
+        ? "bg-white dark:bg-black dark:text-gray-100"
+        : "bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-300"
+        }`}
     >
       <PostDetails
         isEditing={isEditing}
@@ -277,7 +272,7 @@ function PostContent({ doc }: { doc: Doc }) {
 export default function ThreadView() {
   const { authorPubKey, timestamp } = useParams();
 
-  const [currentAuthor] = useCurrentIdentity();
+  const [currentAuthor] = useIdentity();
 
   const letterboxLayer = useLetterboxLayer();
 
@@ -288,8 +283,18 @@ export default function ThreadView() {
 
   const match = useMatch("/:workspace/thread/:pubKey/:timestamp/reply");
 
-  if (!thread) {
+  const isHeated = useIsCacheHeated(thread)
+
+  if (!isHeated) {
+    return <div className="h-full w-full flex text-gray-500 items-center justify-center bg-gray-50"><div>Loading thread...</div></div>
+  }
+
+  if (!thread && isHeated) {
     return <p>No thread found.</p>;
+  }
+
+  if (!thread) {
+    return null
   }
 
   return (

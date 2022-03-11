@@ -1,9 +1,10 @@
 import { isErr } from "earthstar";
 import * as React from "react";
-import { useCurrentIdentity } from "react-earthstar";
+import { useIdentity } from "react-earthstar";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDebouncedCallback } from "use-debounce";
 import MarkdownPreview from "./MarkdownPreview";
+import { useIsCacheHeated } from "./util/use-cache-heated";
 import { useLetterboxLayer } from "./util/use-letterbox-layer";
 
 export default function ThreadReplyForm() {
@@ -12,10 +13,10 @@ export default function ThreadReplyForm() {
   const timestampInt = parseInt(timestamp || "0");
   const threadAuthorPubKey = authorPubKey || "";
 
-  const [currentAuthor] = useCurrentIdentity();
+  const [currentAuthor] = useIdentity();
   const letterboxLayer = useLetterboxLayer();
   const [replyText, setReplyText] = React.useState(
-    letterboxLayer.getReplyDraft(timestampInt, threadAuthorPubKey) || "",
+    "",
   );
   const navigate = useNavigate();
   const [didSaveDraft, setDidSaveDraft] = React.useState(false);
@@ -27,6 +28,16 @@ export default function ThreadReplyForm() {
     }
   }, []);
 
+  const draft = letterboxLayer.getReplyDraft(timestampInt, threadAuthorPubKey)
+
+  const draftIsHeated = useIsCacheHeated(draft);
+
+  React.useEffect(() => {
+    if (draftIsHeated && draft) {
+      setReplyText(draft)
+    }
+  }, [draftIsHeated])
+
   const writeDraft = useDebouncedCallback((content) => {
     letterboxLayer.setReplyDraft(timestampInt, threadAuthorPubKey, content);
 
@@ -37,10 +48,10 @@ export default function ThreadReplyForm() {
     <form
       ref={formRef}
       className={"flex flex-col pt-0 p-3 lg:p-6 lg:pt-0"}
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault();
 
-        const result = letterboxLayer.createReply(
+        const result = await letterboxLayer.createReply(
           timestampInt,
           threadAuthorPubKey,
           replyText,
@@ -60,6 +71,7 @@ export default function ThreadReplyForm() {
         className={"border p-2 mb-2 shadow-inner dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"}
         value={replyText}
         placeholder={"Supports markdown"}
+
         rows={10}
         onChange={(e) => {
           setDidSaveDraft(false);
@@ -68,9 +80,8 @@ export default function ThreadReplyForm() {
         }}
       />
       <div
-        className={`text-right text-gray-500 dark:text-gray-400 ${
-          didSaveDraft ? "visible" : "invisible"
-        }`}
+        className={`text-right text-gray-500 dark:text-gray-400 ${didSaveDraft ? "visible" : "invisible"
+          }`}
       >
         ✔ Draft saved
       </div>

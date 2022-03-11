@@ -1,57 +1,17 @@
 import * as React from "react";
 import {
   ShareLabel,
-  useCurrentIdentity,
+  useIdentity,
   useMakeInvitation,
   usePeer,
-  usePubs,
+  useReplicaServers,
   useReplica,
 } from "react-earthstar";
 import { parseAuthorAddress, ParsedAddress } from "earthstar";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  Combobox,
-  ComboboxInput,
-  ComboboxList,
-  ComboboxOption,
-  ComboboxPopover,
-} from "@reach/combobox";
+
 import { useWorkspaceAddrFromRouter } from "./WorkspaceLookup";
-import PocketDesc from "./PocketDesc";
-import CloudPocketIcon from "./images/cloud-pocket.svg";
-
-function CopyButton({
-  children,
-  copyValue,
-  onClick,
-  ...props
-}: React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  copyValue: any;
-}) {
-  const [copied, setCopied] = React.useState(false);
-
-  React.useEffect(() => {
-    let id = setTimeout(() => setCopied(false), 2000);
-    return () => clearTimeout(id);
-  }, [copied]);
-
-  return (
-    <button
-      className="btn"
-      {...props}
-      onClick={(e) => {
-        if (onClick) {
-          onClick(e);
-        }
-
-        navigator.clipboard.writeText(copyValue);
-        setCopied(true);
-      }}
-    >
-      {copied ? "Copied to clipboard!" : children || "Copy"}
-    </button>
-  );
-}
+import CopyButton from "./CopyButton";
 
 function SpaceSettingsBar() {
   const workspace = useWorkspaceAddrFromRouter();
@@ -70,16 +30,16 @@ function SpaceSettingsBar() {
 
 export default function SpaceSettings() {
   const inferredWorkspace = useWorkspaceAddrFromRouter();
-  const invitationCode = useMakeInvitation([], inferredWorkspace);
+  const [replicaServers] = useReplicaServers()
+  const invitationCode = useMakeInvitation(replicaServers, inferredWorkspace);
 
   const invitationUrl =
-    `${window.location.protocol}//${window.location.hostname}${
-      window.location.port !== "" ? `:${window.location.port}` : ""
+    `${window.location.protocol}//${window.location.hostname}${window.location.port !== "" ? `:${window.location.port}` : ""
     }/join/${invitationCode}`;
 
   const peer = usePeer();
 
-  const [currentAuthor] = useCurrentIdentity();
+  const [currentAuthor] = useIdentity();
 
   const navigate = useNavigate();
 
@@ -96,18 +56,6 @@ export default function SpaceSettings() {
             </>
           )
           : null}
-
-        <p>
-          Want to run your own cloud pocket for you and your friends?{" "}
-          <a
-            className="underline text-blue-500"
-            href="https://github.com/earthstar-project/earthstar-pub#readme"
-          >
-            Find out how!
-          </a>
-        </p>
-
-        <hr />
 
         <h2 className="font-bold text-xl">
           Invite someone to <ShareLabel address={inferredWorkspace} />
@@ -129,7 +77,7 @@ export default function SpaceSettings() {
           className="btn"
           onClick={() => {
             const isSure = window.confirm(
-              `Are you sure you want to remove ${inferredWorkspace} from your workspaces?`,
+              `Are you sure you want to delete your replica for ${inferredWorkspace}?`,
             );
 
             if (isSure) {
@@ -248,7 +196,7 @@ function PocketEditor() {
 */
 
 function DisplayNameForm() {
-  const [currentAuthor] = useCurrentIdentity();
+  const [currentAuthor] = useIdentity();
   const inferredWorkspace = useWorkspaceAddrFromRouter();
   const replica = useReplica(inferredWorkspace);
 

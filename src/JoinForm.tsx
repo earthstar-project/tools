@@ -15,7 +15,7 @@ function JoinBar({ address }: { address: string }) {
     <div className="flex py-2 px-3 bg-white dark:bg-black border-b shadow-sm justify-end sticky top-0 z-50 items-baseline dark:text-white dark:border-gray-800">
       <Link className="md:hidden mr-2 text-blue-500 text-xl" to="/">⬅</Link>
       <p className="flex-grow font-bold text-xl">
-        Add <ShareLabel address={address} />
+        Join <ShareLabel address={address} />
       </p>
     </div>
   );
@@ -33,8 +33,7 @@ export default function Redeemer() {
   const workspaceAddr = "+" + workspace.trimLeft();
 
   const reconstituted = workspace
-    ? `earthstar:///?workspace=+${workspaceAddr.substr(1)}${
-      pubs.map((url) => `&pub=${url}`).join("")
+    ? `earthstar:///?workspace=+${workspaceAddr.substr(1)}${pubs.map((url) => `&pub=${url}`).join("")
     }&v=1`
     : "";
 
@@ -49,88 +48,70 @@ export default function Redeemer() {
       {isErr(result)
         ? <div>The invitation code you pasted is no good: {result.message}</div>
         : alreadyHasWorkspace
-        ? (
-          <div>
-            <JoinBar address={result.workspace} />
-            <p className="p-2">You're already a member of this space!</p>
-          </div>
-        )
-        : (
-          <>
-            <JoinBar address={result.workspace} />
-            <form
-              className="p-3 space-y-3 max-w-prose"
-              onSubmit={() => {
-                result.redeem();
+          ? (
+            <div>
+              <JoinBar address={result.workspace} />
+              <p className="p-2">You're already a member of this share!</p>
+            </div>
+          )
+          : (
+            <>
+              <JoinBar address={result.workspace} />
+              <form
+                className="p-3 space-y-3 max-w-prose"
+                onSubmit={() => {
+                  result.redeem();
 
-                const { name } = parseShareAddress(
-                  result.workspace,
-                ) as ParsedAddress;
+                  const { name } = parseShareAddress(
+                    result.workspace,
+                  ) as ParsedAddress;
 
-                navigate(`/${name}`);
-              }}
-            >
-              <p>If you choose to add this space, here's what will happen:</p>
+                  navigate(`/${name}`);
+                }}
+              >
+                <p>If you choose to join this share, here's what will happen:</p>
 
-              <ol>
-                <li className="bg-blue-50 dark:bg-blue-900 p-4 space-y-4 inline-block rounded my-2">
-                  <p>
-                    A new pocket to hold{" "}
-                    <b>
-                      <ShareLabel address={result.workspace} />
-                    </b>'s data will be created in your browser.
-                  </p>
-                  <div className="flex items-center gap-2">
-                    <img src={BrowserPocketIcon} width={50} />
-                    <div className="flex flex-col">
-                      <PocketDesc
-                        address={result.workspace}
-                      />
-                    </div>
-                  </div>
-                </li>
-                {pubs.length > 0
-                  ? (
-                    <li className="bg-blue-50 dark:bg-blue-900 p-4 space-y-4 inline-block rounded my-2">
-                      <p>
-                        It will then be synchronised with the following{" "}
-                        <b>cloud pockets</b>:
-                      </p>
-
-                      {result.pubs.map((url) => (
-                        <div className="flex items-center gap-2">
-                          <img src={CloudPocketIcon} width={70} />
-                          <div className="flex flex-col space-y-2">
-                            <PocketDesc
-                              address={result.workspace}
-                            />
-                            <div className="text-sm">{url}</div>
-                          </div>
-                        </div>
-                      ))}
-                    </li>
-                  )
-                  : (
+                <ol>
+                  <li className="bg-blue-50 dark:bg-blue-900 p-4 space-y-4 inline-block rounded my-2">
                     <p>
-                      No cloud pockets to sync with were included with this
-                      invitation, so anything you do will stay on this device.
+                      A new replica to hold{" "}
+                      <b>
+                        <ShareLabel address={result.workspace} />
+                      </b>'s data will be stored in your browser.
                     </p>
-                  )}
-              </ol>
+                  </li>
+                  {pubs.length > 0
+                    ? (
+                      <li className="bg-blue-50 dark:bg-blue-900 p-4 space-y-4 inline-block rounded my-2">
+                        <p>
+                          The following replica servers will be added:
+                        </p>
 
-              <p>
-                You will then be able to write and view posts made to{" "}
-                <ShareLabel address={result.workspace} />.
-              </p>
+                        <ul className="list-disc pl-4">
+                          {result.pubs.map((url) => (
+                            <li key={url} className="list-disc">
+                              <a href={url} target="_blank" className="text-blue-600 underline">{url}</a>
+                            </li>
+                          ))}
+                        </ul>
+                      </li>
+                    )
+                    : null}
+                </ol>
 
-              <p>More cloud pockets to sync with can always be added later!</p>
+                <p>
+                  You will then be able to write and view posts made to{" "}
+                  <ShareLabel address={result.workspace} />.
+                </p>
 
-              <button type="submit" className="btn">
-                Add <ShareLabel address={result.workspace} />
-              </button>
-            </form>
-          </>
-        )}
+
+
+                <button type="submit" className="btn">
+                  Join <ShareLabel address={result.workspace} />
+                </button>
+              </form>
+            </>
+          )}
     </div>
   );
 }
