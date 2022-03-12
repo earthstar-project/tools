@@ -4,7 +4,6 @@ import { ShareLabel, useIdentity, useReplica } from "react-earthstar";
 import { Link, Outlet, useMatch } from "react-router-dom";
 import ThreadItem from "./ThreadRootItem";
 import { useIsCacheHeated } from "./util/use-cache-heated";
-import { useLetterboxLayer } from "./util/use-letterbox-layer";
 import { useWorkspaceAddrFromRouter } from "./WorkspaceLookup";
 
 function SpaceBar() {
@@ -70,7 +69,7 @@ export default function ThreadListing() {
 
   const match = useMatch("/:workspacePath");
 
-  const isExactlyOnSpacePath = match !== undefined;
+  const isExactlyOnSpacePath = match !== null;
 
   const isHeated = useIsCacheHeated(threadRoots);
 
@@ -90,8 +89,7 @@ export default function ThreadListing() {
   return (
     <React.Fragment key={match ? match.params['workspacePath'] : 'none'}>
       <section
-        className={`border-r-2 border-gray-300 dark:border-gray-800 h-full flex flex-col overflow-auto shadow-lg ${isExactlyOnSpacePath ? "block" : "hidden md:block"
-          }`}
+        className={`border-r-2 border-gray-300 dark:border-gray-800 h-full flex flex-col overflow-auto shadow-lg ${isExactlyOnSpacePath ? "block" : "hidden md:block"}`}
       >
         <SpaceBar />
         {!isHeated && threadRoots.length === 0 ? <div className="p-1 md:p-3 text-gray-500 text-center">
