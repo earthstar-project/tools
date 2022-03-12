@@ -28,15 +28,15 @@ export default function ThreadReplyForm() {
     }
   }, []);
 
-  const draft = letterboxLayer.getReplyDraft(timestampInt, threadAuthorPubKey)
+  const draft = letterboxLayer.getReplyDraft(timestampInt, threadAuthorPubKey);
 
   const draftIsHeated = useIsCacheHeated(draft);
 
   React.useEffect(() => {
     if (draftIsHeated && draft) {
-      setReplyText(draft)
+      setReplyText(draft);
     }
-  }, [draftIsHeated])
+  }, [draftIsHeated]);
 
   const writeDraft = useDebouncedCallback((content) => {
     letterboxLayer.setReplyDraft(timestampInt, threadAuthorPubKey, content);
@@ -71,7 +71,6 @@ export default function ThreadReplyForm() {
         className={"border p-2 mb-2 shadow-inner dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"}
         value={replyText}
         placeholder={"Supports markdown"}
-
         rows={10}
         onChange={(e) => {
           setDidSaveDraft(false);
@@ -80,8 +79,9 @@ export default function ThreadReplyForm() {
         }}
       />
       <div
-        className={`text-right text-gray-500 dark:text-gray-400 ${didSaveDraft ? "visible" : "invisible"
-          }`}
+        className={`text-right text-gray-500 dark:text-gray-400 ${
+          didSaveDraft ? "visible" : "invisible"
+        }`}
       >
         ✔ Draft saved
       </div>

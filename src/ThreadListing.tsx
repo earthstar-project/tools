@@ -29,7 +29,6 @@ function SpaceBar() {
           )
           : null}
       </div>
-
     </div>
   );
 }
@@ -38,30 +37,29 @@ function FilterBar(props: {
   onlyUnread: boolean;
   setOnlyUnread: (newVal: boolean) => void;
 }) {
-
-  return <div
-    className="sticky bottom-0 p-2 text-right bg-white dark:bg-black border-t dark:border-gray-700"
-  ><label className="mt-1 text-sm">
-      <input
-        type="checkbox"
-        checked={props.onlyUnread}
-        onChange={() => {
-          props.setOnlyUnread(!props.onlyUnread);
-        }}
-      />
-      <span className="ml-2 text-gray-500">Show unread only</span>
-    </label></div>
+  return (
+    <div className="sticky bottom-0 p-2 text-right bg-white dark:bg-black border-t dark:border-gray-700">
+      <label className="mt-1 text-sm">
+        <input
+          type="checkbox"
+          checked={props.onlyUnread}
+          onChange={() => {
+            props.setOnlyUnread(!props.onlyUnread);
+          }}
+        />
+        <span className="ml-2 text-gray-500">Show unread only</span>
+      </label>
+    </div>
+  );
 }
 
 export default function ThreadListing() {
-
   const inferredWorkspace = useWorkspaceAddrFromRouter();
   const replica = useReplica(inferredWorkspace);
 
-
   const [identity] = useIdentity();
 
-  const letterbox = new LetterboxLayerCache(replica, identity)
+  const letterbox = new LetterboxLayerCache(replica, identity);
 
   const [onlyUnread, setOnlyUnread] = React.useState<boolean>(false);
 
@@ -73,28 +71,34 @@ export default function ThreadListing() {
 
   const isHeated = useIsCacheHeated(threadRoots);
 
-  console.log('changed', match?.params['workspacePath']);
+  console.log("changed", match?.params["workspacePath"]);
 
   React.useEffect(() => {
     const unsub = replica.onCacheUpdated(() => {
-      console.log('cache updated')
-    })
+      console.log("cache updated");
+    });
 
     return () => {
-      console.log('unsubbed')
-      unsub()
-    }
-  }, [replica])
+      console.log("unsubbed");
+      unsub();
+    };
+  }, [replica]);
 
   return (
-    <React.Fragment key={match ? match.params['workspacePath'] : 'none'}>
+    <React.Fragment key={match ? match.params["workspacePath"] : "none"}>
       <section
-        className={`border-r-2 border-gray-300 dark:border-gray-800 h-full flex flex-col overflow-auto shadow-lg ${isExactlyOnSpacePath ? "block" : "hidden md:block"}`}
+        className={`border-r-2 border-gray-300 dark:border-gray-800 h-full flex flex-col overflow-auto shadow-lg ${
+          isExactlyOnSpacePath ? "block" : "hidden md:block"
+        }`}
       >
         <SpaceBar />
-        {!isHeated && threadRoots.length === 0 ? <div className="p-1 md:p-3 text-gray-500 text-center">
-          Loading threads...
-        </div> : null}
+        {!isHeated && threadRoots.length === 0
+          ? (
+            <div className="p-1 md:p-3 text-gray-500 text-center">
+              Loading threads...
+            </div>
+          )
+          : null}
 
         {threadRoots.length === 0 && isHeated
           ? (
@@ -109,17 +113,29 @@ export default function ThreadListing() {
                   return (
                     <React.Fragment key={threadRoot.doc.path}>
                       <li>
-                        <ThreadItem author={threadRoot.doc.author} timestamp={letterbox.getThreadRootTimestamp(threadRoot.doc)} hideIfRead={onlyUnread} />
+                        <ThreadItem
+                          author={threadRoot.doc.author}
+                          timestamp={letterbox.getThreadRootTimestamp(
+                            threadRoot.doc,
+                          )}
+                          hideIfRead={onlyUnread}
+                        />
                       </li>
                       <hr className="dark:border-gray-800" />
                     </React.Fragment>
                   );
                 })}
               </ol>
-              {threadRoots.length > 0 ? <FilterBar onlyUnread={onlyUnread} setOnlyUnread={setOnlyUnread} /> : null}
+              {threadRoots.length > 0
+                ? (
+                  <FilterBar
+                    onlyUnread={onlyUnread}
+                    setOnlyUnread={setOnlyUnread}
+                  />
+                )
+                : null}
             </>
           )}
-
       </section>
       <Outlet />
     </React.Fragment>

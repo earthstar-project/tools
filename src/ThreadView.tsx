@@ -198,10 +198,11 @@ function ThreadRootView({ root }: { root: Post }) {
 
   return (
     <article
-      className={`p-3 py-4 pl-6 sm:py-6 ${isUnread
-        ? "bg-white dark:bg-black dark:text-gray-100"
-        : "bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-300"
-        }`}
+      className={`p-3 py-4 pl-6 sm:py-6 ${
+        isUnread
+          ? "bg-white dark:bg-black dark:text-gray-100"
+          : "bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-300"
+      }`}
     >
       <PostDetails
         isEditing={isEditing}
@@ -232,10 +233,11 @@ function PostView({ post }: { post: Post }) {
 
   return (
     <article
-      className={`p-3 py-4 pl-6 sm:py-6 ${isUnread
-        ? "bg-white dark:bg-black dark:text-gray-100"
-        : "bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-300"
-        }`}
+      className={`p-3 py-4 pl-6 sm:py-6 ${
+        isUnread
+          ? "bg-white dark:bg-black dark:text-gray-100"
+          : "bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-300"
+      }`}
     >
       <PostDetails
         isEditing={isEditing}
@@ -283,10 +285,14 @@ export default function ThreadView() {
 
   const match = useMatch("/:workspace/thread/:pubKey/:timestamp/reply");
 
-  const isHeated = useIsCacheHeated(thread)
+  const isHeated = useIsCacheHeated(thread);
 
   if (!isHeated) {
-    return <div className="h-full w-full flex text-gray-500 items-center justify-center bg-gray-50"><div>Loading thread...</div></div>
+    return (
+      <div className="h-full w-full flex text-gray-500 items-center justify-center bg-gray-50">
+        <div>Loading thread...</div>
+      </div>
+    );
   }
 
   if (!thread && isHeated) {
@@ -294,7 +300,7 @@ export default function ThreadView() {
   }
 
   if (!thread) {
-    return null
+    return null;
   }
 
   return (

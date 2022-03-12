@@ -4,8 +4,8 @@ import {
   useIdentity,
   useMakeInvitation,
   usePeer,
-  useReplicaServers,
   useReplica,
+  useReplicaServers,
 } from "react-earthstar";
 import { parseAuthorAddress, ParsedAddress } from "earthstar";
 import { Link, useNavigate } from "react-router-dom";
@@ -30,11 +30,12 @@ function SpaceSettingsBar() {
 
 export default function SpaceSettings() {
   const inferredWorkspace = useWorkspaceAddrFromRouter();
-  const [replicaServers] = useReplicaServers()
+  const [replicaServers] = useReplicaServers();
   const invitationCode = useMakeInvitation(replicaServers, inferredWorkspace);
 
   const invitationUrl =
-    `${window.location.protocol}//${window.location.hostname}${window.location.port !== "" ? `:${window.location.port}` : ""
+    `${window.location.protocol}//${window.location.hostname}${
+      window.location.port !== "" ? `:${window.location.port}` : ""
     }/join/${invitationCode}`;
 
   const peer = usePeer();

@@ -137,8 +137,9 @@ export default function NewThreadForm() {
           }}
         />
         <div
-          className={`text-right text-gray-500 ${didSaveDraft ? "visible" : "invisible"
-            }`}
+          className={`text-right text-gray-500 ${
+            didSaveDraft ? "visible" : "invisible"
+          }`}
         >
           ✔ Draft saved
         </div>
@@ -194,8 +195,9 @@ function DraftItem(
 
   return (
     <div
-      className={`flex justify-between items-baseline border rounded dark:border-gray-800 ${isSelected ? "bg-blue-50 dark:bg-blue-900" : ""
-        }`}
+      className={`flex justify-between items-baseline border rounded dark:border-gray-800 ${
+        isSelected ? "bg-blue-50 dark:bg-blue-900" : ""
+      }`}
     >
       <button
         onClick={onSelect}

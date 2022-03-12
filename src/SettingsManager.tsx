@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useIdentity, useReplicaServers } from "react-earthstar";
 import { Link } from "react-router-dom";
-import IdentityCard from './IdentityCard'
+import IdentityCard from "./IdentityCard";
 
 function ManagerBar() {
   return (
@@ -13,8 +13,6 @@ function ManagerBar() {
     </div>
   );
 }
-
-
 
 function ReplicaServerManager() {
   const [replicaServers, setReplicaServers] = useReplicaServers();
@@ -30,9 +28,7 @@ function ReplicaServerManager() {
         )
         : null}
       {replicaServers.map((server) => {
-        return (
-          <li>{server}</li>
-        );
+        return <li>{server}</li>;
       })}
       <form
         onSubmit={(e) => {
@@ -63,32 +59,26 @@ export default function SettingsManager() {
       <ManagerBar />
       <div className="p-3 space-y-3">
         <h2 className="font-bold text-xl">Identity</h2>
-        {identity
-          ? (
-
-            <IdentityCard keypair={identity} />
-
-          )
-          : (
-            <div>
-              <p className="max-w-prose">
-                You're currently using this app anonymously. You will not be
-                able to write data.
-              </p>
-              <Link
-                className="block underline text-blue-700"
-                to="/new-identity"
-              >
-                Create a new identity
-              </Link>
-              <Link
-                className="block underline text-blue-700"
-                to="/existing-identity"
-              >
-                Use an existing identity
-              </Link>
-            </div>
-          )}
+        {identity ? <IdentityCard keypair={identity} /> : (
+          <div>
+            <p className="max-w-prose">
+              You're currently using this app anonymously. You will not be able
+              to write data.
+            </p>
+            <Link
+              className="block underline text-blue-700"
+              to="/new-identity"
+            >
+              Create a new identity
+            </Link>
+            <Link
+              className="block underline text-blue-700"
+              to="/existing-identity"
+            >
+              Use an existing identity
+            </Link>
+          </div>
+        )}
         <hr />
         <h2 className="font-bold text-xl">Replica servers</h2>
         <ReplicaServerManager />

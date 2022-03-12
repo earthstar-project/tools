@@ -33,7 +33,8 @@ export default function Redeemer() {
   const workspaceAddr = "+" + workspace.trimLeft();
 
   const reconstituted = workspace
-    ? `earthstar:///?workspace=+${workspaceAddr.substr(1)}${pubs.map((url) => `&pub=${url}`).join("")
+    ? `earthstar:///?workspace=+${workspaceAddr.substr(1)}${
+      pubs.map((url) => `&pub=${url}`).join("")
     }&v=1`
     : "";
 
@@ -48,70 +49,74 @@ export default function Redeemer() {
       {isErr(result)
         ? <div>The invitation code you pasted is no good: {result.message}</div>
         : alreadyHasWorkspace
-          ? (
-            <div>
-              <JoinBar address={result.workspace} />
-              <p className="p-2">You're already a member of this share!</p>
-            </div>
-          )
-          : (
-            <>
-              <JoinBar address={result.workspace} />
-              <form
-                className="p-3 space-y-3 max-w-prose"
-                onSubmit={() => {
-                  result.redeem();
+        ? (
+          <div>
+            <JoinBar address={result.workspace} />
+            <p className="p-2">You're already a member of this share!</p>
+          </div>
+        )
+        : (
+          <>
+            <JoinBar address={result.workspace} />
+            <form
+              className="p-3 space-y-3 max-w-prose"
+              onSubmit={() => {
+                result.redeem();
 
-                  const { name } = parseShareAddress(
-                    result.workspace,
-                  ) as ParsedAddress;
+                const { name } = parseShareAddress(
+                  result.workspace,
+                ) as ParsedAddress;
 
-                  navigate(`/${name}`);
-                }}
-              >
-                <p>If you choose to join this share, here's what will happen:</p>
+                navigate(`/${name}`);
+              }}
+            >
+              <p>If you choose to join this share, here's what will happen:</p>
 
-                <ol>
-                  <li className="bg-blue-50 dark:bg-blue-900 p-3 space-y-4 inline-block rounded-xl my-2 border dark:border-blue-600">
-                    <p>
-                      A new replica to hold{" "}
-                      <b>
-                        <ShareLabel address={result.workspace} />
-                      </b>'s data will be stored in your browser.
-                    </p>
-                  </li>
-                  {pubs.length > 0
-                    ? (
-                      <li className="bg-blue-50 dark:bg-blue-900 p-3 space-y-4 inline-block rounded-xl my-2 border dark:border-blue-600">
-                        <p>
-                          The following replica servers will be added:
-                        </p>
+              <ol>
+                <li className="bg-blue-50 dark:bg-blue-900 p-3 space-y-4 inline-block rounded-xl my-2 border dark:border-blue-600">
+                  <p>
+                    A new replica to hold{" "}
+                    <b>
+                      <ShareLabel address={result.workspace} />
+                    </b>'s data will be stored in your browser.
+                  </p>
+                </li>
+                {pubs.length > 0
+                  ? (
+                    <li className="bg-blue-50 dark:bg-blue-900 p-3 space-y-4 inline-block rounded-xl my-2 border dark:border-blue-600">
+                      <p>
+                        The following replica servers will be added:
+                      </p>
 
-                        <ul className="list-disc pl-4">
-                          {result.pubs.map((url) => (
-                            <li key={url} className="list-disc">
-                              <a href={url} target="_blank" className="text-blue-600 underline">{url}</a>
-                            </li>
-                          ))}
-                        </ul>
-                      </li>
-                    )
-                    : null}
-                </ol>
+                      <ul className="list-disc pl-4">
+                        {result.pubs.map((url) => (
+                          <li key={url} className="list-disc">
+                            <a
+                              href={url}
+                              target="_blank"
+                              className="text-blue-600 underline"
+                            >
+                              {url}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </li>
+                  )
+                  : null}
+              </ol>
 
-                <p>
-                  You will then be able to write and view posts made to{" "}
-                  <ShareLabel address={result.workspace} />.
-                </p>
+              <p>
+                You will then be able to write and view posts made to{" "}
+                <ShareLabel address={result.workspace} />.
+              </p>
 
-
-
-                <button type="submit" className="btn">
-                  Join <ShareLabel address={result.workspace} />
-                </button>
-              </form>
-            </>
-          )}
+              <button type="submit" className="btn">
+                Join <ShareLabel address={result.workspace} />
+              </button>
+            </form>
+          </>
+        )}
     </div>
   );
 }

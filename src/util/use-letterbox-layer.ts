@@ -1,4 +1,4 @@
-import * as React from 'react'
+import * as React from "react";
 import { useIdentity, useReplica } from "react-earthstar";
 import { useWorkspaceAddrFromRouter } from "../WorkspaceLookup";
 

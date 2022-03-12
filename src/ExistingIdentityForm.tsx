@@ -22,7 +22,7 @@ export default function SettingsManager() {
       <form
         className="m-3"
         onSubmit={async (e) => {
-          e.preventDefault()
+          e.preventDefault();
 
           const keypair = { address, secret };
 
@@ -33,7 +33,11 @@ export default function SettingsManager() {
             return;
           }
 
-          const canProceed = identity ? window.confirm(`You're already signed in as ${identity}. Are you sure you want to replace that with this identity?`) : true
+          const canProceed = identity
+            ? window.confirm(
+              `You're already signed in as ${identity}. Are you sure you want to replace that with this identity?`,
+            )
+            : true;
 
           if (canProceed) {
             setCurrentIdentity(keypair);
@@ -43,9 +47,18 @@ export default function SettingsManager() {
       >
         <table>
           <tbody>
-            {
-              error ? <tr><td colSpan={2} className="bg-red-100 p-2 border border-red-200 rounded text-red-800">{error}</td></tr> : null
-            }
+            {error
+              ? (
+                <tr>
+                  <td
+                    colSpan={2}
+                    className="bg-red-100 p-2 border border-red-200 rounded text-red-800"
+                  >
+                    {error}
+                  </td>
+                </tr>
+              )
+              : null}
             <tr>
               <td>
                 <label>Address</label>
@@ -75,7 +88,9 @@ export default function SettingsManager() {
 
             <tr>
               <td colSpan={2}>
-                <button type="submit" className="btn block">Use identity</button>
+                <button type="submit" className="btn block">
+                  Use identity
+                </button>
               </td>
             </tr>
           </tbody>
