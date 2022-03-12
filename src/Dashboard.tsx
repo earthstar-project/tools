@@ -28,13 +28,12 @@ function WorkspaceSection({ workspace }: { workspace: string }) {
 
   return (
     <section
-      className={`flex items-baseline text-base sm:text-sm space-x-1 ${
-        isActive
-          ? "bg-blue-100 dark:bg-blue-900"
-          : unreadThreadRoots.length === 0
+      className={`flex items-baseline text-base sm:text-sm space-x-1 ${isActive
+        ? "bg-blue-100 dark:bg-blue-900"
+        : unreadThreadRoots.length === 0
           ? "bg-gray-100 dark:bg-gray-900"
           : ""
-      }`}
+        }`}
     >
       <Link
         to={`/${sharePath}`}
@@ -64,7 +63,7 @@ function IdentityBar() {
   return (
     <Link
       to={`/settings`}
-      className="border-t p-2 text-sm block dark:border-gray-800"
+      className="border-t p-2 text-sm block dark:border-gray-800 sticky bottom-0"
     >
       {identity ? <IdentityLabel address={identity.address} /> : "Anonymous"}
     </Link>
@@ -92,13 +91,12 @@ export default function Dashboard() {
       className={"w-screen flex-grow grid lg:grid-cols-app-lg md:grid-cols-app-md app border-t h-app"}
     >
       <div
-        className={`h-full flex flex-col justify-between flex-initial border-r-2 border-gray-300 dark:border-gray-700 text-black dark:text-white items-stretch justify-between ${
-          isExactlyAtRoot
-            ? "block"
-            : isOneLevelDeep && isAtWorkspace
+        className={`h-full flex flex-col justify-between flex-initial border-r-2 border-gray-300 dark:border-gray-700 text-black dark:text-white items-stretch ${isExactlyAtRoot
+          ? "block"
+          : isOneLevelDeep && isAtWorkspace
             ? "hidden md:flex"
             : "hidden lg:flex"
-        }`}
+          }`}
       >
         <ul>
           {shares.map((addr) => (
