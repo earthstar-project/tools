@@ -198,11 +198,10 @@ function ThreadRootView({ root }: { root: Post }) {
 
   return (
     <article
-      className={`p-3 py-4 pl-6 sm:py-6 ${
-        isUnread
-          ? "bg-white dark:bg-black dark:text-gray-100"
-          : "bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-300"
-      }`}
+      className={`p-3 py-4 pl-6 sm:py-6 ${isUnread
+        ? "bg-white dark:bg-black dark:text-gray-100"
+        : "bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-300"
+        }`}
     >
       <PostDetails
         isEditing={isEditing}
@@ -233,11 +232,10 @@ function PostView({ post }: { post: Post }) {
 
   return (
     <article
-      className={`p-3 py-4 pl-6 sm:py-6 ${
-        isUnread
-          ? "bg-white dark:bg-black dark:text-gray-100"
-          : "bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-300"
-      }`}
+      className={`p-3 py-4 pl-6 sm:py-6 ${isUnread
+        ? "bg-white dark:bg-black dark:text-gray-100"
+        : "bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-300"
+        }`}
     >
       <PostDetails
         isEditing={isEditing}
@@ -323,7 +321,7 @@ export default function ThreadView() {
               Reply
             </Link>
           )
-          : null}
+          : <Link className="link-btn" to={'/settings'}>Sign in to reply</Link>}
       </footer>
       <Outlet />
     </div>
