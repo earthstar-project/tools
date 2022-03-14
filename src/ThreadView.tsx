@@ -281,7 +281,7 @@ export default function ThreadView() {
     authorPubKey || "",
   );
 
-  const match = useMatch("/:workspace/thread/:pubKey/:timestamp/reply");
+  const isOnReplyPathMatch = useMatch("/:workspace/thread/:pubKey/:timestamp/reply");
 
   const isHeated = useIsCacheHeated(thread);
 
@@ -315,13 +315,16 @@ export default function ThreadView() {
         ))}
       </ol>
       <footer className="flex gap-2 p-3 lg:px-6 justify-between py-3">
-        {!match && currentAuthor
+        {!isOnReplyPathMatch && currentAuthor
           ? (
             <Link className="link-btn" to={"reply"}>
               Reply
             </Link>
           )
-          : <Link className="link-btn" to={'/settings'}>Sign in to reply</Link>}
+          : null}
+        {!isOnReplyPathMatch && !currentAuthor ?
+          <Link className="link-btn" to={'/settings'}>Sign in to Reply</Link> : null
+        }
       </footer>
       <Outlet />
     </div>
