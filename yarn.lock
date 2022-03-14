@@ -2203,10 +2203,12 @@
   resolved "https://registry.yarnpkg.com/@deno/shim-timers/-/shim-timers-0.1.0.tgz#a85522a1c0b072bdb374b24634dc29b5e2190ef2"
   integrity sha512-XFRnB5Rtbkd5RiYHwhugNK9gvDgYXmFTUOT5dmhWCKG7WnOWZggbJMnH1NcyYS3QgHvmaTOaHCyNFNSv57j3Dg==
 
-"@earthstar-project/rich-threads-layer@^2.2.2":
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/@earthstar-project/rich-threads-layer/-/rich-threads-layer-2.2.2.tgz#4f08e1102dbd2c5392d0ed3476be800fddff88b8"
-  integrity sha512-xxDeGauStuimfxfDQAS2put+/7xTWC9MFHxrBZbPqvJtGf3jq3UsY9z/c3oBNFQb3wKMBV6bAOciL6xRF9uM3g==
+"@earthstar-project/rich-threads-layer@2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@earthstar-project/rich-threads-layer/-/rich-threads-layer-2.3.0.tgz#cfaf4f09478d8cdd6257d43461eb77c231fe169f"
+  integrity sha512-m3ZO4jgBE/SWA6JGva9nRUrJq0G5emdCQIYAhNVQkDzzm25qYOwMJxzijNSIyqZzwyfmhxP56qXH3l2tyZDL5w==
+  dependencies:
+    earthstar "8.2.4"
 
 "@eslint/eslintrc@^1.2.0":
   version "1.2.0"

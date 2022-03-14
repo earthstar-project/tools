@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@earthstar-project/rich-threads-layer": "^2.2.2",
+    "@earthstar-project/rich-threads-layer": "2.3.0",
     "@reach/combobox": "^0.16.5",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
@@ -47,12 +47,12 @@
   },
   "browserslist": {
     "production": [
-       ">0.2%",
-       "not ie <= 99",
-       "not android <= 4.4.4",
-       "not dead",
-       "not op_mini all"
-     ],
+      ">0.2%",
+      "not ie <= 99",
+      "not android <= 4.4.4",
+      "not dead",
+      "not op_mini all"
+    ],
     "development": [
       "last 1 chrome version",
       "last 1 firefox version",
