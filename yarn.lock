@@ -5567,10 +5567,10 @@ earthstar@8.2.4:
     rfc4648 "1.5.0"
     sha256-uint8array "0.10.3"
 
-earthstar@9.0.1:
-  version "9.0.1"
-  resolved "https://registry.yarnpkg.com/earthstar/-/earthstar-9.0.1.tgz#d4ff3e5fa625936febf7962eaeb2968590372823"
-  integrity sha512-IHTlL0dykhFkaLsJpZdPw35ACubiawtCkcKIxWVbaXkP1aKkvjA8oeAMDgisEnR5u/NJTozIhLbcq6NiFCCzSw==
+earthstar@9.0.2:
+  version "9.0.2"
+  resolved "https://registry.yarnpkg.com/earthstar/-/earthstar-9.0.2.tgz#458573fc50a772a8f090cb4399c55ae4bcb06d9f"
+  integrity sha512-nu3IdDzUlqk1ivLyC25WzyPKxf3X4g/y9jNeN50EK0dl6o5njhyALy8CBAyhFh6Ad6X/i+25E0oRdv+FxjrmpA==
   dependencies:
     "@deno/sham-weakref" "~0.1.0"
     "@deno/shim-timers" "~0.1.0"

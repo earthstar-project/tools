@@ -13,7 +13,7 @@
     "@types/react": "^17.0.40",
     "@types/react-dom": "^17.0.13",
     "date-fns": "^2.22.1",
-    "earthstar": "9.0.1",
+    "earthstar": "9.0.2",
     "history": "^5.0.0",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
