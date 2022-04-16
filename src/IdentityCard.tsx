@@ -56,7 +56,7 @@ export default function IdentityCard({ keypair }: { keypair: AuthorKeypair }) {
           />
           <CopyButton
             className="p-1 text-sm text-blue-500 border border-blue-500 rounded whitespace-nowrap"
-            copyValue={keypair.address}
+            copyValue={keypair.secret}
           >
             Copy
           </CopyButton>
