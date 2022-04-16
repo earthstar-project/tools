@@ -26,26 +26,52 @@ function ReplicaServerManager() {
             You haven't specified any replica servers to sync with yet.
           </p>
         )
-        : null}
-      {replicaServers.map((server) => {
-        return <li>{server}</li>;
-      })}
+        : (
+          <ul className="list-none">
+            {replicaServers.map((server, index) => {
+              return <li key={server}>
+                <code className="mr-2 font-mono">{server}</code>
+
+                <button type="button" title="Remove replica server" onClick={(e) => {
+                e.preventDefault();
+
+                if (window.confirm(`There is no undo! Continue removing ${server}?`)) {
+                  const _replicaServers = replicaServers.filter(_server => _server !== server);
+                  setReplicaServers(_replicaServers);
+                }
+              }}>❌</button>
+              </li>;
+            })}
+          </ul>
+        )}
       <form
         onSubmit={(e) => {
           e.preventDefault();
 
-          setReplicaServers((prev) => [...prev, newReplicaServer]);
-          setNewReplicaServer("");
+          try {
+            if (replicaServers.includes(newReplicaServer)) {
+              throw new Error('Already added!')
+            }
+
+            setReplicaServers((prev) => [...prev, newReplicaServer]);
+            setNewReplicaServer("");
+
+          } catch(error) {
+            window.alert(`Replica server ${newReplicaServer} already added.`)
+          }
         }}
       >
+        <label htmlFor="newreplicaserver" className="block mb-1">Add Replica Server by URL</label>
         <input
           value={newReplicaServer}
+          id="newreplicaserver"
           onChange={(e) => setNewReplicaServer(e.target.value)}
           className="input mr-2"
           placeholder="wss://my.server"
           type="url"
+          required={true}
         />
-        <button type="submit" className="btn">Add replica server</button>
+        <button type="submit" className="btn">Add</button>
       </form>
     </div>
   );
