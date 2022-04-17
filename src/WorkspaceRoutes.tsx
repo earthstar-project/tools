@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useParams } from "react-router-dom";
 import NewThreadForm from "./NewThreadForm";
 import ThreadReplyForm from "./ThreadReplyForm";
 import ThreadView from "./ThreadView";
@@ -11,7 +11,8 @@ export default function WorkspaceRoutes() {
   const workspace = useWorkspaceAddrFromRouter();
 
   const ShareNotFound = function () {
-    return (<AddForm />);
+    const { workspaceLookup } = useParams();
+    return (<AddForm notFound={workspaceLookup} />);
   }
 
   /**
