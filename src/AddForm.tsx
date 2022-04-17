@@ -14,10 +14,11 @@ function AddBar() {
   );
 }
 
-export default function AddForm() {
+export default function AddForm({ notFound }: { notFound?: string }) {
   return (
     <div className="h-app w-full h-overflow col-auto lg:col-span-2">
       <AddBar />
+      {notFound && notFound.length && (<p className="m-3 bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 text-sm p-2 rounded inline-block border dark:border-gray-800">Share "{notFound}" does not exist yet.</p>)}
       <ShareCreatorForm />
     </div>
   );
